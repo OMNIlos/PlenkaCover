@@ -1,0 +1,658 @@
+.plenki-metric-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 8px;
+  margin: 8px 0;
+}
+
+.plenki-metric-card {
+  min-height: 68px;
+  display: grid;
+  align-content: start;
+  gap: 3px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-panel) 72%, transparent);
+  color: var(--text-primary);
+  box-shadow: none;
+  text-align: left;
+}
+
+button.plenki-metric-card {
+  cursor: pointer;
+}
+
+.plenki-metric-card.tone-warning {
+  border-left: 3px solid var(--state-warning-border);
+  background: color-mix(in srgb, var(--state-warning-bg) 14%, var(--surface-panel));
+}
+
+.plenki-metric-card.tone-risk,
+.plenki-metric-card.tone-critical {
+  border-left: 3px solid var(--state-critical-border);
+  background: color-mix(in srgb, var(--state-critical-bg) 14%, var(--surface-panel));
+}
+
+.plenki-metric-card > span {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.25;
+}
+
+.plenki-metric-card > strong {
+  color: var(--text-primary);
+  font-size: clamp(20px, 1.3vw, 24px);
+  font-weight: 800;
+  line-height: 1.08;
+  letter-spacing: 0;
+}
+
+.plenki-metric-card > em,
+.plenki-metric-card > small {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-style: normal;
+  line-height: 1.28;
+}
+
+.plenki-toolbar {
+  display: grid;
+  gap: 8px;
+  margin: 8px 0;
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-panel) 78%, transparent);
+  box-shadow: none;
+}
+
+.plenki-toolbar-head,
+.plenki-toolbar-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.plenki-toolbar-head > div:first-child,
+.plenki-toolbar-row {
+  min-width: 0;
+}
+
+.plenki-toolbar-head strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.2;
+}
+
+.plenki-toolbar-actions,
+.plenki-toolbar-meta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  color: var(--text-secondary);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.plenki-search-field {
+  min-width: min(360px, 100%);
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 0 14px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--text-secondary);
+}
+
+.plenki-search-field input {
+  width: 100%;
+  min-width: 0;
+  min-height: 32px;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 14px;
+  outline: 0;
+}
+
+.plenki-filter-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  min-width: 0;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.plenki-filter-row button,
+.plenki-toolbar-actions button,
+.plenki-toolbar-meta button,
+.plenki-modal-footer button,
+.plenki-bulk-bar button {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.plenki-filter-row button.is-active,
+.plenki-toolbar-actions .action-recommended,
+.plenki-modal-footer .action-recommended,
+.plenki-bulk-bar .action-recommended {
+  border-color: var(--action-recommended-border);
+  background: var(--action-recommended-bg);
+  color: var(--action-recommended-text);
+}
+
+.plenki-filter-row button small {
+  min-width: 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.plenki-filter-row button.is-active small {
+  color: var(--action-recommended-text);
+}
+
+.plenki-data-table-shell {
+  width: 100%;
+  overflow: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+  box-shadow: none;
+}
+
+.plenki-data-table {
+  width: 100%;
+  min-width: 920px;
+  border-collapse: separate;
+  border-spacing: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.plenki-data-table caption {
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  position: absolute;
+}
+
+.plenki-data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: 38px;
+  padding: 0 10px;
+  border-bottom: 1px solid var(--border-default);
+  background: var(--surface-inset);
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.plenki-data-table th button {
+  width: 100%;
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: inherit;
+  font-weight: inherit;
+  text-align: left;
+  text-transform: inherit;
+}
+
+.plenki-data-table th button.is-active {
+  color: var(--text-primary);
+}
+
+.plenki-data-table td {
+  min-height: 48px;
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--rule-hairline);
+  color: var(--text-secondary);
+  vertical-align: middle;
+}
+
+.plenki-data-table tr:last-child td {
+  border-bottom: 0;
+}
+
+.plenki-data-table tbody tr {
+  background: transparent;
+}
+
+.plenki-data-table tbody tr.is-interactive {
+  cursor: pointer;
+}
+
+.plenki-data-table tbody tr.is-selected {
+  background: var(--surface-selected-quiet);
+  box-shadow: inset 3px 0 0 var(--selection-rail);
+}
+
+.plenki-data-table tbody tr.severity-warning {
+  box-shadow: inset 3px 0 0 var(--state-warning-border);
+}
+
+.plenki-data-table tbody tr.severity-critical {
+  box-shadow: inset 3px 0 0 var(--state-critical-border);
+}
+
+.plenki-data-table td strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 14.5px;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.plenki-data-table td small,
+.plenki-data-table td em {
+  display: block;
+  margin-top: 2px;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  font-style: normal;
+  line-height: 1.28;
+}
+
+.plenki-data-table .align-right,
+.plenki-data-table .num {
+  text-align: right;
+}
+
+.plenki-data-table .align-center {
+  text-align: center;
+}
+
+.plenki-data-table td button,
+.plenki-data-table td input,
+.plenki-data-table td select,
+.plenki-data-table td textarea {
+  min-height: 32px;
+  font-size: 13.5px;
+}
+
+.plenki-data-table td button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
+  font-weight: 700;
+}
+
+.plenki-data-table-expanded-row > td,
+.plenki-data-table-empty-row > td {
+  padding: 0;
+}
+
+.plenki-data-table-expanded-row > td {
+  background: color-mix(in srgb, var(--surface-inset) 70%, var(--surface-1));
+}
+
+.plenki-data-table-expanded-row > td::before,
+.plenki-data-table-empty-row > td::before {
+  display: none;
+  content: none;
+}
+
+.plenki-nested-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.plenki-nested-table th,
+.plenki-nested-table td {
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--rule-hairline);
+  color: var(--text-secondary);
+  text-align: left;
+}
+
+.plenki-nested-table th {
+  color: var(--text-muted);
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.plenki-empty-state {
+  display: grid;
+  gap: 4px;
+  padding: var(--space-6);
+  color: var(--text-secondary);
+}
+
+.plenki-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-6);
+  background: rgba(5, 10, 15, 0.66);
+  backdrop-filter: blur(4px);
+}
+
+.plenki-modal,
+.plenki-drawer {
+  width: min(720px, 100%);
+  max-height: min(760px, calc(100vh - 48px));
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-overlay);
+  background: var(--surface-raised);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-dialog);
+}
+
+.plenki-drawer-overlay {
+  justify-content: flex-end;
+  padding: 0;
+}
+
+.plenki-drawer {
+  width: min(560px, 100vw);
+  height: 100vh;
+  max-height: none;
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+.plenki-modal-head,
+.plenki-modal-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.plenki-modal-head h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 20px;
+  line-height: 1.18;
+}
+
+.plenki-modal-body,
+.plenki-drawer-body {
+  min-height: 0;
+  overflow: auto;
+  padding: var(--space-4);
+}
+
+.plenki-modal-footer {
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 0;
+  justify-content: flex-end;
+}
+
+.plenki-icon-button {
+  width: 36px;
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--action-secondary-bg);
+  color: var(--text-primary);
+}
+
+.warehouse-inventory-data-table {
+  min-width: 760px;
+}
+
+.plenki-bulk-bar {
+  position: fixed;
+  left: 272px;
+  right: 24px;
+  bottom: 18px;
+  z-index: 900;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  margin: 0;
+  padding: 8px;
+  border: 1px solid var(--action-recommended-border);
+  border-radius: var(--radius-md);
+  background: color-mix(in srgb, var(--surface-raised) 94%, var(--surface-inset));
+  box-shadow: 0 10px 28px color-mix(in srgb, var(--surface-app) 62%, transparent);
+}
+
+.plenki-bulk-bar > div {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+.plenki-bulk-bar strong {
+  color: var(--text-primary);
+  font-size: 14.5px;
+}
+
+.plenki-switch {
+  min-height: 38px;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: center;
+  gap: var(--space-2);
+  padding: 6px 0;
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+.plenki-switch input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.plenki-switch-track {
+  width: 42px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  padding: 3px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-pill);
+  background: var(--surface-inset);
+}
+
+.plenki-switch-track i {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: var(--text-muted);
+  transition:
+    transform var(--motion-ui) var(--ease-out-strong),
+    background-color var(--motion-ui) var(--ease-standard);
+}
+
+.plenki-switch.is-on .plenki-switch-track {
+  border-color: var(--action-recommended-border);
+  background: var(--action-recommended-bg);
+}
+
+.plenki-switch.is-on .plenki-switch-track i {
+  transform: translateX(18px);
+  background: var(--text-primary);
+}
+
+.plenki-switch-copy {
+  min-width: 0;
+}
+
+.plenki-switch-copy strong {
+  display: block;
+  color: var(--text-primary);
+  font-size: 14px;
+  line-height: 1.25;
+}
+
+.plenki-switch-copy small {
+  display: block;
+  color: var(--text-muted);
+  font-size: 12.5px;
+  line-height: 1.25;
+}
+
+.plenki-switch:focus-within .plenki-switch-track {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .plenki-metric-card:hover,
+  .plenki-data-table tbody tr.is-interactive:hover,
+  .plenki-filter-row button:hover,
+  .plenki-data-table td button:hover,
+  .plenki-icon-button:hover,
+  .plenki-bulk-bar button:hover {
+    border-color: var(--border-default);
+    background-color: var(--surface-hover);
+  }
+}
+
+@media (max-width: 760px) {
+  .plenki-metric-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+  }
+
+  .plenki-metric-card {
+    min-height: 58px;
+    padding: 8px 9px;
+  }
+
+  .plenki-metric-card > strong {
+    font-size: 19px;
+  }
+
+  .plenki-toolbar-head,
+  .plenki-toolbar-row,
+  .plenki-bulk-bar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .plenki-toolbar-actions,
+  .plenki-toolbar-meta,
+  .plenki-bulk-bar > div {
+    justify-content: flex-start;
+    white-space: normal;
+  }
+
+  .plenki-bulk-bar {
+    left: 12px;
+    right: 12px;
+    bottom: 12px;
+  }
+
+  .plenki-search-field {
+    width: 100%;
+  }
+
+  .plenki-data-table {
+    min-width: 0;
+  }
+
+  .plenki-data-table thead {
+    display: none;
+  }
+
+  .plenki-data-table,
+  .plenki-data-table tbody,
+  .plenki-data-table tr,
+  .plenki-data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .plenki-data-table tbody tr {
+    padding: 10px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .plenki-data-table td {
+    min-height: 0;
+    display: grid;
+    grid-template-columns: minmax(112px, 36%) minmax(0, 1fr);
+    gap: var(--space-2);
+    padding: 8px 14px;
+    border-bottom: 0;
+  }
+
+  .plenki-data-table td::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.25;
+    text-transform: uppercase;
+  }
+
+  .plenki-data-table .align-right,
+  .plenki-data-table .num {
+    text-align: left;
+  }
+
+  .plenki-data-table-expanded-row > td {
+    display: block;
+  }
+
+  .plenki-data-table-expanded-row > td::before,
+  .plenki-data-table-empty-row > td::before {
+    display: none;
+  }
+
+  .plenki-overlay {
+    padding: var(--space-3);
+  }
+}

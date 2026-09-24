@@ -1,0 +1,228 @@
+name: ${COMPOSE_PROJECT_NAME:?COMPOSE_PROJECT_NAME is required}
+
+x-logging: &bounded-logging
+  driver: json-file
+  options:
+    max-size: 10m
+    max-file: '5'
+
+x-api-environment: &api-environment
+  APP_ENV: ${APP_ENV:?APP_ENV is required}
+  AUTH_DEV_XROLE: ${AUTH_DEV_XROLE:?AUTH_DEV_XROLE is required}
+  DATABASE_URL: ${DATABASE_URL:?DATABASE_URL is required}
+  DEVICE_GATEWAY_PRINTER: ${DEVICE_GATEWAY_PRINTER:?DEVICE_GATEWAY_PRINTER is required}
+  DEVICE_GATEWAY_SCALE: ${DEVICE_GATEWAY_SCALE:?DEVICE_GATEWAY_SCALE is required}
+  GATEWAY_COMMAND_TIMEOUT_MS: ${GATEWAY_COMMAND_TIMEOUT_MS:?GATEWAY_COMMAND_TIMEOUT_MS is required}
+  GATEWAY_SIMULATOR: ${GATEWAY_SIMULATOR:?GATEWAY_SIMULATOR is required}
+  LOGIN_RATE_MAX: ${LOGIN_RATE_MAX:?LOGIN_RATE_MAX is required}
+  LOGIN_RATE_MAX_KEYS: ${LOGIN_RATE_MAX_KEYS:?LOGIN_RATE_MAX_KEYS is required}
+  LOGIN_RATE_WINDOW_MS: ${LOGIN_RATE_WINDOW_MS:?LOGIN_RATE_WINDOW_MS is required}
+  NODE_ENV: ${NODE_ENV:?NODE_ENV is required}
+  ONEC_FINANCE_SYNC_ENABLED: ${ONEC_FINANCE_SYNC_ENABLED:?ONEC_FINANCE_SYNC_ENABLED is required}
+  ONEC_FINANCE_SYNC_INTERVAL_MS: ${ONEC_FINANCE_SYNC_INTERVAL_MS:?ONEC_FINANCE_SYNC_INTERVAL_MS is required}
+  ONEC_LIVE: ${ONEC_LIVE:?ONEC_LIVE is required}
+  ONEC_PAYMENT_AUTO_APPLY_ENABLED: ${ONEC_PAYMENT_AUTO_APPLY_ENABLED:?ONEC_PAYMENT_AUTO_APPLY_ENABLED is required}
+  ONEC_PAYMENT_SYNC_ENABLED: ${ONEC_PAYMENT_SYNC_ENABLED:?ONEC_PAYMENT_SYNC_ENABLED is required}
+  ONEC_SYNC_ENABLED: ${ONEC_SYNC_ENABLED:?ONEC_SYNC_ENABLED is required}
+  ONEC_SYNC_INTERVAL_MS: ${ONEC_SYNC_INTERVAL_MS:?ONEC_SYNC_INTERVAL_MS is required}
+  ONEC_SYNC_PAGE_SIZE: ${ONEC_SYNC_PAGE_SIZE:?ONEC_SYNC_PAGE_SIZE is required}
+  ONEC_TIMEOUT_MS: ${ONEC_TIMEOUT_MS:?ONEC_TIMEOUT_MS is required}
+  ONEC_WRITE: ${ONEC_WRITE:?ONEC_WRITE is required}
+  PASSWORD_SETUP_TTL: ${PASSWORD_SETUP_TTL:?PASSWORD_SETUP_TTL is required}
+  PILOT_SHORT_PASSWORDS_ENABLED: ${PILOT_SHORT_PASSWORDS_ENABLED:?PILOT_SHORT_PASSWORDS_ENABLED is required}
+  PORT: ${PORT:?PORT is required}
+  PRODUCTION_COST_RECONCILER_ENABLED: ${PRODUCTION_COST_RECONCILER_ENABLED:?PRODUCTION_COST_RECONCILER_ENABLED is required}
+  PUBLIC_ORIGIN: ${PUBLIC_ORIGIN:?PUBLIC_ORIGIN is required}
+  SESSION_TTL: ${SESSION_TTL:?SESSION_TTL is required}
+
+services:
+  db:
+    image: public.ecr.aws/docker/library/postgres:16.14-alpine@sha256:57c72fd2a128e416c7fcc499958864df5301e940bca0a56f58fddf30ffc07777
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:?POSTGRES_DB is required}
+      POSTGRES_PASSWORD: ${POSTGRES_ADMIN_PASSWORD:?POSTGRES_ADMIN_PASSWORD is required}
+      POSTGRES_USER: ${POSTGRES_ADMIN_USER:?POSTGRES_ADMIN_USER is required}
+      DATABASE_OWNER_USER: ${DATABASE_OWNER_USER:?DATABASE_OWNER_USER is required}
+      DATABASE_OWNER_PASSWORD: ${DATABASE_OWNER_PASSWORD:?DATABASE_OWNER_PASSWORD is required}
+      DATABASE_APP_USER: ${DATABASE_APP_USER:?DATABASE_APP_USER is required}
+      DATABASE_APP_PASSWORD: ${DATABASE_APP_PASSWORD:?DATABASE_APP_PASSWORD is required}
+    volumes:
+      - db-data:/var/lib/postgresql/data
+      - ./init-database.sh:/docker-entrypoint-initdb.d/10-plenka-roles.sh:ro
+    networks:
+      - backend
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+    logging: *bounded-logging
+    shm_size: 128m
+    mem_limit: 768m
+
+  migrate:
+    image: ${PLENKA_MIGRATION_IMAGE:?PLENKA_MIGRATION_IMAGE is required}
+    command: ['npx', 'prisma', 'migrate', 'deploy', '--schema', 'apps/api/prisma/schema.prisma']
+    restart: 'no'
+    environment:
+      <<: *api-environment
+      DATABASE_URL: ${MIGRATION_DATABASE_URL:?MIGRATION_DATABASE_URL is required}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - backend
+    logging: *bounded-logging
+    mem_limit: 768m
+
+  seed-pilot:
+    image: ${PLENKA_MIGRATION_IMAGE:?PLENKA_MIGRATION_IMAGE is required}
+    command: ['npm', 'run', 'db:seed', '-w', '@plenka/api']
+    restart: 'no'
+    profiles: ['bootstrap']
+    environment:
+      <<: *api-environment
+      NODE_OPTIONS: --max-old-space-size=512
+      SEED_PROFILE: ${SEED_PROFILE:?SEED_PROFILE is required}
+      SEED_PILOT_PASSWORD_COMMERCIAL: ${SEED_PILOT_PASSWORD_COMMERCIAL:?required}
+      SEED_PILOT_PASSWORD_PRODUCTION: ${SEED_PILOT_PASSWORD_PRODUCTION:?required}
+      SEED_PILOT_PASSWORD_OPERATOR: ${SEED_PILOT_PASSWORD_OPERATOR:?required}
+      SEED_PILOT_PASSWORD_OPERATOR_2: ${SEED_PILOT_PASSWORD_OPERATOR_2:?required}
+      SEED_PILOT_PASSWORD_OPERATOR_3: ${SEED_PILOT_PASSWORD_OPERATOR_3:?required}
+      SEED_PILOT_PASSWORD_WAREHOUSE: ${SEED_PILOT_PASSWORD_WAREHOUSE:?required}
+      SEED_PILOT_PASSWORD_FINANCE: ${SEED_PILOT_PASSWORD_FINANCE:?required}
+      SEED_PILOT_PASSWORD_DIRECTOR: ${SEED_PILOT_PASSWORD_DIRECTOR:?required}
+      SEED_PILOT_PASSWORD_ADMIN: ${SEED_PILOT_PASSWORD_ADMIN:?required}
+      SEED_PILOT_AGENT_TOKEN_POST_1: ${SEED_PILOT_AGENT_TOKEN_POST_1:?required}
+      SEED_PILOT_AGENT_TOKEN_POST_2: ${SEED_PILOT_AGENT_TOKEN_POST_2:?required}
+      SEED_PILOT_AGENT_TOKEN_POST_3: ${SEED_PILOT_AGENT_TOKEN_POST_3:?required}
+      SEED_PILOT_AGENT_TOKEN_POST_4: ${SEED_PILOT_AGENT_TOKEN_POST_4:?required}
+      SEED_PILOT_AGENT_TOKEN_POST_5: ${SEED_PILOT_AGENT_TOKEN_POST_5:?required}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+    logging: *bounded-logging
+    mem_limit: 768m
+
+  reset-pilot-demo:
+    image: ${PLENKA_MIGRATION_IMAGE:?PLENKA_MIGRATION_IMAGE is required}
+    command: ['npm', 'run', 'db:reset:pilot-demo', '-w', '@plenka/api']
+    restart: 'no'
+    profiles: ['maintenance']
+    environment:
+      DATABASE_URL: ${MIGRATION_DATABASE_URL:?MIGRATION_DATABASE_URL is required}
+      APP_ENV: ${APP_ENV:?APP_ENV is required}
+      NODE_OPTIONS: --max-old-space-size=512
+      SEED_PROFILE: ${SEED_PROFILE:?SEED_PROFILE is required}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+    logging: *bounded-logging
+    mem_limit: 768m
+
+  purge-pilot-order-history:
+    image: ${PLENKA_MIGRATION_IMAGE:?PLENKA_MIGRATION_IMAGE is required}
+    command: ['npm', 'run', 'db:purge:pilot-order-history', '-w', '@plenka/api']
+    restart: 'no'
+    profiles: ['maintenance']
+    environment:
+      DATABASE_URL: ${MIGRATION_DATABASE_URL:?MIGRATION_DATABASE_URL is required}
+      APP_ENV: ${APP_ENV:?APP_ENV is required}
+      NODE_OPTIONS: --max-old-space-size=512
+      SEED_PROFILE: ${SEED_PROFILE:?SEED_PROFILE is required}
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+    logging: *bounded-logging
+    mem_limit: 768m
+
+  api:
+    image: ${PLENKA_API_IMAGE:?PLENKA_API_IMAGE is required}
+    restart: unless-stopped
+    init: true
+    read_only: true
+    tmpfs:
+      - /tmp:size=128m,mode=1777
+    environment:
+      <<: *api-environment
+      PALLET_LABEL_PROFILE: ${PALLET_LABEL_PROFILE:?PALLET_LABEL_PROFILE is required}
+      WAREHOUSE_COVERAGE_V2_ENABLED: ${WAREHOUSE_COVERAGE_V2_ENABLED:?WAREHOUSE_COVERAGE_V2_ENABLED is required}
+    depends_on:
+      db:
+        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
+    networks:
+      - backend
+    healthcheck:
+      test:
+        - CMD
+        - node
+        - -e
+        - "fetch('http://127.0.0.1:3000/api/health/ready').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    logging: *bounded-logging
+    mem_limit: 768m
+
+  web:
+    image: ${PLENKA_WEB_IMAGE:?PLENKA_WEB_IMAGE is required}
+    restart: unless-stopped
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,mode=1777
+    environment:
+      ACME_EMAIL: ${ACME_EMAIL:?ACME_EMAIL is required}
+      PUBLIC_HOST: ${PUBLIC_HOST:?PUBLIC_HOST is required}
+    ports:
+      - '80:80'
+      - '443:443'
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - ./frontend-routes.caddy:/etc/caddy/frontend-routes.caddy:ro
+      - caddy-data:/data
+      - caddy-config:/config
+    depends_on:
+      api:
+        condition: service_healthy
+    networks:
+      - edge
+      - backend
+    healthcheck:
+      test: ['CMD', 'wget', '--quiet', '--spider', 'http://127.0.0.1:2019/config/']
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_BIND_SERVICE
+    logging: *bounded-logging
+    mem_limit: 192m
+
+networks:
+  edge:
+  backend:
+    internal: true
+
+volumes:
+  db-data:
+  caddy-data:
+  caddy-config:

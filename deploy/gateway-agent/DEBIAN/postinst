@@ -1,0 +1,24 @@
+#!/bin/sh
+set -eu
+
+if ! getent group plenka-gateway >/dev/null; then
+  addgroup --system plenka-gateway
+fi
+if ! getent passwd plenka-gateway >/dev/null; then
+  install -d -o root -g root -m 0755 /var/lib/plenka-gateway
+  adduser --system --ingroup plenka-gateway --home /var/lib/plenka-gateway \
+    --no-create-home --disabled-password --disabled-login plenka-gateway
+fi
+
+install -d -o root -g plenka-gateway -m 0750 /etc/plenka-gateway
+install -d -o plenka-gateway -g plenka-gateway -m 0750 /var/lib/plenka-gateway
+
+if command -v systemctl >/dev/null 2>&1; then
+  systemctl daemon-reload >/dev/null 2>&1 || true
+  if [ -f /run/plenka-gateway-agent.was-active ]; then
+    systemctl start plenka-gateway.service
+    rm -f /run/plenka-gateway-agent.was-active
+  fi
+fi
+
+exit 0

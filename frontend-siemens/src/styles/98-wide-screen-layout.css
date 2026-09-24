@@ -1,0 +1,75 @@
+@media (min-width: 1600px){
+  .app-shell[data-active-role="commercial"]{--commercial-wide-detail-max:min(100%, 1760px);--commercial-wide-main:minmax(0, 1fr);--commercial-wide-context:minmax(480px, 520px);}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view,
+  .app-shell[data-active-role="commercial"] .commercial-overview-detail-slot.is-landing{width:var(--commercial-wide-detail-max);max-width:var(--commercial-wide-detail-max);margin-inline:0 auto;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-surface{grid-template-columns:var(--commercial-wide-main) var(--commercial-wide-context);gap:14px;align-items:start;min-width:0;overflow:hidden;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-object-header,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-primary-action,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-main-grid,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-side-stack,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-material-shortage-panel,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-production-problem-panel{grid-column:1;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-object-header{grid-row:1;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-primary-action{grid-row:2;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-main-grid{grid-row:3 / span 6;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-side-stack{grid-column:2;grid-row:1 / span 20;align-self:start;display:grid;grid-template-columns:minmax(0, 1fr);gap:14px;min-width:min(100%, 480px);}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-secondary-actions,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-route-strip,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-cover-panel,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-shipment-strip,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-billing-panel,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-resolution-panel{grid-column:2;min-width:0;max-width:100%;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-secondary-actions{grid-row:1;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-route-strip{grid-row:2;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-cover-panel{grid-row:3;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-shipment-strip{grid-row:4;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-billing-panel{grid-row:5;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-side-stack > *{grid-column:1;grid-row:auto;order:initial;min-width:0;max-width:100%;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-route-strip,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-cover-panel,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-shipment-strip,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-billing-panel{align-self:start;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-route-strip{grid-template-columns:repeat(2, minmax(0, 1fr));}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .order-route-item{min-height:0;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-cover-production-strip{grid-template-columns:1fr;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-cover-production-strip > div,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-route-step,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-route{grid-template-columns:1fr;gap:8px;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-route-line{width:2px;min-width:0;height:14px;margin-left:20px;background:linear-gradient(180deg, color-mix(in srgb, var(--state-warning-border) 82%, transparent), color-mix(in srgb, var(--state-info-border) 70%, transparent));}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-route-line::after{right:auto;left:50%;top:auto;bottom:-5px;transform:translateX(-50%);}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view :is(.order-route-item, .commercial-cover-production-strip > div, .commercial-payment-route-step) :is(span, strong, small){min-width:0;overflow-wrap:normal;word-break:normal;hyphens:none;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-main-grid{grid-template-columns:minmax(0, 1fr);}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-template-panel,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-positions-panel{grid-column:1;}
+  .app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-dashboard{width:100%;max-width:100%;}
+  .app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-finance-signals{grid-template-columns:repeat(3, minmax(0, 1fr));}
+}
+@media (min-width: 2200px){
+  .app-shell[data-active-role="commercial"]{grid-template-columns:236px minmax(360px, 420px) minmax(0, 1fr);--commercial-wide-detail-max:min(100%, 1840px);--commercial-wide-context:minmax(500px, 560px);}
+}
+@media (min-width: 3000px){
+  .app-shell[data-active-role="commercial"]{grid-template-columns:252px minmax(400px, 460px) minmax(0, 1fr);--commercial-wide-detail-max:min(100%, 1920px);--commercial-wide-context:minmax(520px, 600px);}
+}
+@media (max-width: 900px){
+  .app-shell[data-active-role="commercial"] .commercial-detail-view,
+  .app-shell[data-active-role="commercial"] .commercial-overview-detail-slot.is-landing{width:auto;max-width:none;}
+}
+.app-shell[data-active-role="commercial"] .queue-row.is-selected{background:linear-gradient(90deg, color-mix(in srgb, var(--accent-soft) 72%, transparent), transparent 58%), var(--selection-surface-quiet);box-shadow:inset 5px 0 0 var(--accent), inset 0 0 0 1px color-mix(in srgb, var(--accent) 36%, transparent), var(--selection-shadow);}
+@media (min-width: 1600px){
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-workspace{display:grid;grid-template-columns:minmax(0, 1fr) minmax(420px, 480px);gap:14px;align-items:start;min-width:0;overflow:hidden;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-object-header,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-primary-action,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-secondary-actions,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-problem-block,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-main-grid,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-material-shortage-panel,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-production-problem-panel{grid-column:1;min-width:0;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-side-stack{grid-column:2;grid-row:1 / span 20;align-self:start;display:grid;grid-template-columns:minmax(0, 1fr);gap:12px;min-width:0;max-width:100%;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-primary-action{grid-template-columns:minmax(0, 1fr) minmax(240px, 300px);}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-cover-production-strip,
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-route{grid-template-columns:1fr;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-payment-route-line{display:none;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-fulfillment-summary{grid-template-columns:repeat(2, minmax(0, 1fr));}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-fulfillment-summary div:nth-child(2n){border-right:0;}
+  .app-shell[data-active-role="commercial"] .commercial-detail-view .commercial-fulfillment-summary div:nth-child(n + 3){border-top:1px solid var(--border-subtle);}
+}

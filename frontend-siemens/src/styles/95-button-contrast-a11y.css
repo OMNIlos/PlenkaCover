@@ -1,0 +1,291 @@
+.commercial-workbench {
+  --action-recommended-bg: var(--office-action-primary-bg);
+  --action-recommended-hover-bg: var(--office-action-primary-hover-bg);
+  --action-recommended-active-bg: var(--office-action-primary-active-bg);
+  --action-recommended-border: var(--office-action-primary-border);
+  --action-recommended-text: var(--office-action-primary-text);
+  --action-peer-bg: var(--office-action-peer-bg);
+  --action-peer-hover-bg: var(--office-action-peer-hover-bg);
+  --action-peer-active-bg: var(--office-action-peer-active-bg);
+  --action-peer-border: var(--office-action-peer-border);
+  --action-peer-text: var(--office-action-peer-text);
+  --action-secondary-bg: var(--office-action-secondary-bg);
+  --action-secondary-hover-bg: var(--office-action-secondary-hover-bg);
+  --action-secondary-active-bg: var(--office-action-secondary-active-bg);
+  --action-secondary-border: var(--office-action-secondary-border);
+  --action-secondary-text: var(--office-action-secondary-text);
+  --action-destructive-bg: var(--office-action-danger-bg);
+  --action-destructive-hover-bg: var(--office-action-danger-hover-bg);
+  --action-destructive-active-bg: var(--office-action-danger-active-bg);
+  --action-destructive-border: var(--office-action-danger-border);
+  --action-destructive-text: var(--office-action-danger-text);
+  --action-disabled-bg: var(--office-action-disabled-bg);
+  --action-disabled-border: var(--office-action-disabled-border);
+  --action-disabled-text: var(--office-action-disabled-text);
+}
+
+.compact-action-button.action-recommended,
+.compact-action-button:not(.action-recommended):not(.action-peer):not(.action-secondary):not(.action-navigation):not(.action-destructive):not(.action-disabled),
+.action-tile.action-recommended,
+.office-command-primary,
+.notification-actions .ack-button,
+.create-intake-button {
+  border-color: var(--action-recommended-border);
+  background: var(--action-recommended-bg);
+  color: var(--action-recommended-text);
+  filter: none;
+}
+
+.compact-action-button.action-peer,
+.action-tile.action-peer {
+  border-color: var(--action-peer-border);
+  background: var(--action-peer-bg);
+  color: var(--action-peer-text);
+  filter: none;
+}
+
+.compact-action-button.action-secondary,
+.action-tile.action-secondary,
+.compact-action-button.action-navigation,
+.action-tile.action-navigation,
+.office-command-secondary,
+.notification-actions .notification-secondary-button,
+.drawer-actions button,
+.drawer-close-button,
+.director-table td button,
+.queue-reorder-controls button,
+.scanner-session-button,
+.warehouse-actions-secondary .compact-action-button {
+  border-color: var(--action-secondary-border);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
+  filter: none;
+}
+
+.compact-action-button.action-navigation,
+.action-tile.action-navigation {
+  border-color: color-mix(in srgb, var(--action-secondary-border) 70%, transparent);
+  background: color-mix(in srgb, var(--action-secondary-bg) 62%, transparent);
+  color: var(--action-secondary-text);
+  box-shadow: none;
+}
+
+.compact-action-button.action-destructive,
+.action-tile.action-destructive,
+.office-command-danger,
+.logout-button {
+  border-color: var(--action-destructive-border);
+  background: var(--action-destructive-bg);
+  color: var(--action-destructive-text);
+  filter: none;
+}
+
+.compact-action-button:disabled,
+.compact-action-button.action-disabled,
+.action-tile:disabled,
+.action-tile.action-disabled,
+.office-command-blocked,
+.office-command-button.is-disabled,
+.role-top-nav button:disabled,
+.intake-position-actions button:disabled {
+  border-color: var(--action-disabled-border);
+  background: var(--action-disabled-bg);
+  color: var(--action-disabled-text);
+  opacity: 1;
+  filter: none;
+}
+
+.action-tile-text small,
+.office-command-button small,
+.compact-action-button small,
+.compact-action-button > span,
+.compact-action-button span:not(.sr-only) {
+  color: currentColor;
+  opacity: 1;
+}
+
+.notification-badge {
+  background: var(--action-destructive-bg);
+  color: var(--action-destructive-text);
+}
+
+.compact-action-button.action-secondary .action-tile-text small,
+.action-tile.action-secondary .action-tile-text small,
+.office-command-secondary small,
+.notification-actions .notification-secondary-button small {
+  color: var(--action-subtext-on-dark);
+}
+
+.commercial-workbench .compact-action-button.action-secondary .action-tile-text small,
+.commercial-workbench .action-tile.action-secondary .action-tile-text small,
+.commercial-workbench .office-command-secondary small,
+.commercial-workbench .notification-actions .notification-secondary-button small {
+  color: var(--action-subtext-on-light);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .compact-action-button.action-recommended:not(:disabled):hover,
+  .compact-action-button:not(.action-recommended):not(.action-peer):not(.action-secondary):not(.action-navigation):not(.action-destructive):not(.action-disabled):not(:disabled):hover,
+  .action-tile.action-recommended:not(:disabled):hover,
+  .office-command-primary:not(.is-disabled):hover,
+  .notification-actions .ack-button:not(:disabled):hover,
+  .create-intake-button:not(:disabled):hover {
+    border-color: var(--action-recommended-hover-bg);
+    background: var(--action-recommended-hover-bg);
+    color: var(--action-recommended-text);
+    filter: none;
+  }
+
+  .compact-action-button.action-peer:not(:disabled):hover,
+  .action-tile.action-peer:not(:disabled):hover {
+    border-color: var(--action-peer-hover-bg);
+    background: var(--action-peer-hover-bg);
+    color: var(--action-peer-text);
+    filter: none;
+  }
+
+  .compact-action-button.action-secondary:not(:disabled):hover,
+  .action-tile.action-secondary:not(:disabled):hover,
+  .compact-action-button.action-navigation:not(:disabled):hover,
+  .action-tile.action-navigation:not(:disabled):hover,
+  .office-command-secondary:not(.is-disabled):hover,
+  .notification-actions .notification-secondary-button:not(:disabled):hover,
+  .drawer-actions button:not(:disabled):hover,
+  .drawer-close-button:not(:disabled):hover,
+  .director-table td button:not(:disabled):hover,
+  .queue-reorder-controls button:not(:disabled):hover,
+  .scanner-session-button:not(:disabled):hover,
+  .warehouse-actions-secondary .compact-action-button:not(:disabled):hover {
+    border-color: var(--action-secondary-border);
+    background: var(--action-secondary-hover-bg);
+    color: var(--action-secondary-text);
+    filter: none;
+  }
+
+  .compact-action-button.action-destructive:not(:disabled):hover,
+  .action-tile.action-destructive:not(:disabled):hover,
+  .office-command-danger:not(.is-disabled):hover,
+  .logout-button:not(:disabled):hover {
+    border-color: var(--action-destructive-hover-bg);
+    background: var(--action-destructive-hover-bg);
+    color: var(--action-destructive-text);
+    filter: none;
+  }
+}
+
+.compact-action-button.action-recommended:not(:disabled):active,
+.compact-action-button:not(.action-recommended):not(.action-peer):not(.action-secondary):not(.action-navigation):not(.action-destructive):not(.action-disabled):not(:disabled):active,
+.action-tile.action-recommended:not(:disabled):active,
+.office-command-primary:not(.is-disabled):active,
+.notification-actions .ack-button:not(:disabled):active,
+.create-intake-button:not(:disabled):active {
+  border-color: var(--action-recommended-active-bg);
+  background: var(--action-recommended-active-bg);
+  color: var(--action-recommended-text);
+}
+
+.compact-action-button.action-peer:not(:disabled):active,
+.action-tile.action-peer:not(:disabled):active {
+  border-color: var(--action-peer-active-bg);
+  background: var(--action-peer-active-bg);
+  color: var(--action-peer-text);
+}
+
+.compact-action-button.action-secondary:not(:disabled):active,
+.action-tile.action-secondary:not(:disabled):active,
+.compact-action-button.action-navigation:not(:disabled):active,
+.action-tile.action-navigation:not(:disabled):active,
+.office-command-secondary:not(.is-disabled):active,
+.notification-actions .notification-secondary-button:not(:disabled):active,
+.drawer-actions button:not(:disabled):active,
+.drawer-close-button:not(:disabled):active,
+.director-table td button:not(:disabled):active,
+.queue-reorder-controls button:not(:disabled):active,
+.scanner-session-button:not(:disabled):active,
+.warehouse-actions-secondary .compact-action-button:not(:disabled):active {
+  border-color: var(--action-secondary-border);
+  background: var(--action-secondary-active-bg);
+  color: var(--action-secondary-text);
+}
+
+.compact-action-button.action-destructive:not(:disabled):active,
+.action-tile.action-destructive:not(:disabled):active,
+.office-command-danger:not(.is-disabled):active,
+.logout-button:not(:disabled):active {
+  border-color: var(--action-destructive-active-bg);
+  background: var(--action-destructive-active-bg);
+  color: var(--action-destructive-text);
+}
+
+.demo-role-button,
+.section-nav-button,
+.role-top-nav button,
+.header-icon-button,
+.account-button,
+.icon-close-button,
+.setting-toggle,
+.filter-chip,
+.director-tabs button,
+.role-button {
+  color: var(--text-secondary);
+}
+
+.demo-role-button:hover,
+.section-nav-button:hover,
+.role-top-nav button:hover,
+.header-icon-button:hover,
+.account-button:hover,
+.icon-close-button:hover,
+.setting-toggle:hover,
+.filter-chip:hover,
+.director-tabs button:hover,
+.role-button:hover {
+  color: var(--text-primary);
+}
+
+.demo-role-button:hover :is(span, strong, small, ix-icon),
+.section-nav-button:hover :is(span, strong, small, ix-icon),
+.role-top-nav button:hover :is(span, strong, small, ix-icon),
+.header-icon-button:hover :is(span, strong, small, ix-icon),
+.account-button:hover :is(span, strong, small, ix-icon),
+.icon-close-button:hover :is(span, strong, small, ix-icon),
+.setting-toggle:hover :is(span, strong, small, ix-icon),
+.filter-chip:hover :is(span, strong, small, ix-icon),
+.director-tabs button:hover :is(span, strong, small, ix-icon),
+.role-button:hover :is(span, strong, small, ix-icon) {
+  color: currentColor;
+  opacity: 1;
+}
+
+.demo-role-button.is-active,
+.section-nav-button.is-active,
+.role-top-nav button.is-active,
+.header-icon-button.is-active,
+.account-button.is-active,
+.setting-toggle.is-active,
+.filter-chip.is-active,
+.director-tabs button.is-active,
+.role-button.is-active {
+  color: var(--text-primary);
+}
+
+.demo-role-button.is-active :is(span, strong, small, ix-icon),
+.section-nav-button.is-active :is(span, strong, small, ix-icon),
+.role-top-nav button.is-active :is(span, strong, small, ix-icon),
+.header-icon-button.is-active :is(span, strong, small, ix-icon),
+.account-button.is-active :is(span, strong, small, ix-icon),
+.setting-toggle.is-active :is(span, strong, small, ix-icon),
+.filter-chip.is-active :is(span, strong, small, ix-icon),
+.director-tabs button.is-active :is(span, strong, small, ix-icon),
+.role-button.is-active :is(span, strong, small, ix-icon) {
+  color: currentColor;
+  opacity: 1;
+}
+
+.account-button .avatar-mark,
+.account-button:hover .avatar-mark,
+.account-button:active .avatar-mark,
+.account-button.is-active .avatar-mark {
+  color: var(--text-inverse);
+  background: var(--accent);
+}

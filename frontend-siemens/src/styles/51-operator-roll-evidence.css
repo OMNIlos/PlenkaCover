@@ -1,0 +1,209 @@
+.operator-roll-mobile-evidence {
+  grid-area: rolls;
+  display: none;
+  min-width: 0;
+}
+
+.operator-roll-evidence-grid {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.operator-roll-evidence-card {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  background: var(--surface-2);
+}
+
+.operator-roll-evidence-card.is-current {
+  border-color: var(--border-default);
+  background: var(--selection-surface);
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--selection-rail) 36%, transparent),
+    var(--selection-shadow);
+}
+
+.operator-roll-evidence-card.severity-warning {
+  border-color: var(--border-muted);
+  background: var(--surface-2);
+  box-shadow: inset 2px 0 0 var(--semantic-rail-warning);
+}
+
+.operator-roll-evidence-card.severity-critical {
+  border-color: color-mix(in srgb, var(--state-critical-border) 42%, var(--border-muted));
+  background: color-mix(in srgb, var(--state-critical-bg) 8%, var(--surface-2));
+  box-shadow: inset 2px 0 0 var(--semantic-rail-critical);
+}
+
+.operator-roll-evidence-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+}
+
+.operator-roll-evidence-card span,
+.operator-roll-evidence-details summary {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.operator-roll-evidence-card strong {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+}
+
+.operator-roll-evidence-card dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+  margin: 0;
+}
+
+.operator-roll-evidence-card dl > div {
+  min-width: 0;
+  padding: 7px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: var(--surface-inset);
+}
+
+.operator-roll-evidence-card dt {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.operator-roll-evidence-card dd {
+  margin: 4px 0 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.operator-roll-evidence-card.is-next {
+  grid-template-columns: minmax(0, 1fr);
+  align-items: stretch;
+  gap: 7px;
+  padding: 8px;
+  background: color-mix(in srgb, var(--surface-2) 82%, var(--surface-inset));
+}
+
+.operator-roll-evidence-card.is-next .operator-roll-evidence-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.operator-roll-evidence-card.is-next .operator-roll-evidence-card-head strong {
+  font-size: 16px;
+}
+
+.operator-roll-next-summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 3px 8px;
+  min-width: 0;
+}
+
+.operator-roll-next-summary span,
+.operator-roll-next-summary small {
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+  text-transform: none;
+}
+
+.operator-roll-next-summary b {
+  display: block;
+  margin-right: 0;
+  margin-bottom: 0;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.operator-roll-next-summary span:nth-child(3) {
+  grid-column: 1 / -1;
+}
+
+.operator-roll-next-summary small {
+  grid-column: 1 / -1;
+  color: var(--text-secondary);
+  font-weight: 800;
+}
+
+.operator-roll-evidence-details {
+  min-width: 0;
+  border: 1px solid var(--border-muted);
+  border-radius: 4px;
+  background: var(--surface-2);
+}
+
+.operator-roll-evidence-details summary {
+  cursor: pointer;
+  padding: 9px 10px;
+  list-style-position: inside;
+}
+
+.operator-roll-evidence-details > div {
+  display: grid;
+  gap: 6px;
+  padding: 0 10px 10px;
+}
+
+.operator-roll-evidence-details span {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 4px;
+  background: var(--surface-inset);
+}
+
+.operator-roll-evidence-details b {
+  color: var(--text-primary);
+  font-variant-numeric: tabular-nums;
+}
+
+.operator-roll-evidence-details em {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: normal;
+}
+
+.operator-roll-evidence-details .severity-warning em {
+  color: var(--text-secondary);
+}
+
+.operator-roll-evidence-details .severity-critical em {
+  color: var(--state-critical-text);
+}

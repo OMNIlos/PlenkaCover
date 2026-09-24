@@ -1,0 +1,22 @@
+{
+"odata.metadata": "https://msk1.1cfresh.com:443/a/ea_demo/4099533/odata/standard.odata/$metadata#Document_СчетНаОплатуПокупателю",
+"value": [{
+"Ref_Key": "bb72e06c-1e91-11e6-a31d-14dae9b19a48",
+"DataVersion": "AAAAAAAAAAA=",
+"Number": "0000-000632",
+"Date": "2024-01-09T00:00:00",
+"Posted": true,
+"Контрагент_Key": "9e1d8972-1dc5-11e6-a31d-14dae9b19a48",
+"СуммаДокумента": 58785,
+"ВалютаДокумента_Key": "a8c61b74-cc0d-11e5-9653-3085a93ddca2"
+},{
+"Ref_Key": "8bb818b7-1e91-11e6-a31d-14dae9b19a48",
+"DataVersion": "AAAAAAAAAAA=",
+"Number": "0000-000651",
+"Date": "2024-01-09T09:00:00",
+"Posted": true,
+"Контрагент_Key": "9e1d895f-1dc5-11e6-a31d-14dae9b19a48",
+"СуммаДокумента": 232020,
+"ВалютаДокумента_Key": "a8c61b74-cc0d-11e5-9653-3085a93ddca2"
+}]
+}

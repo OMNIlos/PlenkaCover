@@ -1,0 +1,677 @@
+.warehouse-scan-station-page,
+.warehouse-scan-station-page *,
+.warehouse-inventory-cockpit,
+.warehouse-inventory-cockpit *,
+.warehouse-pallet-label-panel,
+.warehouse-pallet-label-panel * {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.warehouse-pallet-label-layout {
+  display: grid;
+  grid-template-columns: minmax(220px, 3fr) minmax(230px, 2fr);
+  gap: 14px;
+  align-items: start;
+  width: 100%;
+  max-width: 100%;
+}
+
+.warehouse-pallet-label-preview {
+  position: relative;
+  width: min(100%, 230px);
+  margin-inline: auto;
+  overflow: hidden;
+}
+
+.warehouse-pallet-label-controls {
+  min-width: 0;
+  max-width: 100%;
+  overflow: hidden;
+}
+
+.warehouse-scan-station-layout,
+.warehouse-inventory-layout {
+  display: grid;
+  gap: 12px;
+  align-items: start;
+  width: 100%;
+  min-width: 0;
+}
+
+.warehouse-scan-station-layout {
+  grid-template-columns: minmax(300px, 420px) minmax(0, 1fr);
+}
+
+.warehouse-inventory-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.warehouse-scan-station-table,
+.warehouse-scan-station-detail,
+.warehouse-inventory-main,
+.warehouse-inventory-detail {
+  min-width: 0;
+  max-width: 100%;
+}
+
+.warehouse-scan-station-detail {
+  position: sticky;
+  top: 12px;
+  max-height: calc(100dvh - 148px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.warehouse-scan-station-detail .warehouse-scan {
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.warehouse-scan-input-form {
+  display: grid;
+  grid-template-columns: minmax(180px, 1fr) auto;
+  gap: 7px;
+  align-items: end;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+}
+
+.warehouse-scan-input-form label {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
+}
+
+.warehouse-scan-input-form label > span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.warehouse-scan-input-form input,
+.warehouse-scan-input-form button {
+  box-sizing: border-box;
+  min-width: 0;
+  min-height: 40px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+}
+
+.warehouse-scan-input-form input {
+  width: 100%;
+  padding: 8px 10px;
+  background: var(--surface-inset);
+}
+
+.warehouse-scan-input-form button {
+  padding: 8px 12px;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.warehouse-scan-input-form :is(input, button):focus-visible,
+.warehouse-detail-close:focus-visible,
+.warehouse-inventory-detail-close:focus-visible {
+  outline: 2px solid var(--focus, var(--accent));
+  outline-offset: 2px;
+}
+
+.warehouse-scan-input-form :is(input, button):disabled {
+  border-color: var(--border-muted);
+  color: var(--text-disabled);
+  background: var(--surface-disabled);
+  cursor: not-allowed;
+}
+
+.warehouse-scan-input-form > small {
+  grid-column: 1 / -1;
+  color: var(--state-critical-text);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.warehouse-scan-input-form > small.is-success {
+  color: var(--state-success-text);
+}
+
+.warehouse-scan-queue-scroll {
+  width: 100%;
+  max-height: clamp(320px, 58dvh, 620px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+}
+
+.warehouse-scan-queue-scroll .plenki-data-table-shell {
+  overflow: visible;
+  border: 0;
+  border-radius: 0;
+}
+
+.warehouse-scan-queue-scroll .warehouse-scan-station-data-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+.warehouse-scan-station-data-table {
+  min-width: 0;
+  table-layout: fixed;
+}
+
+.warehouse-scan-queue-scroll::-webkit-scrollbar,
+.warehouse-scan-station-detail::-webkit-scrollbar,
+.warehouse-inventory-detail::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+
+.warehouse-scan-queue-scroll::-webkit-scrollbar-thumb,
+.warehouse-scan-station-detail::-webkit-scrollbar-thumb,
+.warehouse-inventory-detail::-webkit-scrollbar-thumb {
+  border: 2px solid transparent;
+  border-radius: var(--radius-pill);
+  background: var(--border-strong);
+  background-clip: padding-box;
+}
+
+.warehouse-operation-header {
+  position: relative;
+  display: grid;
+  grid-template-columns: 52px minmax(0, 1fr) minmax(132px, 0.36fr);
+  gap: 8px;
+  align-items: stretch;
+  padding: 9px 52px 9px 10px;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+}
+
+.warehouse-detail-close,
+.warehouse-inventory-detail-close {
+  display: inline-grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: var(--surface-1);
+  cursor: pointer;
+}
+
+.warehouse-detail-close {
+  position: absolute;
+  top: 9px;
+  right: 10px;
+}
+
+.warehouse-operation-header .step-illustration {
+  width: 52px;
+  height: 52px;
+  align-self: center;
+}
+
+.warehouse-operation-title,
+.warehouse-operation-state {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.warehouse-operation-title span,
+.warehouse-operation-state span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.1;
+  text-transform: uppercase;
+}
+
+.warehouse-operation-title strong,
+.warehouse-operation-state strong {
+  display: block;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.warehouse-operation-title small,
+.warehouse-operation-state small {
+  display: block;
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.warehouse-scan-station-detail .warehouse-scan-session-strip {
+  grid-template-columns: minmax(0, 0.46fr) minmax(0, 1fr);
+  gap: 8px;
+  padding: 7px;
+}
+
+.warehouse-scan-station-detail .warehouse-scan-mode,
+.warehouse-scan-station-detail .scan-focus-strip {
+  grid-column: auto;
+  grid-row: auto;
+}
+
+.warehouse-scan-mode {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 2px 7px;
+  align-items: center;
+}
+
+.warehouse-scan-mode span {
+  grid-column: 2;
+  min-width: 0;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.15;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.warehouse-scan-mode strong {
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  line-height: 1.15;
+}
+
+.warehouse-scan-station-detail .scan-focus-strip strong,
+.warehouse-command-facts strong {
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.scan-alert-row {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.warehouse-scan-result,
+.warehouse-blocker {
+  padding: 5px 8px;
+}
+
+.warehouse-scan-result strong,
+.warehouse-blocker strong {
+  overflow-wrap: anywhere;
+}
+
+.warehouse-roll-route-summary {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+}
+
+.warehouse-route-card {
+  min-height: 54px;
+  padding: 8px 9px;
+}
+
+.warehouse-receiving-workarea {
+  gap: 8px;
+}
+
+.warehouse-roll-table {
+  display: grid;
+  gap: 6px;
+  padding: 8px;
+  overflow: hidden;
+}
+
+.warehouse-roll-row {
+  grid-template-columns:
+    minmax(58px, 0.5fr)
+    minmax(92px, 0.8fr)
+    minmax(92px, 0.78fr)
+    minmax(112px, 1fr)
+    minmax(94px, 0.76fr)
+    minmax(104px, 0.78fr);
+  min-width: 0;
+}
+
+.warehouse-roll-row.is-delivery-operation {
+  grid-template-columns:
+    minmax(112px, 0.9fr)
+    minmax(148px, 1.05fr)
+    minmax(128px, 0.88fr)
+    minmax(180px, 1.12fr);
+}
+
+.warehouse-roll-row > span {
+  min-width: 0;
+  padding: 7px 8px;
+  overflow: hidden;
+}
+
+.warehouse-roll-row strong,
+.warehouse-roll-row small {
+  overflow: hidden;
+  max-width: 100%;
+  background: transparent;
+  overflow-wrap: anywhere;
+  text-overflow: ellipsis;
+  white-space: normal;
+  word-break: normal;
+}
+
+.warehouse-roll-row small {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.warehouse-row-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+.warehouse-row-action {
+  flex: 1 1 46px;
+  min-width: 0;
+  min-height: 32px;
+  padding: 5px 7px;
+  line-height: 1.05;
+  white-space: normal;
+}
+
+.warehouse-inline-action-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+  align-items: stretch;
+  min-width: 0;
+  padding: 8px;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+}
+
+.warehouse-inline-action {
+  display: inline-flex;
+  flex: 1 1 136px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 0;
+  min-height: 38px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  background: var(--surface-1);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.warehouse-inline-action.action-recommended {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.warehouse-inline-action.action-destructive {
+  border-color: var(--state-critical-border);
+  color: var(--state-critical-text);
+  background: color-mix(in srgb, var(--state-critical-bg) 18%, var(--surface-1));
+}
+
+.warehouse-inline-action:disabled {
+  border-color: var(--border-muted);
+  color: var(--text-muted);
+  background: var(--surface-disabled);
+  cursor: not-allowed;
+}
+
+.warehouse-inline-action ix-icon {
+  flex: 0 0 auto;
+}
+
+.warehouse-inline-action span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.warehouse-inline-action span small {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.warehouse-secondary-details {
+  display: grid;
+  gap: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--border-muted);
+}
+
+.warehouse-secondary-details > summary,
+.warehouse-evidence-details summary {
+  width: fit-content;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.warehouse-secondary-details[open] > summary {
+  margin-bottom: 8px;
+}
+
+.warehouse-inventory-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+}
+
+.warehouse-inventory-detail {
+  position: sticky;
+  top: 12px;
+  align-self: start;
+  gap: 10px;
+  padding: 12px;
+  max-height: calc(100dvh - 180px);
+  overflow: auto;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) transparent;
+}
+
+.warehouse-inventory-detail-head {
+  position: relative;
+  gap: 3px;
+  padding-right: 44px;
+}
+
+.warehouse-inventory-detail-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.warehouse-inventory-detail-head h3,
+.warehouse-inventory-detail-head p,
+.warehouse-inventory-detail-list dd {
+  overflow-wrap: anywhere;
+}
+
+.warehouse-inventory-status-line {
+  gap: 6px;
+}
+
+.warehouse-inventory-actions.embedded-action-surface {
+  padding: 8px;
+}
+
+.warehouse-inventory-actions .secondary-actions,
+.warehouse-inventory-actions .primary-actions,
+.warehouse-inventory-actions .destructive-actions,
+.warehouse-inventory-actions .disabled-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.warehouse-inventory-actions .compact-action-button {
+  flex: 1 1 132px;
+  width: auto;
+  min-width: 0;
+  justify-content: center;
+}
+
+.warehouse-inventory-quick-edit {
+  gap: 8px;
+  padding: 10px;
+}
+
+.warehouse-inventory-quick-edit label {
+  grid-template-columns: minmax(82px, 0.34fr) minmax(0, 1fr);
+}
+
+.warehouse-inventory-detail-list {
+  gap: 6px;
+}
+
+.warehouse-inventory-toolbar .plenki-toolbar-row {
+  display: grid;
+  grid-template-areas:
+    'search meta'
+    'filters filters';
+  grid-template-columns: minmax(240px, 1fr) auto;
+  align-items: start;
+}
+
+.warehouse-inventory-toolbar .plenki-search-field {
+  grid-area: search;
+  width: 100%;
+  max-width: none;
+}
+
+.warehouse-inventory-toolbar .plenki-filter-row {
+  grid-area: filters;
+  width: 100%;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  overflow: visible;
+}
+
+.warehouse-inventory-toolbar .plenki-filter-row button {
+  flex: 0 1 auto;
+  max-width: 172px;
+}
+
+.warehouse-inventory-toolbar .plenki-toolbar-meta {
+  grid-area: meta;
+}
+
+.warehouse-inventory-data-table-rolls {
+  min-width: 760px;
+}
+
+.warehouse-inventory-data-table td,
+.warehouse-inventory-data-table th {
+  min-width: 0;
+}
+
+.warehouse-inventory-data-table td strong,
+.warehouse-inventory-data-table td small {
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.warehouse-operation-history .warehouse-evidence-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
+}
+
+.warehouse-operation-history .warehouse-evidence-grid > div,
+.warehouse-operation-history .warehouse-evidence-grid :is(strong, small) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.warehouse-pallet-label-controls :is(button, select),
+.warehouse-pallet-title,
+.warehouse-pallet-title > * {
+  max-width: 100%;
+}
+
+.warehouse-cover-tasks-panel-v2,
+.warehouse-cover-tasks-panel-v2 *,
+.warehouse-coverage-recheck,
+.warehouse-coverage-recheck *,
+.warehouse-coverage-physical,
+.warehouse-coverage-physical * {
+  box-sizing: border-box;
+  min-width: 0;
+}
+
+.warehouse-cover-tasks-panel-v2,
+.warehouse-coverage-recheck,
+.warehouse-coverage-physical {
+  position: static;
+  inset: auto;
+  max-height: none;
+  overflow: visible;
+}
+
+.warehouse-coverage-recheck-layout,
+.warehouse-coverage-member-list,
+.warehouse-coverage-physical-rows {
+  width: 100%;
+  max-width: 100%;
+}
+
+@media (max-width: 520px) {
+  ix-application:has(.app-shell[data-active-role='warehouse']) {
+    width: 100%;
+    max-width: 100%;
+  }
+}

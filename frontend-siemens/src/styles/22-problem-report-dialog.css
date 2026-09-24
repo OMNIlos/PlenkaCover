@@ -1,0 +1,355 @@
+.problem-report-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(4, 10, 16, 0.68);
+}
+
+.problem-report-dialog {
+  width: min(760px, 100%);
+  max-height: min(840px, calc(100vh - 32px));
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-overlay);
+  background: var(--surface-panel);
+  color: var(--text-primary);
+  box-shadow: var(--shadow-dialog);
+  overflow: hidden;
+}
+
+.problem-report-header,
+.problem-report-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--surface-raised);
+}
+
+.problem-report-header {
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.problem-report-header h2 {
+  margin: 4px 0 0;
+  font-size: 22px;
+  line-height: 1.2;
+}
+
+.problem-report-body {
+  display: grid;
+  gap: 16px;
+  padding: 18px 20px;
+  overflow: auto;
+}
+
+.problem-report-context {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.problem-report-context div,
+.problem-report-next,
+.problem-report-duplicate {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-inset);
+}
+
+.problem-report-context span,
+.problem-report-next span,
+.problem-report-form label > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.problem-report-context strong,
+.problem-report-next strong {
+  display: block;
+  font-size: 14px;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.problem-report-duplicate {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  border-color: var(--state-warning-border, var(--border-strong));
+}
+
+.problem-report-duplicate strong,
+.problem-report-duplicate span {
+  display: block;
+}
+
+.problem-report-duplicate span {
+  margin-top: 4px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.problem-report-duplicate label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.problem-report-form {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.problem-report-dialog.is-compact-role .problem-report-form {
+  grid-template-columns: 1fr;
+}
+
+.problem-report-form label,
+.problem-report-reason {
+  min-width: 0;
+}
+
+.problem-report-form input,
+.problem-report-form select,
+.problem-report-form textarea {
+  width: 100%;
+  min-height: 42px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font: inherit;
+  padding: 10px 12px;
+}
+
+.problem-report-form input[readonly],
+.problem-report-form select:disabled {
+  color: var(--text-secondary);
+  border-color: var(--border-subtle);
+  opacity: 1;
+}
+
+.problem-report-form textarea {
+  min-height: 112px;
+  resize: vertical;
+  line-height: 1.45;
+}
+
+.problem-report-reason,
+.problem-report-locked-target {
+  grid-column: 1 / -1;
+}
+
+.problem-report-locked-target {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.problem-report-next {
+  border-left: 3px solid var(--state-warning-border, var(--border-strong));
+}
+
+.problem-report-actions {
+  border-top: 1px solid var(--border-subtle);
+}
+
+.problem-report-actions button {
+  min-height: 42px;
+}
+
+.defect-dialog {
+  width: min(900px, 100%);
+}
+
+.defect-dialog-description {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.45;
+}
+
+.defect-dialog .operator-live-scale {
+  width: 100%;
+  max-width: none;
+  margin-top: 0;
+}
+
+.defect-scale-recovery {
+  margin-top: -8px;
+  padding: 9px 12px;
+  border-left: 3px solid var(--state-critical-border);
+  background: color-mix(in srgb, var(--state-critical-bg) 32%, var(--surface-inset));
+  color: var(--state-critical-text);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.defect-dialog-evidence {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.defect-dialog-evidence > div {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-inset);
+}
+
+.defect-dialog-evidence dt,
+.defect-dialog-note > span {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.25;
+}
+
+.defect-dialog-evidence dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 800;
+  line-height: 1.35;
+  overflow-wrap: anywhere;
+}
+
+.defect-dialog-note {
+  display: grid;
+  min-width: 0;
+}
+
+.defect-dialog-note textarea {
+  width: 100%;
+  min-height: 112px;
+  padding: 10px 12px;
+  resize: vertical;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font: inherit;
+  line-height: 1.45;
+}
+
+.defect-dialog-note textarea:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.defect-dialog-note small {
+  justify-self: end;
+  margin-top: 4px;
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.defect-dialog-error {
+  padding: 10px 12px;
+  border: 1px solid var(--state-critical-border);
+  border-radius: var(--radius-md);
+  background: var(--state-critical-bg);
+  color: var(--state-critical-text);
+  font-weight: 700;
+}
+
+.defect-dialog-retry-status {
+  padding: 10px 12px;
+  border: 1px solid var(--state-warning-border);
+  border-radius: var(--radius-md);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+  font-weight: 700;
+}
+
+.defect-dialog .problem-report-actions button {
+  min-height: 44px;
+}
+
+.defect-dialog .action-destructive {
+  border: 1px solid var(--state-critical-border);
+  background: var(--action-destructive-bg);
+  color: var(--action-destructive-text);
+}
+
+@media (min-width: 721px) and (max-height: 800px) {
+  .problem-report-dialog.is-compact-role .problem-report-body {
+    gap: 10px;
+    padding-block: 12px;
+  }
+
+  .problem-report-dialog.is-compact-role .problem-report-form textarea {
+    height: 72px;
+    min-height: 72px;
+  }
+}
+
+@media (max-width: 720px) {
+  .problem-report-backdrop {
+    align-items: stretch;
+    padding: 10px;
+  }
+
+  .problem-report-dialog {
+    max-height: calc(100vh - 20px);
+  }
+
+  .problem-report-context,
+  .problem-report-form {
+    grid-template-columns: 1fr;
+  }
+
+  .problem-report-header,
+  .problem-report-actions {
+    padding: 14px;
+  }
+
+  .problem-report-body {
+    padding: 14px;
+  }
+
+  .problem-report-duplicate,
+  .problem-report-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .defect-dialog-evidence {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .problem-report-dialog {
+    scroll-behavior: auto;
+  }
+}

@@ -1,0 +1,34 @@
+{
+	auto_https off
+}
+
+:8080 {
+	encode zstd gzip
+	@sourceMaps path *.map
+
+	header {
+		X-Content-Type-Options "nosniff"
+		X-Frame-Options "DENY"
+		Referrer-Policy "strict-origin-when-cross-origin"
+	}
+
+	route {
+		handle @sourceMaps {
+			respond 404
+		}
+
+		handle /healthz {
+			respond "ok" 200
+		}
+
+		handle /api/* {
+			respond "API proxy is not configured in the standalone image" 503
+		}
+
+		handle {
+			root * /srv
+			try_files {path} /index.html
+			file_server
+		}
+	}
+}

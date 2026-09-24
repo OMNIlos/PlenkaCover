@@ -1,0 +1,271 @@
+.warehouse-pallet-label-panel {
+  display: grid;
+  gap: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border-muted);
+}
+
+.warehouse-pallet-print-state {
+  display: inline-flex;
+  align-items: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.warehouse-pallet-print-state.state-submitted {
+  border-color: var(--state-success-border);
+  background: var(--state-success-bg);
+  color: var(--state-success-text);
+}
+
+.warehouse-pallet-print-state:is(.state-pending, .state-uncertain) {
+  border-color: var(--state-warning-border);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+}
+
+.warehouse-pallet-print-state.state-failed {
+  border-color: var(--state-critical-border);
+  background: var(--state-critical-bg);
+  color: var(--state-critical-text);
+}
+
+.warehouse-pallet-label-preview {
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--office-surface);
+  box-shadow: var(--shadow-surface);
+}
+
+.warehouse-pallet-label-preview.has-preview {
+  background: #fff;
+}
+
+.warehouse-pallet-label-preview img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--office-surface);
+}
+
+.warehouse-pallet-label-placeholder {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 20px;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+.warehouse-pallet-label-placeholder strong {
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.warehouse-pallet-label-placeholder span {
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.warehouse-pallet-label-placeholder button {
+  min-height: 40px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.warehouse-pallet-label-controls {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 12px;
+  border: 1px solid var(--border-muted);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+}
+
+.warehouse-pallet-printer-field,
+.warehouse-pallet-reprint-field {
+  display: grid;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.warehouse-pallet-printer-field select,
+.warehouse-pallet-reprint-field textarea {
+  box-sizing: border-box;
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-1);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.warehouse-pallet-printer-field select {
+  height: 40px;
+  padding: 7px 32px 7px 10px;
+}
+
+.warehouse-pallet-reprint-field textarea {
+  min-height: 104px;
+  padding: 9px 10px;
+  resize: vertical;
+}
+
+.warehouse-pallet-printer-field :is(select, small),
+.warehouse-pallet-reprint-field small {
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.warehouse-pallet-printer-field small,
+.warehouse-pallet-reprint-field small {
+  color: var(--text-muted);
+  font-weight: 800;
+}
+
+.warehouse-pallet-printer-field select:focus-visible,
+.warehouse-pallet-reprint-field textarea:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.warehouse-pallet-printer-statuses {
+  display: grid;
+  gap: 6px;
+  margin: 8px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.warehouse-pallet-offline-printers summary {
+  min-height: 36px;
+  padding: 8px 9px;
+  border: 1px solid var(--state-warning-border);
+  border-radius: var(--radius-sm);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.35;
+  cursor: pointer;
+}
+
+.warehouse-pallet-offline-printers summary:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.warehouse-pallet-printer-statuses li {
+  display: grid;
+  gap: 2px;
+  padding: 7px 8px;
+  border-left: 3px solid var(--state-warning-border);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+  font-size: 13px;
+  line-height: 1.25;
+}
+
+.warehouse-pallet-readiness,
+.warehouse-pallet-print-error,
+.warehouse-pallet-print-feedback {
+  margin: 0;
+  padding: 8px 9px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.35;
+}
+
+.warehouse-pallet-readiness {
+  border: 1px solid var(--state-warning-border);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+}
+
+.warehouse-pallet-print-error {
+  border: 1px solid var(--state-critical-border);
+  background: var(--state-critical-bg);
+  color: var(--state-critical-text);
+}
+
+.warehouse-pallet-print-feedback.is-success {
+  border: 1px solid var(--state-success-border);
+  background: var(--state-success-bg);
+  color: var(--state-success-text);
+}
+
+.warehouse-pallet-print-feedback.is-error {
+  border: 1px solid var(--state-critical-border);
+  background: var(--state-critical-bg);
+  color: var(--state-critical-text);
+}
+
+.warehouse-pallet-label-controls .warehouse-pallet-print-button {
+  width: 100%;
+  min-height: 44px;
+  border-color: var(--action-recommended-border);
+  background: var(--action-recommended-bg);
+  color: var(--action-recommended-text);
+}
+
+.warehouse-pallet-label-controls .warehouse-pallet-print-button:disabled {
+  border-color: var(--state-disabled-border);
+  background: var(--state-disabled-bg);
+  color: var(--state-disabled-text);
+}
+
+.warehouse-pallet-label-controls .warehouse-pallet-export-toolbar {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.warehouse-pallet-label-controls .warehouse-pallet-export-button {
+  width: 100%;
+  min-width: 0;
+}
+
+.warehouse-pallet-label-controls :is(button, select):disabled {
+  cursor: not-allowed;
+  opacity: 0.68;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .warehouse-pallet-label-controls .warehouse-pallet-print-button:not(:disabled):hover {
+    border-color: var(--action-recommended-hover-bg);
+    background: var(--action-recommended-hover-bg);
+    color: var(--action-recommended-text);
+  }
+
+  .warehouse-pallet-label-controls .warehouse-pallet-export-button:not(:disabled):hover,
+  .warehouse-pallet-label-placeholder button:not(:disabled):hover {
+    border-color: var(--action-secondary-border);
+    background: var(--action-secondary-hover-bg);
+    color: var(--action-secondary-text);
+  }
+}
+
+.warehouse-pallet-reprint-dialog .plenki-modal-body {
+  min-width: min(420px, calc(100vw - 48px));
+}

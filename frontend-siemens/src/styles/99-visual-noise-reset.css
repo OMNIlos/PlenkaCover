@@ -1,0 +1,319 @@
+/*
+  Product visual-noise reset.
+  This layer is intentionally imported last: it reduces old prototype chrome
+  without changing domain state, role visibility or runtime contracts.
+*/
+
+:root {
+  --noise-border: color-mix(in srgb, var(--border-subtle) 56%, transparent);
+  --noise-border-strong: color-mix(in srgb, var(--border-default) 74%, transparent);
+  --noise-surface: color-mix(in srgb, var(--surface-1) 74%, var(--surface-inset));
+  --noise-surface-flat: color-mix(in srgb, var(--surface-1) 88%, var(--surface-inset));
+  --noise-office-border: color-mix(in srgb, var(--office-border-subtle) 74%, transparent);
+  --noise-office-surface: color-mix(in srgb, var(--office-surface) 92%, var(--office-bg));
+  --noise-office-muted: color-mix(in srgb, var(--office-surface-muted) 78%, var(--office-bg));
+  --noise-shadow: none;
+}
+
+body {
+  font-variant-numeric: tabular-nums;
+}
+
+.app-shell {
+  min-width: 0;
+}
+
+.list-panel,
+.detail-panel,
+.office-workbench,
+.operator-workbench,
+.warehouse-workbench,
+.director-workbench,
+.finance-workbench,
+.admin-workbench {
+  min-width: 0;
+}
+
+.app-shell :is(.eyebrow, small) {
+  letter-spacing: 0;
+}
+
+:is(
+  .surface,
+  .action-surface,
+  .context-card,
+  .commercial-panel,
+  .commercial-cover-panel,
+  .commercial-template-panel,
+  .commercial-payment-shipment-strip,
+  .finance-panel,
+  .finance-queue-card,
+  .finance-command-card,
+  .production-dispatch-card,
+  .production-operator-card,
+  .production-roll-card,
+  .operator-shift-panel,
+  .operator-stage-signal,
+  .terminal-metrics,
+  .operator-current-roll,
+  .operator-step-ladder,
+  .label-lifecycle,
+  .device-strip,
+  .warehouse-panel,
+  .warehouse-inventory-cockpit,
+  .warehouse-inventory-summary-card,
+  .warehouse-section-card,
+  .admin-check-card,
+  .admin-recovery-card,
+  .admin-template-card,
+  .director-card,
+  .director-decision-card,
+  .director-qr-card,
+  .penalty-focus-panel,
+  .penalty-metric-tile
+) {
+  box-shadow: none;
+}
+
+.app-shell[data-active-role="commercial"],
+.app-shell[data-active-role="production"],
+.app-shell[data-active-role="finance"],
+.app-shell[data-active-role="director"],
+.app-shell[data-active-role="admin"] {
+  --surface-1: var(--office-surface);
+  --surface-2: var(--office-surface-muted);
+  --surface-3: var(--office-surface-hover);
+  --surface-raised: var(--office-surface);
+  --surface-inset: var(--office-surface-inset);
+  --surface-panel: var(--noise-office-surface);
+  --surface-quiet: var(--noise-office-muted);
+  --border-subtle: var(--office-border-subtle);
+  --border-default: var(--office-border-default);
+  --border-strong: var(--office-border-strong);
+  --border-muted: var(--noise-office-border);
+  --text-primary: var(--office-text-primary);
+  --text-secondary: var(--office-text-secondary);
+  --text-muted: var(--office-text-muted);
+  --accent: var(--office-accent);
+  --accent-soft: var(--office-accent-soft);
+  --accent-rgb: var(--office-accent-rgb);
+  --focus: var(--office-focus);
+  --state-info-bg: var(--office-state-info-bg);
+  --state-info-border: var(--office-state-info-border);
+  --state-info-text: var(--office-state-info-text);
+  --state-success-bg: var(--office-state-success-bg);
+  --state-success-border: var(--office-state-success-border);
+  --state-success-text: var(--office-state-success-text);
+  --state-warning-bg: var(--office-state-warning-bg);
+  --state-warning-border: var(--office-state-warning-border);
+  --state-warning-text: var(--office-state-warning-text);
+  --state-critical-bg: var(--office-state-critical-bg);
+  --state-critical-border: var(--office-state-critical-border);
+  --state-critical-text: var(--office-state-critical-text);
+  --state-disabled-bg: var(--office-state-disabled-bg);
+  --state-disabled-border: var(--office-state-disabled-border);
+  --state-disabled-text: var(--office-state-disabled-text);
+  color-scheme: light;
+}
+
+.app-shell[data-active-role="commercial"] {
+  --accent: var(--role-commercial);
+}
+
+.app-shell[data-active-role="production"] {
+  --accent: var(--role-production);
+}
+
+.app-shell[data-active-role="finance"] {
+  --accent: var(--role-finance);
+}
+
+.app-shell[data-active-role="director"] {
+  --accent: var(--role-director);
+}
+
+.app-shell[data-active-role="admin"] {
+  --accent: var(--role-admin);
+}
+
+.app-shell[data-active-role="commercial"] :is(.detail-panel, .list-panel),
+.app-shell[data-active-role="production"] :is(.detail-panel, .list-panel),
+.app-shell[data-active-role="finance"] :is(.detail-panel, .list-panel),
+.app-shell[data-active-role="director"] :is(.detail-panel, .list-panel),
+.app-shell[data-active-role="admin"] :is(.detail-panel, .list-panel) {
+  background: var(--office-bg);
+  color: var(--office-text-primary);
+}
+
+.app-shell[data-active-role="commercial"] :is(.office-workbench, .finance-workbench, .director-workbench, .admin-workbench),
+.app-shell[data-active-role="production"] :is(.office-workbench, .finance-workbench, .director-workbench, .admin-workbench),
+.app-shell[data-active-role="finance"] :is(.office-workbench, .finance-workbench, .director-workbench, .admin-workbench),
+.app-shell[data-active-role="director"] :is(.office-workbench, .finance-workbench, .director-workbench, .admin-workbench),
+.app-shell[data-active-role="admin"] :is(.office-workbench, .finance-workbench, .director-workbench, .admin-workbench) {
+  background: transparent;
+}
+
+.app-shell[data-active-role="commercial"] :is(.surface, .commercial-panel, .commercial-cover-panel, .commercial-template-panel, .commercial-payment-shipment-strip, .context-card),
+.app-shell[data-active-role="production"] :is(.surface, .production-dispatch-card, .production-operator-card, .production-roll-card, .context-card),
+.app-shell[data-active-role="finance"] :is(.surface, .finance-panel, .finance-queue-card, .finance-command-card, .context-card),
+.app-shell[data-active-role="director"] :is(.surface, .director-card, .director-decision-card, .director-qr-card, .penalty-focus-panel, .penalty-metric-tile, .context-card),
+.app-shell[data-active-role="admin"] :is(.surface, .admin-check-card, .admin-recovery-card, .admin-template-card, .context-card) {
+  border-color: var(--noise-office-border);
+  background: var(--noise-office-surface);
+  background-image: none;
+  box-shadow: none;
+}
+
+.app-shell[data-active-role] :is(.section-nav-button, .role-top-nav-item, .mobile-section-nav-item) {
+  border-color: rgb(58, 72, 86);
+  background: rgb(21, 29, 38);
+  color: rgb(244, 247, 251);
+  box-shadow: none;
+}
+
+.app-shell[data-active-role] :is(.section-nav-button, .role-top-nav-item, .mobile-section-nav-item) :is(strong, span, small) {
+  color: currentColor;
+}
+
+.app-shell[data-active-role] :is(.section-nav-button, .role-top-nav-item, .mobile-section-nav-item).is-active {
+  border-color: rgb(46, 198, 176);
+  background: rgb(18, 58, 56);
+  color: rgb(255, 255, 255);
+}
+
+.app-shell[data-active-role] :is(.section-nav-button, .role-top-nav-item, .mobile-section-nav-item) :is(.role-count, .notification-badge) {
+  background: rgba(244, 247, 251, 0.14);
+  color: rgb(244, 247, 251);
+}
+
+.app-shell[data-active-role="operator"] :is(.metric-tile, .device-chip, .operator-step-chip, .operator-roll-chip, .label-step),
+.app-shell[data-active-role="warehouse"] :is(.metric-tile, .device-chip, .scan-stage, .warehouse-section-card) {
+  box-shadow: none;
+}
+
+:is(
+  .filter-chip,
+  .commercial-owner-chip,
+  .commercial-state-badge,
+  .order-stage-pill,
+  .newness-pill,
+  .severity-pill,
+  .production-state-badge,
+  .production-priority-pill,
+  .finance-source-chip,
+  .finance-state-badge,
+  .admin-state-badge,
+  .operator-step-chip,
+  .device-chip,
+  .metric-tile
+) {
+  min-height: 0;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+  background-image: none;
+}
+
+:is(.filter-chip, .commercial-owner-chip, .finance-source-chip, .admin-state-badge):not(.is-active):not(.is-selected) {
+  border-color: transparent;
+  background: transparent;
+}
+
+.filter-chip {
+  padding-inline: 10px;
+}
+
+.filter-chip:not(.is-active) .role-count,
+.filter-chip:not(.is-active) .notification-badge {
+  background: transparent;
+  color: currentColor;
+}
+
+.row-pill-stack {
+  gap: 4px;
+}
+
+:is(.commercial-cover-summary, .commercial-payment-grid, .commercial-fulfillment-summary, .drawer-evidence-grid) > div,
+:is(.terminal-metric-grid, .current-roll-summary, .stage-signal-facts, .device-chip-grid) > div,
+:is(.warehouse-inventory-summary, .penalty-summary-grid) > div {
+  border-color: var(--noise-border);
+  box-shadow: none;
+  background-image: none;
+}
+
+.action-surface:not(.large-actions),
+.order-secondary-actions,
+.director-supervisor-actions,
+.finance-panel-actions {
+  border-color: transparent;
+  background: transparent;
+  box-shadow: none;
+}
+
+.compact-action-button.action-navigation,
+.action-tile.action-navigation,
+.compact-action-button.action-secondary,
+.action-tile.action-secondary {
+  box-shadow: none;
+}
+
+.action-tile.action-recommended,
+.compact-action-button.action-recommended,
+.order-primary-action,
+.finance-primary-action-panel,
+.terminal-actions.large-actions .action-tile,
+.warehouse-actions.large-actions .action-tile {
+  box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 12%, transparent);
+}
+
+:is(.commercial-workbench, .finance-workbench, .director-workbench, .admin-workbench) :is(span, small, dt, dd, p, li) {
+  font-size: max(13px, 1em);
+}
+
+:is(.office-workbench, .finance-workbench, .director-workbench, .admin-workbench) :is(.eyebrow, small) {
+  line-height: 1.3;
+}
+
+.app-shell[data-active-role="commercial"] :is(.commercial-main-grid, .commercial-readiness-grid, .commercial-payment-grid, .commercial-cover-summary),
+.app-shell[data-active-role="production"] :is(.production-dispatch-grid, .production-roll-card-grid),
+.app-shell[data-active-role="finance"] :is(.finance-command-grid, .finance-why-grid, .finance-ledger-grid),
+.app-shell[data-active-role="director"] :is(.director-main-grid, .director-overview, .penalty-summary-grid),
+.app-shell[data-active-role="admin"] :is(.admin-context-strip, .admin-evidence-panel) {
+  gap: 10px;
+}
+
+@media (max-width: 900px) {
+  .app-shell {
+    grid-template-columns: minmax(0, 1fr);
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .list-panel,
+  .detail-panel,
+  .office-workbench,
+  .operator-workbench,
+  .warehouse-workbench,
+  .director-workbench,
+  .finance-workbench,
+  .admin-workbench {
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+  }
+
+  .app-shell :is(.commercial-main-grid, .director-main-grid, .finance-layout, .warehouse-layout, .operator-layout) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .app-shell :is(.compact-action-button, .action-tile, button) {
+    min-height: 40px;
+  }
+
+  .app-shell :is(.eyebrow, small, .filter-chip, .severity-pill, .order-stage-pill, .production-state-badge) {
+    font-size: max(13px, 1em);
+  }
+
+  .app-shell :is(.surface, .commercial-panel, .finance-panel, .production-dispatch-card, .director-card, .admin-check-card) {
+    border-radius: var(--radius-md);
+  }
+}

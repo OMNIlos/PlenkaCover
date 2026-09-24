@@ -1,0 +1,394 @@
+.commercial-overview-dashboard {
+  display: grid;
+  gap: 8px;
+  padding-block: var(--space-1) 10px;
+  border-block-end: 1px solid var(--border-subtle);
+}
+
+.commercial-overview-detail-slot {
+  display: none;
+}
+
+.app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing {
+  display: block;
+}
+
+.app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-dashboard {
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-head {
+  grid-template-columns: minmax(0, 1fr) minmax(260px, 0.38fr);
+  align-items: end;
+}
+
+.app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-head h2 {
+  font-size: 26px;
+  line-height: 1.08;
+}
+
+.app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-finance-summary {
+  padding: 10px;
+}
+
+.app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-actions {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+@media (min-width: 901px) {
+  .app-shell[data-active-role="commercial"]:has(.commercial-overview-detail-slot.is-landing) .list-panel .commercial-overview-dashboard {
+    display: none;
+  }
+}
+
+.commercial-overview-head {
+  display: grid;
+  gap: 8px;
+}
+
+.app-shell[data-active-role="commercial"] .list-panel > .panel-header {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.app-shell[data-active-role="commercial"] .list-panel > .panel-header .panel-header-actions {
+  width: 100%;
+  justify-content: stretch;
+}
+
+.app-shell[data-active-role="commercial"] .list-panel > .panel-header .create-intake-button {
+  width: 100%;
+  max-width: none;
+}
+
+.app-shell[data-active-role="commercial"] .list-panel > .panel-header .panel-count-label {
+  display: none;
+}
+
+.commercial-overview-head h2 {
+  margin: 2px 0 0;
+  color: var(--text-primary);
+  font-size: var(--type-body);
+  font-weight: 850;
+  letter-spacing: 0;
+  line-height: 1.2;
+}
+
+.commercial-overview-focus {
+  --overview-accent: var(--accent);
+  --overview-bg: color-mix(in srgb, var(--accent) 10%, var(--surface-raised));
+  --overview-text: var(--text-primary);
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 1px 7px;
+  align-items: center;
+  min-height: 42px;
+  padding: 6px 8px;
+  overflow: hidden;
+  border: 1px solid color-mix(in srgb, var(--overview-accent) 52%, var(--border-default));
+  border-radius: 6px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--overview-accent) 10%, transparent), transparent 70%),
+    var(--overview-bg);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.commercial-overview-focus::before,
+.commercial-overview-button::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background: var(--overview-accent);
+}
+
+.commercial-overview-icon {
+  display: inline-grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid color-mix(in srgb, var(--overview-accent) 58%, var(--border-default));
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--overview-accent) 14%, var(--surface-inset));
+  box-shadow: none;
+  color: var(--overview-text);
+}
+
+.commercial-overview-focus .commercial-overview-icon {
+  grid-row: 1 / span 2;
+}
+
+.commercial-overview-icon ix-icon {
+  display: block;
+}
+
+.commercial-overview-title {
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.commercial-overview-focus strong {
+  color: var(--text-muted);
+  font-size: var(--type-caption);
+  font-weight: 750;
+  line-height: 1.15;
+}
+
+.commercial-overview-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px;
+}
+
+.commercial-finance-summary {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  padding: 8px 9px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.commercial-finance-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  min-width: 0;
+}
+
+.commercial-finance-heading span,
+.commercial-finance-heading small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.commercial-finance-heading span {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.commercial-finance-heading small {
+  color: var(--text-muted);
+  font-size: 10.5px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.commercial-finance-signals {
+  display: grid;
+  gap: 0;
+  border-block-start: 1px solid var(--border-subtle);
+}
+
+.commercial-finance-signal {
+  display: grid;
+  grid-template-columns: minmax(92px, 0.8fr) auto minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+  min-width: 0;
+  min-height: 34px;
+  padding: 7px 0;
+  border: 0;
+  border-block-end: 1px solid var(--border-subtle);
+  border-radius: 0;
+  color: var(--text-secondary);
+  background: transparent;
+  text-align: left;
+}
+
+.commercial-finance-signal:last-child {
+  border-block-end: 0;
+}
+
+.commercial-finance-signal .commercial-finance-label,
+.commercial-finance-signal small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.commercial-finance-signal .commercial-finance-label {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-weight: 850;
+  line-height: 1.15;
+}
+
+.commercial-finance-signal strong {
+  color: var(--text-primary);
+  font-size: 16px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.commercial-finance-signal small {
+  color: var(--text-muted);
+  font-size: 10.5px;
+  line-height: 1.15;
+}
+
+.commercial-finance-signal.tone-warning {
+  color: var(--state-warning-text);
+}
+
+.commercial-finance-signal.tone-critical {
+  color: var(--state-critical-text);
+}
+
+.commercial-overview-button {
+  --overview-accent: var(--accent);
+  --overview-bg: transparent;
+  --overview-text: var(--text-primary);
+  position: relative;
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) auto;
+  gap: 8px;
+  align-items: center;
+  min-height: 38px;
+  padding: 6px 7px;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--overview-bg);
+  color: var(--text-primary);
+  text-align: left;
+  cursor: pointer;
+}
+
+.commercial-overview-card-copy {
+  display: grid;
+  min-width: 0;
+  gap: 1px;
+}
+
+.commercial-overview-count {
+  min-width: 2ch;
+  color: var(--overview-text);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.commercial-overview-button small {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 650;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.commercial-overview-focus:hover:not(:disabled),
+.commercial-overview-button:hover:not(:disabled),
+.commercial-overview-focus:focus-visible,
+.commercial-overview-button:focus-visible {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--focus) 28%, transparent);
+}
+
+.commercial-overview-focus.tone-warning,
+.commercial-overview-button.tone-warning {
+  --overview-accent: var(--state-warning-border);
+  --overview-bg: color-mix(in srgb, var(--state-warning-bg) 24%, var(--surface-inset));
+  --overview-text: var(--state-warning-text);
+}
+
+.commercial-overview-focus.tone-critical,
+.commercial-overview-button.tone-critical {
+  --overview-accent: var(--state-critical-border);
+  --overview-bg: color-mix(in srgb, var(--state-critical-bg) 28%, var(--surface-inset));
+  --overview-text: var(--state-critical-text);
+}
+
+.commercial-overview-button.metric-warehouse {
+  --overview-accent: var(--state-warning-border);
+  --overview-bg: color-mix(in srgb, var(--state-warning-bg) 12%, transparent);
+  --overview-text: var(--state-warning-text);
+}
+
+.commercial-overview-button.metric-production {
+  --overview-accent: var(--accent);
+  --overview-bg: color-mix(in srgb, var(--accent) 8%, transparent);
+  --overview-text: var(--text-primary);
+}
+
+.commercial-overview-button.is-current {
+  border-color: color-mix(in srgb, var(--overview-accent) 78%, var(--focus));
+  background: color-mix(in srgb, var(--overview-accent) 13%, var(--surface-inset));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--overview-accent) 28%, transparent);
+}
+
+.commercial-overview-focus:disabled,
+.commercial-overview-button:disabled {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+@media (max-width: 900px) {
+  .commercial-overview-detail-slot {
+    display: block;
+  }
+
+  .app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing {
+    display: none;
+  }
+
+  .app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-dashboard {
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+  }
+
+  .app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-head {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell[data-active-role="commercial"] .detail-panel .commercial-overview-detail-slot.is-landing .commercial-overview-head h2 {
+    font-size: var(--type-body);
+    line-height: 1.2;
+  }
+
+  .commercial-overview-dashboard {
+    padding-inline: 0;
+  }
+
+  .app-shell[data-active-role="commercial"] .list-panel > .panel-header .create-intake-button {
+    min-height: 42px;
+  }
+
+  .commercial-overview-actions {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-finance-signals {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-finance-heading {
+    display: grid;
+    gap: 2px;
+  }
+
+  .commercial-overview-button {
+    min-height: 38px;
+    padding: 7px;
+  }
+}

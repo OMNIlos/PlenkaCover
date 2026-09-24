@@ -1,0 +1,100 @@
+/* Auth-shell: экран входа. Не трогает существующие рабочие поверхности. */
+.auth-screen {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 32px;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--surface-inset) 88%, #0f8f88) 0%, var(--bg-app) 48%, #101820 100%);
+}
+.auth-workspace {
+  width: min(392px, 100%);
+}
+.auth-card {
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: color-mix(in srgb, var(--surface-1) 88%, var(--surface-inset));
+  box-shadow: 0 18px 40px rgba(5, 12, 18, 0.28);
+}
+.auth-card-header h2 {
+  margin: 0;
+  color: var(--text-primary);
+  letter-spacing: 0;
+}
+.auth-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  min-height: 420px;
+  padding: 30px;
+}
+.auth-card-header {
+  display: grid;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+.auth-card-header .auth-hint {
+  margin: 2px 0 0;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.auth-status-card {
+  min-height: 180px;
+}
+.auth-label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.auth-input {
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font-size: 14px;
+}
+.auth-input:focus {
+  border-color: var(--focus);
+  outline: 0;
+  box-shadow: var(--shadow-focus-only);
+}
+.auth-error {
+  font-size: 13px;
+  color: var(--state-critical-text);
+}
+.auth-notice {
+  font-size: 13px;
+  color: var(--state-success-text);
+}
+.auth-button {
+  min-height: 42px;
+  padding: 11px 12px;
+  border: 1px solid var(--office-action-primary-border);
+  border-radius: var(--radius-md);
+  background: var(--office-action-primary-bg);
+  color: var(--office-action-primary-text);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+.auth-button:hover:not(:disabled) {
+  background: var(--office-action-primary-hover-bg);
+}
+.auth-button:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+
+@media (max-width: 760px) {
+  .auth-screen {
+    padding: 18px;
+  }
+  .auth-card {
+    min-height: 380px;
+  }
+}

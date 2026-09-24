@@ -1,0 +1,7 @@
+node_modules
+dist
+qa-screenshots
+outputs
+.DS_Store
+*.log
+coverage

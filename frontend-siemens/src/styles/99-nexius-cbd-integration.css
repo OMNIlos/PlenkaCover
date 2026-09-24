@@ -1,0 +1,187 @@
+.finance-shipment-relation {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.finance-shipment-relation strong {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.12;
+  overflow-wrap: anywhere;
+}
+
+.finance-shipment-relation small {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.15;
+  overflow-wrap: anywhere;
+}
+
+.finance-payment-shipment-panel {
+  border-color: color-mix(in srgb, var(--state-info-border) 42%, var(--border-subtle));
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--state-info-bg) 16%, transparent), transparent 76%),
+    color-mix(in srgb, var(--surface-inset) 88%, var(--surface-1));
+}
+
+.finance-collapsed-panel > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.finance-collapsed-panel > summary::marker {
+  color: var(--text-secondary);
+}
+
+.finance-collapsed-panel > summary strong {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.finance-collapsed-panel[open] > summary {
+  margin-bottom: 10px;
+}
+
+.action-tile {
+  overflow: hidden;
+}
+
+.action-tile-text {
+  max-width: 100%;
+}
+
+.action-tile-text strong,
+.action-tile-text small {
+  overflow-wrap: anywhere;
+  hyphens: auto;
+}
+
+.terminal-secondary-actions .compact-action-button {
+  min-width: 0;
+  overflow: hidden;
+}
+
+.terminal-secondary-actions .compact-action-button span {
+  max-width: 100%;
+  overflow-wrap: anywhere;
+  word-break: normal;
+}
+
+.operator-table-summary > .operator-summary-object {
+  grid-template-columns: 52px minmax(0, 1fr);
+  grid-template-rows: auto auto auto;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.operator-summary-object .step-illustration {
+  grid-row: 1 / -1;
+  width: 52px;
+  height: 52px;
+  border-radius: 4px;
+  box-shadow: none;
+}
+
+.operator-summary-object .step-illustration ix-icon {
+  width: 32px;
+  height: 32px;
+}
+
+.warehouse-empty-scan-state {
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--state-warning-border);
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--state-warning-bg) 22%, var(--surface-inset));
+}
+
+.warehouse-empty-scan-state strong {
+  color: var(--state-warning-text);
+  line-height: 1.2;
+}
+
+.warehouse-empty-scan-state span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+@media (max-width: 900px) {
+  .warehouse-roll-table .operator-panel-title {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .warehouse-close-inline-action {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 520px) {
+  .warehouse-scan-session-strip .scanner-session-button {
+    min-height: 64px;
+    font-size: 15px;
+  }
+}
+
+.operator-table-terminal .operator-focus.operator-focus-compact {
+  grid-template-columns: minmax(220px, 0.62fr) minmax(300px, 1fr) minmax(220px, 0.72fr);
+  gap: 8px;
+  padding: 8px;
+  border-radius: 6px;
+}
+
+.operator-table-terminal .operator-focus-compact .terminal-main {
+  align-content: start;
+  min-height: 0;
+  padding: 10px;
+}
+
+.operator-table-terminal .operator-focus-compact .terminal-main .workbench-visual-row {
+  grid-template-columns: 44px minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+}
+
+.operator-table-terminal .operator-focus-compact .terminal-main .step-illustration {
+  width: 44px;
+  height: 44px;
+}
+
+.operator-table-terminal .operator-focus-compact .terminal-main .step-illustration ix-icon {
+  width: 28px;
+  height: 28px;
+}
+
+.operator-table-terminal .operator-focus-compact .terminal-main h3 {
+  margin: 1px 0 0;
+  font-size: 22px;
+  line-height: 1.12;
+}
+
+.operator-table-terminal .operator-focus-compact .operator-machine-value {
+  font-size: 13px;
+}
+
+.operator-table-terminal .operator-focus-compact .operator-step-instruction {
+  font-size: 13px;
+  line-height: 1.28;
+}
+
+.operator-table-terminal .operator-focus-compact .operator-stage-signal,
+.operator-table-terminal .operator-focus-compact .operator-live-scale {
+  min-height: 0;
+}

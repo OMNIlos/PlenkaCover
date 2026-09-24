@@ -1,0 +1,50 @@
+{
+  "name": "plenka-cover",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Плёнки Контур — backend v1 (NestJS + Prisma + Postgres). Monorepo; frontend joins later under apps/web.",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run build -w @plenka/contracts && npm run build -w @plenka/api && npm run build -w @plenka/gateway-agent",
+    "dev": "npm run start:dev -w @plenka/api",
+    "protected:demo": "node tools/protected-demo/build-protected-demo.mjs",
+    "test": "npm run test -w @plenka/api && npm run test -w @plenka/gateway-agent && npm run test:protected-demo && npm run test:physical-release && npm run test:gateway-package && npm run test:dependency-policy",
+    "test:protected-demo": "node --test tools/protected-demo/hardware-preflight.test.mjs",
+    "test:physical-release": "node --test scripts/release/physical-device-manifest.test.mjs",
+    "test:gateway-package": "node --test scripts/gateway/test/package.test.mjs",
+    "test:dependency-policy": "node --test scripts/security/dependency-policy.test.mjs",
+    "lint": "npm run lint -w @plenka/api",
+    "lint:fix": "npm run lint:fix -w @plenka/api",
+    "format": "prettier --write \"apps/**/src/**/*.ts\" \"packages/**/src/**/*.ts\"",
+    "db:up": "docker compose up -d db",
+    "db:down": "docker compose down",
+    "db:generate": "npm run db:generate -w @plenka/api",
+    "db:migrate": "npm run db:migrate -w @plenka/api",
+    "db:deploy": "npm run db:deploy -w @plenka/api",
+    "db:seed": "npm run db:seed -w @plenka/api"
+  },
+  "overrides": {
+    "exceljs": {
+      "uuid": "11.1.1"
+    },
+    "deepmerge-ts": "8.0.0",
+    "fast-uri": "3.1.5",
+    "js-yaml": "4.3.2",
+    "multer": "2.3.0",
+    "qs": "6.16.0",
+    "@istanbuljs/load-nyc-config@1.1.0": {
+      "js-yaml": "3.15.2"
+    }
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1",
+    "javascript-obfuscator": "^5.4.3",
+    "prettier": "^3.4.2"
+  }
+}

@@ -1,0 +1,499 @@
+.director-payroll-tariff-actions {
+  display: grid;
+  grid-template-columns: auto minmax(280px, 1fr);
+  align-items: stretch;
+  gap: var(--space-2);
+}
+
+.director-payroll-create-tariff-order,
+.director-payroll-tariff-disclosure {
+  min-height: 48px;
+  padding: 10px 14px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.director-payroll-create-tariff-order {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+.director-payroll-tariff-disclosure {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-width: 0;
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  text-align: left;
+}
+
+.director-payroll-tariff-disclosure > span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.director-payroll-tariff-disclosure strong,
+.director-payroll-tariff-disclosure small {
+  overflow-wrap: anywhere;
+}
+
+.director-payroll-tariff-disclosure small {
+  color: var(--text-muted);
+  font-weight: 650;
+}
+
+.director-payroll-tariff-disclosure ix-icon {
+  flex: 0 0 auto;
+  transform: rotate(0deg);
+  transition: transform 160ms ease;
+}
+
+.director-payroll-tariff-disclosure[aria-expanded='true'] ix-icon {
+  transform: rotate(90deg);
+}
+
+.director-payroll-create-tariff-order:focus-visible,
+.director-payroll-tariff-disclosure:focus-visible,
+.payroll-tariff-order-dialog button:focus-visible,
+.payroll-tariff-order-dialog input:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.director-payroll-applied-tariffs {
+  display: grid;
+  gap: var(--space-4);
+  margin-top: var(--space-3);
+}
+
+.director-payroll-tariff-order {
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.director-payroll-tariff-order > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.director-payroll-tariff-order > header h3 {
+  margin: 0;
+  font-size: 16px;
+}
+
+.director-payroll-tariff-order > header span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+}
+
+.payroll-tariff-order-dialog {
+  width: min(1440px, calc(100vw - 48px));
+  max-width: none;
+  height: min(900px, calc(100dvh - 48px));
+  max-height: none;
+}
+
+.payroll-tariff-order-dialog-body {
+  display: grid;
+  grid-template-columns: minmax(220px, 270px) minmax(0, 1fr);
+  min-height: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.payroll-tariff-order-versions,
+.payroll-tariff-order-editor {
+  min-width: 0;
+  min-height: 0;
+}
+
+.payroll-tariff-order-versions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border-right: 1px solid var(--border-subtle);
+  background: var(--surface-inset);
+  overflow-y: auto;
+}
+
+.payroll-tariff-order-versions > header,
+.payroll-tariff-ladder > header,
+.payroll-tariff-special-rules > header,
+.payroll-tariff-order-identity > header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.payroll-tariff-order-versions h4,
+.payroll-tariff-ladder h4,
+.payroll-tariff-special-rules h4,
+.payroll-tariff-order-identity h4 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 15px;
+  line-height: 1.3;
+}
+
+.payroll-tariff-refresh,
+.payroll-tariff-add-band,
+.payroll-tariff-row-action button,
+.payroll-tariff-order-actions button,
+.payroll-tariff-order-feedback button,
+.payroll-tariff-new-version {
+  min-height: 36px;
+  padding: 7px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.payroll-tariff-order-dialog button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.payroll-tariff-order-version-list {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.payroll-tariff-order-version-list > button {
+  display: grid;
+  gap: 3px;
+  width: 100%;
+  min-width: 0;
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.payroll-tariff-order-version-list > button.is-selected {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.payroll-tariff-order-version-list span,
+.payroll-tariff-order-version-list time,
+.payroll-tariff-order-version-list em {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.3;
+}
+
+.payroll-tariff-order-version-list em {
+  color: var(--state-success-text);
+  font-weight: 800;
+}
+
+.payroll-tariff-new-version {
+  width: 100%;
+  margin-top: auto;
+}
+
+.payroll-tariff-order-editor {
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  padding: var(--space-4);
+  overflow: auto;
+}
+
+.payroll-tariff-order-loading,
+.payroll-tariff-order-notice,
+.payroll-tariff-workflow-status,
+.payroll-tariff-order-feedback {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.payroll-tariff-workflow-status {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.payroll-tariff-workflow-status strong {
+  color: var(--text-primary);
+}
+
+.payroll-tariff-order-feedback {
+  display: flex;
+  flex: 1 1 420px;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  border-color: var(--state-warning-border);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+}
+
+.payroll-tariff-order-identity,
+.payroll-tariff-ladder,
+.payroll-tariff-special-rules {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+.payroll-tariff-order-identity > div,
+.payroll-tariff-special-rule-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-3);
+}
+
+.payroll-tariff-order-identity label,
+.payroll-tariff-matrix-table label,
+.payroll-tariff-special-rules label {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.payroll-tariff-order-dialog input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 38px;
+  padding: 7px 9px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.payroll-tariff-order-dialog input[type='checkbox'] {
+  width: 18px;
+  min-height: 18px;
+  padding: 0;
+}
+
+.payroll-tariff-order-dialog label.has-error input,
+.payroll-tariff-order-dialog .has-error input {
+  border-color: var(--state-critical-border);
+}
+
+.payroll-tariff-order-dialog label em,
+.payroll-tariff-order-dialog .payroll-tariff-rate-field em {
+  color: var(--state-critical-text);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.3;
+}
+
+.payroll-tariff-order-dialog label small,
+.payroll-tariff-rate-field small {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 650;
+}
+
+.payroll-tariff-matrix-editor {
+  display: grid;
+  gap: var(--space-5);
+  min-width: 0;
+}
+
+.payroll-tariff-matrix-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.payroll-tariff-matrix-table {
+  width: 100%;
+  min-width: 760px;
+  border-collapse: collapse;
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font-size: 12px;
+}
+
+.payroll-tariff-matrix-table th,
+.payroll-tariff-matrix-table td {
+  padding: 8px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  vertical-align: top;
+}
+
+.payroll-tariff-matrix-table th {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-weight: 850;
+}
+
+.payroll-tariff-matrix-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.payroll-tariff-mobile-label {
+  display: none;
+}
+
+.payroll-tariff-rate-field small {
+  font-variant-numeric: tabular-nums;
+}
+
+.payroll-tariff-row-action {
+  width: 84px;
+}
+
+.payroll-tariff-special-rules fieldset {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  margin: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+}
+
+.payroll-tariff-special-rules legend {
+  padding: 0 var(--space-1);
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.payroll-tariff-special-rules .payroll-tariff-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.payroll-tariff-order-dialog-footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.payroll-tariff-order-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-2);
+}
+
+.payroll-tariff-order-actions .primary-button,
+.payroll-tariff-new-version.primary-button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-on-accent);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .director-payroll-create-tariff-order:hover,
+  .payroll-tariff-order-actions .primary-button:hover,
+  .payroll-tariff-new-version.primary-button:hover {
+    background: var(--action-recommended-hover-bg);
+  }
+  .director-payroll-tariff-disclosure:hover,
+  .payroll-tariff-refresh:hover,
+  .payroll-tariff-add-band:hover,
+  .payroll-tariff-row-action button:hover,
+  .payroll-tariff-order-actions button:hover,
+  .payroll-tariff-order-feedback button:hover,
+  .payroll-tariff-order-version-list > button:hover {
+    border-color: var(--accent);
+    background: var(--surface-hover);
+  }
+}
+.director-payroll-create-tariff-order:active:not(:disabled),
+.payroll-tariff-order-actions .primary-button:active:not(:disabled),
+.payroll-tariff-new-version.primary-button:active:not(:disabled) {
+  background: var(--action-recommended-active-bg);
+}
+
+@media (max-width: 900px) {
+  .plenki-overlay:has(> .payroll-tariff-order-dialog) {
+    padding: 0;
+  }
+
+  .payroll-tariff-order-dialog {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: 0;
+  }
+
+  .payroll-tariff-order-dialog-body {
+    grid-template-columns: minmax(0, 1fr);
+    overflow-x: visible;
+    overflow-y: auto;
+  }
+
+  .payroll-tariff-order-versions {
+    max-height: 240px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .payroll-tariff-order-editor {
+    overflow: visible;
+  }
+
+  .payroll-tariff-order-identity > div,
+  .payroll-tariff-special-rule-grid,
+  .director-payroll-tariff-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .payroll-tariff-order-actions,
+  .payroll-tariff-order-actions button,
+  .payroll-tariff-order-feedback,
+  .payroll-tariff-order-feedback button {
+    width: 100%;
+  }
+
+  .director-payroll-create-tariff-order,
+  .director-payroll-tariff-disclosure {
+    min-height: 44px;
+  }
+}

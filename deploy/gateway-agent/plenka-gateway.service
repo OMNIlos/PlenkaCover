@@ -1,0 +1,41 @@
+[Unit]
+Description=PlenkaCover on-post gateway agent
+Documentation=file:/usr/share/doc/plenka-gateway-agent/README.md
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+Type=simple
+User=plenka-gateway
+Group=plenka-gateway
+SupplementaryGroups=dialout
+EnvironmentFile=/etc/plenka-gateway/agent.env
+WorkingDirectory=/var/lib/plenka-gateway
+ExecStartPre=/opt/plenka-gateway/node --env-file=/etc/plenka-gateway/agent.env /opt/plenka-gateway/main.js --check-config
+ExecStart=/opt/plenka-gateway/node /opt/plenka-gateway/main.js
+Restart=always
+RestartSec=5s
+TimeoutStopSec=20s
+UMask=0027
+
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=false
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectKernelLogs=true
+ProtectControlGroups=true
+ProtectClock=true
+ProtectHostname=true
+RestrictSUIDSGID=true
+RestrictRealtime=true
+LockPersonality=true
+CapabilityBoundingSet=
+AmbientCapabilities=
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+ReadWritePaths=/var/lib/plenka-gateway
+
+[Install]
+WantedBy=multi-user.target

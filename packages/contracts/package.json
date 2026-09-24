@@ -1,0 +1,15 @@
+{
+  "name": "@plenka/contracts",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared domain contracts for Плёнки Контур (roles, capabilities, statuses, events). Consumed by apps/api and, later, apps/web.",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}

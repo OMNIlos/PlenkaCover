@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+config=/etc/plenka-gateway/agent.env
+if [ ! -r "$config" ]; then
+  printf 'ERROR: %s is not readable; install root:plenka-gateway 0640 config first\n' "$config" >&2
+  exit 1
+fi
+
+if [ "$(id -u)" -eq 0 ]; then
+  exec runuser -u plenka-gateway -- /opt/plenka-gateway/node --env-file="$config" \
+    /opt/plenka-gateway/probe-scale.js
+fi
+
+exec /opt/plenka-gateway/node --env-file="$config" /opt/plenka-gateway/probe-scale.js

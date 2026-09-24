@@ -1,0 +1,2959 @@
+// Плёнки Контур — backend v1 starter schema.
+//
+// ТЗ §13: this is NOT the final DB schema. It seeds the slice-1 foundation
+// (ТЗ §11.1 "Domain core and audit foundation"): users + a durable, append-only
+// event/audit store. Domain entities (orders, rolls, finance, ...) are added
+// slice-by-slice per ТЗ §11.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+/// Roles mirror @plenka/contracts ROLES (ТЗ §4). Keep values in sync.
+enum Role {
+  commercial
+  production_lead
+  operator
+  warehouse
+  finance
+  director
+  admin
+}
+
+/// User account (V2 S1: real identity). `passwordHash` is a scrypt hash; null when
+/// the account authenticates via an external IdP. The final RBAC matrix is still a
+/// discovery item (ТЗ §11.1, §12.6) — capabilities are derived from `role` server-side.
+model User {
+  id                 String    @id @default(cuid())
+  externalId         String?   @unique
+  login              String    @unique
+  passwordHash       String?
+  identityProvider   String    @default("local") // local | oidc:<issuer>
+  displayName        String
+  role               Role
+  isActive           Boolean   @default(true)
+  mustChangePassword Boolean   @default(false)
+  passwordChangedAt  DateTime?
+  lastLoginAt        DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  events                       DomainEvent[]                     @relation("EventActor")
+  sessions                     Session[]
+  operatorPostSessions         OperatorPostSession[]
+  operatorMachineAssignments   OperatorShiftMachineAssignment[]  @relation("OperatorMachineAssignmentOperator")
+  operatorMachineChanges       OperatorMachineChange[]           @relation("OperatorMachineChangeOperator")
+  createdMachineAssignments    OperatorShiftMachineAssignment[]  @relation("OperatorMachineAssignmentCreator")
+  dispatchItems                RollDispatchItem[]
+  penalties                    Penalty[]                         @relation("PenaltyEmployee")
+  capabilityOverrides          UserCapabilityOverride[]          @relation("CapabilityOverrideTarget")
+  createdOverrides             UserCapabilityOverride[]          @relation("CapabilityOverrideCreator")
+  updatedOverrides             UserCapabilityOverride[]          @relation("CapabilityOverrideUpdater")
+  notificationReceipts         NotificationReceipt[]
+  operatorRollOperations       OperatorRollOperation[]
+  warehouseOperations          WarehouseOperation[]
+  operatorWeightCaptures       WeightCapture[]                   @relation("OperatorWeightCaptureActor")
+  operatorLabelPrintJobs       LabelPrintJob[]                   @relation("OperatorLabelPrintActor")
+  labelPrintReconciliations    LabelPrintReconciliation[]        @relation("LabelPrintReconciliationActor")
+  palletPrintReconciliations   PalletPrintReconciliation[]       @relation("PalletPrintReconciliationActor")
+  oneCStockPushOperations      OneCStockPushOperation[]
+  coverageFacts                WarehouseRollCoverageFact[]       @relation("CoverageFactActor")
+  coverageDecisions            WarehouseCoverageDecision[]       @relation("CoverageDecisionActor")
+  coverageCommands             WarehouseCoverageCommand[]        @relation("CoverageCommandActor")
+  spoolPriceReferences         SpoolPriceReference[]             @relation("SpoolPriceReferenceActor")
+  spoolStockReceipts           SpoolStockReceipt[]               @relation("SpoolStockReceiptActor")
+  productionCostSnapshots      RollProductionCostSnapshot[]      @relation("ProductionCostSnapshotActor")
+  operatorShiftCloseCommands   OperatorShiftCloseCommand[]       @relation("OperatorShiftCloseCommandOperator")
+  palletLabelLayoutVersions    PalletLabelLayoutVersion[]        @relation("PalletLabelLayoutVersionPublisher")
+  palletLabelLayoutCommands    PalletLabelLayoutPublishCommand[] @relation("PalletLabelLayoutPublishCommandActor")
+  createdPayrollTariffOrders   PayrollTariffOrder[]              @relation("PayrollTariffOrderCreator")
+  updatedPayrollTariffOrders   PayrollTariffOrder[]              @relation("PayrollTariffOrderUpdater")
+  publishedPayrollTariffOrders PayrollTariffOrder[]              @relation("PayrollTariffOrderPublisher")
+  payrollTariffOrderCommands   PayrollTariffOrderCommand[]       @relation("PayrollTariffOrderCommandActor")
+  defectBagPrintJobs         DefectBagLabelPrintJob[]         @relation("DefectBagLabelPrintActor")
+  defectBagMovements         DefectBagMovement[]              @relation("DefectBagMovementActor")
+
+  @@map("users")
+}
+
+/// Opaque, revocable server session (V2 S1). The raw token is shown to the client
+/// once at login; only its sha256 `tokenHash` is stored. A session is valid iff it
+/// exists AND is not expired AND is not revoked AND its user is active.
+model Session {
+  id                   String               @id @default(cuid())
+  userId               String
+  user                 User                 @relation(fields: [userId], references: [id])
+  tokenHash            String               @unique
+  createdAt            DateTime             @default(now())
+  expiresAt            DateTime
+  revokedAt            DateTime?
+  lastSeenAt           DateTime?
+  userAgent            String?
+  ip                   String?
+  purpose              String               @default("full") // SESSION_PURPOSES
+  warehousePostId      String?
+  warehousePost        Post?                @relation("WarehouseBrowserPost", fields: [warehousePostId], references: [id], onDelete: Restrict)
+  warehousePostBoundAt DateTime?
+  warehouseOperations  WarehouseOperation[]
+  defectBagMovements   DefectBagMovement[]
+
+  @@index([userId])
+  @@index([warehousePostId])
+  @@map("sessions")
+}
+
+model UserCapabilityOverride {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation("CapabilityOverrideTarget", fields: [userId], references: [id], onDelete: Cascade)
+  capability  String
+  effect      String
+  reason      String
+  createdById String
+  createdBy   User     @relation("CapabilityOverrideCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedById String
+  updatedBy   User     @relation("CapabilityOverrideUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([userId, capability])
+  @@index([createdById])
+  @@index([updatedById])
+  @@map("user_capability_overrides")
+}
+
+/// Append-only durable fact log. Backs BOTH audit trail and dashboards
+/// (ТЗ §5.6 AuditEntry/DomainEvent, §7, §11). Never update/delete rows;
+/// corrections are new events carrying old/new/reason.
+model DomainEvent {
+  id               String   @id @default(cuid())
+  /// family: audit | problem | notification | device | admin | integration
+  family           String
+  /// full event name, e.g. "audit:roll_dispatch_assigned"
+  type             String
+  /// business object this event is about (orderId, rollId, ...)
+  objectId         String?
+  actorKind        String   @default("user")
+  actorRole        Role?
+  actorId          String?
+  actor            User?    @relation("EventActor", fields: [actorId], references: [id], onDelete: Restrict)
+  systemActorKey   String?
+  /// short human label for audit/dashboard rows
+  label            String?
+  /// structured payload / business interpretation
+  detail           Json?
+  oldValue         Json?
+  newValue         Json?
+  reason           String?
+  /// links to a source snapshot (ТЗ §8) when the fact came from an import
+  sourceSnapshotId String?
+  createdAt        DateTime @default(now())
+
+  notificationReceipts NotificationReceipt[]
+
+  @@index([objectId])
+  @@index([family])
+  @@index([type])
+  @@index([createdAt])
+  @@index([type, createdAt, id])
+  @@map("domain_events")
+}
+
+/// Versioned payroll tariff order. Published rows form an immutable effective-date schedule.
+model PayrollTariffOrder {
+  id            String    @id @default(cuid())
+  name          String    @db.VarChar(200)
+  status        String    @default("draft")
+  effectiveFrom DateTime  @db.Timestamptz(3)
+  currency      String    @default("RUB") @db.Char(3)
+  matrix        Json
+  revision      Int       @default(1)
+  createdById   String?
+  createdBy     User?     @relation("PayrollTariffOrderCreator", fields: [createdById], references: [id], onDelete: Restrict)
+  updatedById   String?
+  updatedBy     User?     @relation("PayrollTariffOrderUpdater", fields: [updatedById], references: [id], onDelete: Restrict)
+  publishedById String?
+  publishedBy   User?     @relation("PayrollTariffOrderPublisher", fields: [publishedById], references: [id], onDelete: Restrict)
+  createdAt     DateTime  @default(now()) @db.Timestamptz(3)
+  updatedAt     DateTime  @updatedAt @db.Timestamptz(3)
+  publishedAt   DateTime? @db.Timestamptz(3)
+
+  commands PayrollTariffOrderCommand[]
+
+  @@index([status, effectiveFrom(sort: Desc), id], map: "payroll_tariff_orders_schedule_idx")
+  @@map("payroll_tariff_orders")
+}
+
+/// Immutable idempotency result for one create, update, or publish intent.
+model PayrollTariffOrderCommand {
+  id                 String             @id @default(cuid())
+  operationKey       String             @unique @db.Uuid
+  action             String
+  orderId            String
+  order              PayrollTariffOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  requestFingerprint String             @db.Char(64)
+  resultSnapshot     Json
+  actorId            String
+  actor              User               @relation("PayrollTariffOrderCommandActor", fields: [actorId], references: [id], onDelete: Restrict)
+  createdAt          DateTime           @default(now()) @db.Timestamptz(3)
+
+  @@index([orderId, createdAt, id])
+  @@map("payroll_tariff_order_commands")
+}
+
+/// Per-user interaction with an immutable DomainEvent-backed notification.
+/// Reading a notification never updates or deletes the event itself.
+model NotificationReceipt {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  eventId        String
+  event          DomainEvent @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  readAt         DateTime    @default(now())
+  acknowledgedAt DateTime?
+
+  @@unique([userId, eventId])
+  @@index([userId, readAt])
+  @@index([eventId])
+  @@map("notification_receipts")
+}
+
+// ===========================================================================
+// Slice 2 — Commercial order & position core (ТЗ §5.1, §11.2)
+// ===========================================================================
+
+/// Counterparty (ТЗ §5.1 CounterpartyBillingSnapshot). legalName is sensitive:
+/// projected only to commercial/finance/director (ТЗ §4, §15). 1С sync deferred.
+model Counterparty {
+  id            String   @id @default(cuid())
+  displayName   String
+  legalName     String?
+  inn           String?
+  kpp           String?
+  sourceCode    String?
+  billingSource String   @default("manual_platform") // SourceKind
+  syncStatus    String   @default("ready") // SourceHealth
+  createdAt     DateTime @default(now())
+
+  orders         CommercialOrder[]
+  orderTemplates CounterpartyOrderTemplate[]
+
+  externalId    String? @unique // 1С Ref_Key
+  sourceVersion String? // 1С DataVersion
+
+  @@map("counterparties")
+}
+
+/// Production-owned order template for a concrete counterparty. The positions
+/// JSON is a snapshot shaped like CreatePositionDto[] and is copied into orders.
+model CounterpartyOrderTemplate {
+  id             String       @id @default(cuid())
+  counterpartyId String
+  counterparty   Counterparty @relation(fields: [counterpartyId], references: [id])
+  name           String
+  description    String?
+  status         String       @default("active") // active | archived
+  ownerRole      Role         @default(production_lead)
+  positions      Json
+  usageCount     Int          @default(0)
+  lastUsedAt     DateTime?
+  createdById    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+  version        Int          @default(1)
+
+  orders   CommercialOrder[]
+  versions CounterpartyOrderTemplateVersion[]
+
+  @@index([counterpartyId, status])
+  @@map("counterparty_order_templates")
+}
+
+/// Immutable snapshot of one production-owned counterparty template revision.
+model CounterpartyOrderTemplateVersion {
+  id          String                    @id @default(cuid())
+  templateId  String
+  template    CounterpartyOrderTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  version     Int
+  positions   Json
+  createdById String?
+  createdAt   DateTime                  @default(now())
+
+  orders CommercialOrder[]
+
+  @@unique([templateId, version])
+  @@index([templateId, createdAt])
+  @@map("counterparty_order_template_versions")
+}
+
+model StockProductionTemplate {
+  id             String    @id @default(cuid())
+  name           String    @unique
+  normalizedName String    @unique
+  description    String?
+  status         String    @default("active")
+  positions      Json
+  usageCount     Int       @default(0)
+  lastUsedAt     DateTime?
+  createdById    String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  version        Int       @default(1)
+
+  versions StockProductionTemplateVersion[]
+  orders   CommercialOrder[]                @relation("StockProductionTemplateOrders")
+
+  @@index([status, updatedAt])
+  @@map("stock_production_templates")
+}
+
+model StockProductionTemplateVersion {
+  id          String                  @id @default(cuid())
+  templateId  String
+  template    StockProductionTemplate @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  version     Int
+  positions   Json
+  createdById String?
+  createdAt   DateTime                @default(now())
+
+  orders CommercialOrder[] @relation("StockProductionTemplateVersionOrders")
+
+  @@unique([templateId, version])
+  @@index([templateId, createdAt])
+  @@map("stock_production_template_versions")
+}
+
+/// Commercial order (ТЗ §5.1). State = four INDEPENDENT indicators, never one status.
+model CommercialOrder {
+  id                               String                            @id @default(cuid())
+  orderNumber                      String                            @unique
+  title                            String?
+  comment                          String?
+  commercialFinanceNote            String?                           @db.VarChar(2000)
+  version                          Int                               @default(1)
+  commentVersion                   Int                               @default(1)
+  warehouseCoverageWorkflowVersion Int                               @default(1)
+  cancellationStatus               String                            @default("active")
+  cancellationVersion              Int                               @default(1)
+  cancelledAt                      DateTime?
+  cancelledById                    String?
+  cancellationReason               String?                           @db.VarChar(500)
+  clientRequestId                  String?                           @unique
+  requestFingerprint               String?                           @db.Char(64)
+  creatorRole                      Role
+  counterpartyId                   String?
+  counterparty                     Counterparty?                     @relation(fields: [counterpartyId], references: [id], onDelete: Restrict)
+  counterpartyTemplateId           String?
+  counterpartyTemplate             CounterpartyOrderTemplate?        @relation(fields: [counterpartyTemplateId], references: [id])
+  counterpartyTemplateName         String?
+  counterpartyTemplateVersionId    String?
+  counterpartyTemplateVersion      CounterpartyOrderTemplateVersion? @relation(fields: [counterpartyTemplateVersionId], references: [id])
+  stockProductionTemplateId        String?
+  stockProductionTemplate          StockProductionTemplate?          @relation("StockProductionTemplateOrders", fields: [stockProductionTemplateId], references: [id], onDelete: Restrict)
+  stockProductionTemplateName      String?
+  stockProductionTemplateVersionId String?
+  stockProductionTemplateVersion   StockProductionTemplateVersion?   @relation("StockProductionTemplateVersionOrders", fields: [stockProductionTemplateVersionId], references: [id], onDelete: Restrict)
+  requestType                      String                            @default("client_order") // REQUEST_TYPES
+  stockBatchCode                   String?                           @unique
+  productionIndicator              String                            @default("not_started") // PRODUCTION_INDICATORS
+  warehouseCoverStatus             String                            @default("not_checked") // WAREHOUSE_COVER_STATUSES
+  paymentStatus                    String                            @default("unpaid") // PAYMENT_STATUSES
+  shipmentStatus                   String                            @default("not_shipped") // SHIPMENT_STATUSES
+  recipeOwnerRole                  Role                              @default(commercial)
+  delegationMarker                 Boolean                           @default(false)
+  commercialConfirmationPolicy     String                            @default("required") // or bypassed_by_delegation
+  commercialStage                  String                            @default("incoming") // COMMERCIAL_STAGES
+  draftedAt                        DateTime?
+  sentToFinanceAt                  DateTime?
+  financeConfirmedAt               DateTime?
+  commercialLockedAt               DateTime?
+  readyForShipmentAt               DateTime?
+  shipmentCompletedAt              DateTime?
+  createdAt                        DateTime                          @default(now())
+  updatedAt                        DateTime                          @updatedAt
+
+  positions            CommercialOrderPosition[]
+  coverProposals       WarehouseCoverProposal[]
+  problems             ProductionProblem[]
+  productionOrder      ProductionOrder?
+  financeOrder         FinanceOrder?
+  resolutionCases      OrderResolutionCase[]
+  coverageFacts        WarehouseRollCoverageFact[]          @relation("CoverageFactSourceOrder")
+  coverageState        WarehouseCoverageState?
+  coverageCalculations WarehouseCoverageCalculation[]
+  coverageMatches      WarehouseCoverageMatch[]
+  coverageDecisions    WarehouseCoverageDecision[]
+  coverageCommands     WarehouseCoverageCommand[]
+  coverageMemberships  WarehouseCoverageRecheckMembership[]
+  producedStockRolls   WarehouseRoll[]                      @relation("ProducedForStockOrder")
+  producedClientRolls  WarehouseRoll[]                      @relation("ProducedForClientOrder")
+  releasedStockRolls   WarehouseRoll[]                      @relation("ReleasedCancelledOrderStock")
+  reserveRollCommands  WarehouseReserveRollCommand[]        @relation("ReserveRollBatchOrder")
+  warehousePallets     WarehousePallet[]
+  financeNoteCommands  CommercialFinanceNoteCommand[]
+  amendmentCommands    CommercialOrderAmendmentCommand[]
+
+  externalId    String? @unique // 1С Ref_Key
+  sourceVersion String? // 1С DataVersion
+
+  @@index([commercialStage, updatedAt, id])
+  @@index([createdAt, id])
+  @@index([paymentStatus, shipmentStatus])
+  @@index([requestType, stockBatchCode])
+  @@index([requestType, stockProductionTemplateId])
+  @@map("commercial_orders")
+}
+
+/// Idempotency record for an optimistic commercial finance-note mutation.
+model CommercialFinanceNoteCommand {
+  id                 String          @id @default(cuid())
+  orderId            String
+  order              CommercialOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  operationKey       String          @unique @db.Uuid
+  requestFingerprint String          @db.Char(64)
+  result             Json
+  createdAt          DateTime        @default(now())
+
+  @@index([orderId, createdAt])
+  @@map("commercial_finance_note_commands")
+}
+
+/// Durable idempotency claim for amendments, cancellations and reactivation.
+model CommercialOrderAmendmentCommand {
+  id                   String          @id @default(cuid())
+  orderId              String
+  order                CommercialOrder @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  operationKey         String          @unique @db.Uuid
+  requestFingerprint   String          @db.Char(64)
+  kind                 String
+  expectedOrderVersion Int
+  reason               String          @db.VarChar(500)
+  actorRole            Role
+  actorId              String?
+  result               Json?
+  createdAt            DateTime        @default(now())
+
+  @@index([orderId, createdAt])
+  @@map("commercial_order_amendment_commands")
+}
+
+/// A position is a group of rolls with identical parameters (ТЗ §5.1).
+model CommercialOrderPosition {
+  id                          String                   @id @default(cuid())
+  orderId                     String
+  order                       CommercialOrder          @relation(fields: [orderId], references: [id])
+  rollCount                   Int
+  filmType                    String
+  actualThickness             String
+  accountingThickness         String
+  rawMaterialId               String?
+  baseRawMaterialDefinitionId String?
+  baseRawMaterialDefinition   RawMaterialDefinition?   @relation("PositionBaseRawMaterial", fields: [baseRawMaterialDefinitionId], references: [id], onDelete: Restrict)
+  recipeDefinitionVersionId   String?
+  recipeDefinitionVersion     RecipeDefinitionVersion? @relation(fields: [recipeDefinitionVersionId], references: [id], onDelete: Restrict)
+  spoolType                   String?
+  birka                       String?
+  manualBirka                 String?
+  comment                     String?
+  plannedWeightKg             Float?
+  widthMm                     Float?
+  plannedLengthM              Float?
+  version                     Int                      @default(1)
+  updatedAt                   DateTime                 @updatedAt
+  warehouseCoverStatus        String                   @default("not_checked")
+
+  recipe             RecipeSnapshot?
+  coverProposals     WarehouseCoverProposal[]
+  reservedRolls      WarehouseRoll[]              @relation("ReservedRollPosition")
+  producedRolls      WarehouseRoll[]              @relation("ProducedForClientPosition")
+  reserveRollCommand WarehouseReserveRollCommand? @relation("ReserveRollSourcePosition")
+  coverageFacts      WarehouseRollCoverageFact[]  @relation("CoverageFactSourcePosition")
+  coverageMatches    WarehouseCoverageMatch[]
+
+  @@index([orderId, updatedAt])
+  @@map("commercial_order_positions")
+}
+
+/// Recipe snapshot — needs old/new audit + correction (ТЗ §5.1).
+model RecipeSnapshot {
+  id                        String                  @id @default(cuid())
+  positionId                String                  @unique
+  position                  CommercialOrderPosition @relation(fields: [positionId], references: [id])
+  recipeOwnerRole           Role                    @default(commercial)
+  parameters                Json
+  source                    String // commercial_form | production_lead_form
+  createdBy                 String
+  version                   String                  @default("v1")
+  createdAt                 DateTime                @default(now())
+  recipeDefinitionId        String?
+  recipeDefinitionVersionId String?
+  recipeVersionNumber       Int?
+  recipeName                String?
+  ingredients               Json?
+
+  history RecipeSnapshotVersion[]
+
+  @@map("recipe_snapshots")
+}
+
+/// Immutable recipe history while RecipeSnapshot remains the current pointer for compatibility.
+model RecipeSnapshotVersion {
+  id               String         @id @default(cuid())
+  recipeSnapshotId String
+  recipeSnapshot   RecipeSnapshot @relation(fields: [recipeSnapshotId], references: [id], onDelete: Cascade)
+  version          Int
+  parameters       Json
+  source           String
+  createdBy        String
+  createdAt        DateTime       @default(now())
+
+  @@unique([recipeSnapshotId, version])
+  @@index([recipeSnapshotId, createdAt])
+  @@map("recipe_snapshot_versions")
+}
+
+model RawMaterialDefinition {
+  id                     String   @id @default(cuid())
+  name                   String
+  normalizedName         String   @unique
+  kind                   String   @default("custom")
+  status                 String   @default("active")
+  isProductionSelectable Boolean  @default(false)
+  createdById            String?
+  createdByRole          Role
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+  externalId             String?  @unique
+  sourceVersion          String?
+  sourceCode             String?
+  sourceArticle          String?
+  sourceUnit             String?
+  sourceKind             String?
+
+  stock                RawMaterialStock?
+  ingredients          RecipeIngredient[]
+  basePositions        CommercialOrderPosition[] @relation("PositionBaseRawMaterial")
+  bigBagBaseSelections BigBagUnit[]              @relation("BigBagBaseRawMaterial")
+  oneCNomenclatureItem OneCNomenclatureItem?
+  costReferences       MaterialPriceReference[]
+
+  @@index([isProductionSelectable, status])
+  @@map("raw_material_definitions")
+}
+
+model RecipeDefinition {
+  id                 String                    @id @default(cuid())
+  name               String
+  normalizedName     String                    @unique
+  status             String                    @default("active")
+  clientRequestId    String                    @unique @db.Uuid
+  requestFingerprint String                    @db.Char(64)
+  createdById        String?
+  createdByRole      Role
+  createdAt          DateTime                  @default(now())
+  updatedAt          DateTime                  @updatedAt
+  versions           RecipeDefinitionVersion[]
+
+  @@map("recipe_definitions")
+}
+
+model RecipeDefinitionVersion {
+  id                 String                    @id @default(cuid())
+  recipeDefinitionId String
+  recipeDefinition   RecipeDefinition          @relation(fields: [recipeDefinitionId], references: [id], onDelete: Restrict)
+  version            Int
+  createdAt          DateTime                  @default(now())
+  ingredients        RecipeIngredient[]
+  positions          CommercialOrderPosition[]
+  bigBags            BigBagUnit[]
+
+  @@unique([recipeDefinitionId, version])
+  @@map("recipe_definition_versions")
+}
+
+model RecipeIngredient {
+  id                        String                  @id @default(cuid())
+  recipeDefinitionVersionId String
+  recipeDefinitionVersion   RecipeDefinitionVersion @relation(fields: [recipeDefinitionVersionId], references: [id], onDelete: Restrict)
+  rawMaterialDefinitionId   String
+  rawMaterialDefinition     RawMaterialDefinition   @relation(fields: [rawMaterialDefinitionId], references: [id], onDelete: Restrict)
+  sequence                  Int
+  shareBasisPoints          Int
+
+  @@unique([recipeDefinitionVersionId, rawMaterialDefinitionId])
+  @@unique([recipeDefinitionVersionId, sequence])
+  @@map("recipe_ingredients")
+}
+
+/// Warehouse cover proposal — no auto-apply; commercial confirms/rejects (ТЗ §3, §5.4).
+model WarehouseCoverProposal {
+  id                     String                  @id @default(cuid())
+  orderId                String
+  order                  CommercialOrder         @relation(fields: [orderId], references: [id])
+  positionId             String
+  position               CommercialOrderPosition @relation(fields: [positionId], references: [id])
+  coverType              String // partial | full
+  route                  String                  @default("production_only")
+  coverQty               Int
+  reserveQty             Int                     @default(0)
+  productionQty          Int                     @default(0)
+  matchedRollIds         Json                    @default("[]")
+  status                 String                  @default("full_proposed") // WAREHOUSE_COVER_STATUSES
+  version                Int                     @default(1)
+  sourceCapturedAt       DateTime                @default(now())
+  expiresAt              DateTime?
+  commercialApprovedById String?
+  commercialApprovedAt   DateTime?
+  technicalApprovedById  String?
+  technicalApprovedAt    DateTime?
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  matches       WarehouseCoverMatch[]
+  reservedRolls WarehouseRoll[]       @relation("ReservedRollProposal")
+
+  @@index([orderId, positionId, status])
+  @@index([status, expiresAt])
+  @@map("warehouse_cover_proposals")
+}
+
+/// Safe compatibility evidence for a concrete proposed warehouse roll.
+model WarehouseCoverMatch {
+  id         String                 @id @default(cuid())
+  proposalId String
+  proposal   WarehouseCoverProposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  rollId     String
+  roll       WarehouseRoll          @relation(fields: [rollId], references: [id])
+  compatible Boolean                @default(true)
+  criteria   Json
+  createdAt  DateTime               @default(now())
+
+  @@unique([proposalId, rollId])
+  @@index([rollId])
+  @@map("warehouse_cover_matches")
+}
+
+/// Structured cross-role problem, not a comment (ТЗ §5.1 ProductionProblem).
+model ProductionProblem {
+  id                   String           @id @default(cuid())
+  // Поломка станка не привязана к заказу — для machine_breakdown orderId пуст, задан postId.
+  orderId              String?
+  order                CommercialOrder? @relation(fields: [orderId], references: [id])
+  postId               String?
+  post                 Post?            @relation(fields: [postId], references: [id])
+  positionId           String?
+  rollId               String?
+  actorRole            Role
+  reason               String
+  machineBreakdownType String?
+  recovery             String?
+  status               String           @default("open")
+  type                 String           @default("general") // PRODUCTION_PROBLEM_TYPES
+  defectRecordId       String?          @unique
+  defectRecord         DefectRecord?    @relation(fields: [defectRecordId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  resolvedAt           DateTime?
+  resolvedById         String?
+  createdAt            DateTime         @default(now())
+
+  resolutionCase OrderResolutionCase?
+
+  @@index([type, status])
+  @@index([postId, status])
+  @@map("production_problems")
+}
+
+/// Structured owner/next-action lifecycle for disputed order decisions.
+model OrderResolutionCase {
+  id                          String                        @id @default(cuid())
+  openScopeKey                String?                       @unique
+  orderId                     String
+  order                       CommercialOrder               @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  problemId                   String?                       @unique
+  problem                     ProductionProblem?            @relation(fields: [problemId], references: [id], onDelete: SetNull)
+  type                        String
+  status                      String                        @default("open")
+  ownerRole                   Role
+  affectedPositionIds         Json                          @default("[]")
+  affectedRollIds             Json                          @default("[]")
+  reason                      String
+  outcome                     String?
+  nextOwnerRole               Role?
+  createdByRole               Role
+  createdById                 String?
+  version                     Int                           @default(1)
+  createdAt                   DateTime                      @default(now())
+  updatedAt                   DateTime                      @updatedAt
+  resolvedAt                  DateTime?
+  coverageScope               String?
+  coverageOrigin              String?
+  sourceCoverageCalculationId String?
+  sourceCoverageCalculation   WarehouseCoverageCalculation? @relation(fields: [sourceCoverageCalculationId], references: [id], onDelete: Restrict)
+  sourceCoverageDecisionId    String?                       @db.Uuid
+  sourceCoverageDecision      WarehouseCoverageDecision?    @relation(fields: [sourceCoverageDecisionId], references: [id], onDelete: Restrict)
+  sourceCoverageStateVersion  Int?
+
+  coverageMemberships    WarehouseCoverageRecheckMembership[]
+  coverageScopeCommands  WarehouseCoverageCommand[]           @relation("CoverageCommandScopeCase")
+  coverageResultCommands WarehouseCoverageCommand[]           @relation("CoverageCommandResultCase")
+
+  @@index([orderId, status])
+  @@index([ownerRole, status, updatedAt, id])
+  @@map("order_resolution_cases")
+}
+
+// ===========================================================================
+// Slice 3 — Production roll dispatch (ТЗ §5.2, §11.3)
+// ===========================================================================
+
+/// Order-level container + drilldown for production (ТЗ §5.2 ProductionOrder).
+/// The roll is the daily unit of work; this stays the container (ТЗ §3).
+model ProductionOrder {
+  id                             String                        @id @default(cuid())
+  commercialOrderId              String                        @unique
+  commercialOrder                CommercialOrder               @relation(fields: [commercialOrderId], references: [id])
+  indicator                      String                        @default("needs_production") // PRODUCTION_INDICATORS
+  approvalState                  String                        @default("pending") // pending | approved
+  assignedOwnerId                String?
+  blockers                       Json                          @default("[]")
+  sourceCoverageCalculationId    String?
+  sourceCoverageCalculation      WarehouseCoverageCalculation? @relation(fields: [sourceCoverageCalculationId], references: [id], onDelete: Restrict)
+  sourceCoverageDecisionId       String?                       @db.Uuid
+  sourceCoverageDecision         WarehouseCoverageDecision?    @relation(fields: [sourceCoverageDecisionId], references: [id], onDelete: Restrict)
+  sourceCoverageInputFingerprint String?                       @db.Char(64)
+  sourceCoverageGeneration       Int?
+  createdAt                      DateTime                      @default(now())
+  updatedAt                      DateTime                      @updatedAt
+
+  dispatchItems             RollDispatchItem[]
+  additionalProductionCosts AdditionalProductionCost[]
+
+  @@unique([commercialOrderId, sourceCoverageGeneration], map: "production_orders_coverage_order_generation_uq")
+  @@map("production_orders")
+}
+
+/// New key core after 26.06 (ТЗ §5.2 ProductionRollDispatchItem). Per-roll work:
+/// assignment, machine, priority, status — daily work goes by individual rolls.
+model RollDispatchItem {
+  id                      String          @id @default(cuid())
+  rollCode                String          @unique
+  productionOrderId       String
+  productionOrder         ProductionOrder @relation(fields: [productionOrderId], references: [id])
+  orderLineId             String? // commercial position id
+  positionSequence        Int             @default(0)
+  rawMaterialId           String?
+  recipeVersion           String?
+  filmType                String?
+  plannedWeightKg         Float?
+  widthMm                 Float?
+  plannedLengthM          Float?
+  characteristicsSnapshot Json?
+  assignedOperatorId      String?
+  assignedOperator        User?           @relation(fields: [assignedOperatorId], references: [id])
+  machineId               String?
+  workplaceId             String?
+  postId                  String?
+  plannedShiftId          String?
+  queueRank               Int             @default(0)
+  priority                Int             @default(0)
+  status                  String          @default("new") // DISPATCH_ITEM_STATUSES
+  cancelledAt             DateTime?
+  cancellationReason      String?         @db.VarChar(500)
+  bulkGroupId             String?
+  replacesDispatchItemId  String?         @unique
+  createdAt               DateTime        @default(now())
+  updatedAt               DateTime        @updatedAt
+  completedAt             DateTime?
+
+  operatorLine              OperatorRollLine?
+  post                      Post?                        @relation(fields: [postId], references: [id])
+  plannedShift              Shift?                       @relation(fields: [plannedShiftId], references: [id])
+  coverageFact              WarehouseRollCoverageFact?   @relation("CoverageFactSourceDispatch")
+  replacesDispatchItem      RollDispatchItem?            @relation("RollDispatchReplacement", fields: [replacesDispatchItemId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  replacementAttempt        RollDispatchItem?            @relation("RollDispatchReplacement")
+  additionalProductionCosts AdditionalProductionCost[]
+  productionCostSnapshots   RollProductionCostSnapshot[]
+
+  @@index([assignedOperatorId])
+  @@index([status])
+  @@index([orderLineId, positionSequence])
+  @@index([postId])
+  @@index([plannedShiftId])
+  @@index([queueRank])
+  @@map("roll_dispatch_items")
+}
+
+/// Append-only, versioned raw-material price reference used by production costing.
+model MaterialPriceReference {
+  id                      String                @id @default(cuid())
+  operationKey            String                @unique @db.Uuid
+  requestFingerprint      String                @db.Char(64)
+  rawMaterialDefinitionId String
+  rawMaterialDefinition   RawMaterialDefinition @relation(fields: [rawMaterialDefinitionId], references: [id], onDelete: Restrict)
+  priceKopecksPerKg       Int
+  source                  String                @db.VarChar(200)
+  effectiveFrom           DateTime
+  reason                  String                @db.VarChar(500)
+  createdById             String?
+  createdByRole           Role
+  createdAt               DateTime              @default(now())
+
+  @@unique([rawMaterialDefinitionId, effectiveFrom])
+  @@index([rawMaterialDefinitionId, effectiveFrom, id])
+  @@map("material_price_references")
+}
+
+/// Append-only direct or order-level production cost.
+model AdditionalProductionCost {
+  id                 String            @id @default(cuid())
+  operationKey       String            @unique @db.Uuid
+  requestFingerprint String            @db.Char(64)
+  rollDispatchItemId String?
+  rollDispatchItem   RollDispatchItem? @relation(fields: [rollDispatchItemId], references: [id], onDelete: Restrict)
+  productionOrderId  String?
+  productionOrder    ProductionOrder?  @relation(fields: [productionOrderId], references: [id], onDelete: Restrict)
+  allocationBasis    String            @db.VarChar(32)
+  amountKopecks      Int
+  source             String            @db.VarChar(200)
+  effectiveAt        DateTime
+  reason             String            @db.VarChar(500)
+  createdById        String?
+  createdByRole      Role
+  createdAt          DateTime          @default(now())
+
+  @@index([rollDispatchItemId, effectiveAt, id])
+  @@index([productionOrderId, effectiveAt, id])
+  @@map("additional_production_costs")
+}
+
+/// Append-only exact spool price history. Identity normalization is deliberately narrow:
+/// NFKC, whitespace folding, Russian lowercase, and `ё` -> `е`; semantic tokens stay intact.
+model SpoolPriceReference {
+  id                   String              @id @default(cuid())
+  operationKey         String              @unique @db.Uuid
+  requestFingerprint   String              @db.Char(64)
+  spoolTypeKey         String              @db.VarChar(200)
+  spoolTypeLabel       String              @db.VarChar(200)
+  priceKopecksPerMeter BigInt
+  source               String              @db.VarChar(200)
+  effectiveFrom        DateTime
+  reason               String              @db.VarChar(500)
+  createdById          String
+  createdBy            User                @relation("SpoolPriceReferenceActor", fields: [createdById], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  createdByRole        Role
+  createdAt            DateTime            @default(now())
+  stockReceipts        SpoolStockReceipt[]
+
+  @@unique([spoolTypeKey, effectiveFrom])
+  @@index([spoolTypeKey, effectiveFrom, id])
+  @@map("spool_price_references")
+}
+
+/// Append-only spool receipts recorded by warehouse in exact linear millimeters.
+model SpoolStockReceipt {
+  id                  String              @id @default(cuid())
+  operationKey        String              @unique @db.Uuid
+  requestFingerprint  String              @db.Char(64)
+  spoolTypeKey        String              @db.VarChar(200)
+  spoolTypeLabel      String              @db.VarChar(200)
+  quantityMillimeters BigInt
+  priceReferenceId    String
+  priceReference      SpoolPriceReference @relation(fields: [priceReferenceId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  receivedAt          DateTime
+  receivedById        String
+  receivedBy          User                @relation("SpoolStockReceiptActor", fields: [receivedById], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  receivedByRole      Role
+  createdAt           DateTime            @default(now())
+
+  @@index([spoolTypeKey, receivedAt, id])
+  @@map("spool_stock_receipts")
+}
+
+/// Immutable, append-only actual-cost version. Automatic reconciliation may supersede only a
+/// changed partial version; a complete version changes only through an explicit Finance command.
+model RollProductionCostSnapshot {
+  id                      String                      @id @default(cuid())
+  rollDispatchItemId      String
+  rollDispatchItem        RollDispatchItem            @relation(fields: [rollDispatchItemId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  version                 Int
+  supersedesSnapshotId    String?                     @unique
+  supersedesSnapshot      RollProductionCostSnapshot? @relation("ProductionCostSnapshotSupersession", fields: [supersedesSnapshotId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  supersededBySnapshot    RollProductionCostSnapshot? @relation("ProductionCostSnapshotSupersession")
+  operationKey            String                      @unique @db.Uuid
+  requestFingerprint      String                      @db.Char(64)
+  calculationFingerprint  String                      @db.Char(64)
+  calculationVersion      String                      @db.VarChar(32)
+  basis                   String                      @default("actual") @db.VarChar(16)
+  basisWeightGrams        Int
+  producedAt              DateTime
+  closedAt                DateTime
+  status                  String                      @db.VarChar(16)
+  materialAmountKopecks   BigInt?
+  spoolAmountKopecks      BigInt?
+  payrollAmountKopecks    BigInt?
+  additionalAmountKopecks BigInt
+  totalAmountKopecks      BigInt?
+  totalKopecksPerKg       BigInt?
+  unresolvedReasons       Json
+  sourceSnapshot          Json
+  actorId                 String?
+  actor                   User?                       @relation("ProductionCostSnapshotActor", fields: [actorId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actorRole               Role?
+  systemActorKey          String?                     @db.VarChar(100)
+  correctionReason        String?                     @db.VarChar(500)
+  createdAt               DateTime                    @default(now())
+
+  @@unique([rollDispatchItemId, version])
+  @@index([rollDispatchItemId, createdAt, id])
+  @@index([status, createdAt, id])
+  @@map("roll_production_cost_snapshots")
+}
+
+/// Machine assignment (ТЗ §5.2). Exact model is discovery (§12.14): roll/order/shift.
+model MachineAssignment {
+  id                 String   @id @default(cuid())
+  rollDispatchItemId String?
+  productionOrderId  String?
+  machineId          String
+  postId             String?
+  scope              String // roll | order | shift
+  reason             String?
+  createdAt          DateTime @default(now())
+
+  @@map("machine_assignments")
+}
+
+// ===========================================================================
+// Slice 4 — Operator roll execution (ТЗ §5.3, §11.4)
+// ===========================================================================
+
+/// Roll-table-first execution unit (ТЗ §5.3 OperatorRollLine). Captured weights,
+/// QR, label and warehouse state for one physical roll. 1:1 with a dispatch item.
+model OperatorRollLine {
+  id                 String           @id @default(cuid())
+  rollDispatchItemId String           @unique
+  rollDispatchItem   RollDispatchItem @relation(fields: [rollDispatchItemId], references: [id])
+  sequence           Int              @default(0)
+  groupId            String?
+  planKg             Float?
+  spoolKg            Float?
+  grossKg            Float?
+  netKg              Float?
+  toleranceOk        Boolean?
+  step               String           @default("assigned") // OPERATOR_STEPS
+  deferredFromStep   String? // step to restore on «вернуть в работу» (design 2026-07-13)
+  labelState         String           @default("not_printed") // LABEL_LIFECYCLE
+  warehouseState     String           @default("not_ready") // ROLL_WAREHOUSE_STATES
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  weightCaptures            WeightCapture[]
+  defects                   DefectRecord[]
+  labelJobs                 LabelPrintJob[]
+  labelPrintReconciliations LabelPrintReconciliation[]
+  operations                OperatorRollOperation[]
+
+  @@map("operator_roll_lines")
+}
+
+/// Weight capture from the scale device (ТЗ §5.3, §9). When scale capture is
+/// required the operator CANNOT enter weights manually — value comes from the device.
+model WeightCapture {
+  id                   String                 @id @default(cuid())
+  operatorRollLineId   String
+  line                 OperatorRollLine       @relation(fields: [operatorRollLineId], references: [id])
+  kind                 String // spool | roll
+  deviceId             String?
+  deviceStatus         String                 @default("ready") // DEVICE_STATUSES
+  stable               Boolean                @default(true)
+  grossKg              Float?
+  spoolKg              Float?
+  netKg                Float?
+  toleranceOk          Boolean?
+  actorRole            Role
+  actorId              String?
+  actor                User?                  @relation("OperatorWeightCaptureActor", fields: [actorId], references: [id], onDelete: SetNull)
+  postId               String?
+  postSessionId        String?
+  postSession          OperatorPostSession?   @relation(fields: [postSessionId], references: [id], onDelete: SetNull)
+  operationId          String?                @unique
+  operation            OperatorRollOperation? @relation(fields: [operationId], references: [id], onDelete: SetNull)
+  warehouseOperationId String?                @unique
+  warehouseOperation   WarehouseOperation?    @relation(fields: [warehouseOperationId], references: [id], onDelete: SetNull)
+  supersedesCaptureId  String?                @unique
+  supersedesCapture    WeightCapture?         @relation("RollWeightCaptureSupersession", fields: [supersedesCaptureId], references: [id], onDelete: Restrict)
+  supersededByCapture  WeightCapture?         @relation("RollWeightCaptureSupersession")
+  createdAt            DateTime               @default(now())
+
+  defect        DefectRecord?
+  coverageFacts WarehouseRollCoverageFact[] @relation("CoverageFactSourceWeightCapture")
+
+  @@index([kind, stable, createdAt, id], map: "wc_analytics_scan_idx")
+  @@index([operatorRollLineId, kind, stable, createdAt, id], map: "wc_line_canon_idx")
+  @@index([postSessionId, kind, stable, createdAt, id], map: "wc_session_scan_idx")
+  @@map("weight_captures")
+}
+
+/// Defect must be an event, not a comment (ТЗ §5.3 DefectRuntime).
+model DefectRecord {
+  id                 String           @id @default(cuid())
+  operatorRollLineId String
+  line               OperatorRollLine @relation(fields: [operatorRollLineId], references: [id])
+  weightCaptureId    String?          @unique
+  weightCapture      WeightCapture?   @relation(fields: [weightCaptureId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  sourceRole         Role
+  weightKg           Float?
+  comment            String
+  blocking           Boolean          @default(false)
+  createdAt          DateTime         @default(now())
+
+  problem            ProductionProblem?
+  spoolStockMovement SpoolStockMovement?
+
+  @@index([createdAt, id], map: "defect_records_created_at_id_idx")
+  @@index([operatorRollLineId], map: "defect_records_operator_roll_line_id_idx")
+  @@map("defect_records")
+}
+
+/// Append-only warehouse spool stock movement created when one physical defect attempt is
+/// finalized. The unique defect key makes retries safe and prevents inventory inflation.
+model SpoolStockMovement {
+  id             String        @id @default(cuid())
+  defectRecordId String?       @unique
+  defectRecord   DefectRecord? @relation(fields: [defectRecordId], references: [id], onDelete: SetNull, onUpdate: Restrict)
+  rollCode       String
+  spoolType      String
+  tareKg         Float
+  quantity       Int           @default(1)
+  location       String        @default("warehouse")
+  returnedByRole Role
+  returnedById   String?
+  createdAt      DateTime      @default(now())
+
+  @@index([spoolType, location, createdAt, id], map: "spool_stock_movements_stock_idx")
+  @@map("spool_stock_movements")
+}
+
+/// Label print job (ТЗ §5.3). Reprint requires reason + audit (ТЗ §9).
+model LabelPrintJob {
+  id                 String                 @id @default(cuid())
+  operatorRollLineId String
+  line               OperatorRollLine       @relation(fields: [operatorRollLineId], references: [id])
+  printerId          String?
+  status             String                 @default("printed") // queued | submitted | printed | failed | reprint_requested | delivery_unknown
+  reason             String?
+  replacesJobId      String?
+  operationId        String?                @unique
+  operation          OperatorRollOperation? @relation(fields: [operationId], references: [id], onDelete: SetNull)
+  actorId            String?
+  actor              User?                  @relation("OperatorLabelPrintActor", fields: [actorId], references: [id], onDelete: SetNull)
+  postSessionId      String?
+  postSession        OperatorPostSession?   @relation(fields: [postSessionId], references: [id], onDelete: SetNull)
+  postId             String?
+  post               Post?                  @relation(fields: [postId], references: [id], onDelete: SetNull)
+  gatewayCommandId   String?
+  failureReason      String?
+  completedAt        DateTime?
+  createdAt          DateTime               @default(now())
+
+  reconciliations LabelPrintReconciliation[]
+
+  @@map("label_print_jobs")
+}
+
+/// Immutable admin decision resolving a physically ambiguous printer delivery. The result is a
+/// whitelisted business projection only; label tokens, device frames and transport errors are banned.
+model LabelPrintReconciliation {
+  id                 String           @id @default(cuid())
+  operationKey       String           @unique @db.Uuid
+  printJobId         String
+  printJob           LabelPrintJob    @relation(fields: [printJobId], references: [id], onDelete: Restrict)
+  operatorRollLineId String
+  line               OperatorRollLine @relation(fields: [operatorRollLineId], references: [id], onDelete: Restrict)
+  postId             String
+  post               Post             @relation(fields: [postId], references: [id], onDelete: Restrict)
+  actorId            String
+  actor              User             @relation("LabelPrintReconciliationActor", fields: [actorId], references: [id], onDelete: Restrict)
+  outcome            String
+  reason             String
+  result             Json
+  createdAt          DateTime         @default(now())
+
+  @@index([printJobId, createdAt])
+  @@index([operatorRollLineId, createdAt])
+  @@map("label_print_reconciliations")
+}
+
+/// Browser/business idempotency journal for one operator physical-state intent. It stores only
+/// safe provenance and result references; QR bytes, raw frames and adapter errors never belong here.
+model OperatorRollOperation {
+  id                 String              @id @default(cuid())
+  operationKey       String              @unique
+  operatorRollLineId String
+  line               OperatorRollLine    @relation(fields: [operatorRollLineId], references: [id], onDelete: Restrict)
+  action             String
+  actorId            String
+  actor              User                @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  postSessionId      String
+  postSession        OperatorPostSession @relation(fields: [postSessionId], references: [id], onDelete: Restrict)
+  postId             String
+  post               Post                @relation(fields: [postId], references: [id], onDelete: Restrict)
+  deviceId           String?
+  device             DeviceRuntime?      @relation(fields: [deviceId], references: [id], onDelete: SetNull)
+  requestFingerprint String
+  expectedStep       String
+  resultStep         String?
+  status             String              @default("in_progress") // in_progress | succeeded | failed
+  httpStatus         Int?
+  errorCode          String?
+  resultRef          String?
+  reason             String?
+  attempt            Int                 @default(0)
+  leaseToken         String?             @db.Uuid
+  leaseExpiresAt     DateTime?
+  createdAt          DateTime            @default(now())
+  completedAt        DateTime?
+
+  weightCapture WeightCapture?
+  labelPrintJob LabelPrintJob?
+
+  @@index([operatorRollLineId, action, createdAt])
+  @@index([actorId, createdAt])
+  @@index([postId, createdAt])
+  @@index([status, leaseExpiresAt])
+  @@map("operator_roll_operations")
+}
+
+/// Big-bag: the explicit manual-weight exception with actor/time/reason/audit (ТЗ §9).
+/// Created by the warehouse FROM raw material stock (deducted, audited); the operator
+/// takes it into a shift (design 2026-07-13 §3.1).
+model BigBagUnit {
+  id                          String                   @id @default(cuid())
+  code                        String                   @unique
+  material                    String
+  batchCode                   String?
+  materialId                  String? // Legacy/single-stock RawMaterialStock.materialId
+  materialSelectionKind       String                   @default("legacy") // legacy | material | recipe | preset
+  materialPreset              String? // Fixed manual warehouse choice for Big-Bag registration
+  baseRawMaterialDefinitionId String?
+  baseRawMaterialDefinition   RawMaterialDefinition?   @relation("BigBagBaseRawMaterial", fields: [baseRawMaterialDefinitionId], references: [id], onDelete: Restrict)
+  recipeDefinitionVersionId   String?
+  recipeDefinitionVersion     RecipeDefinitionVersion? @relation(fields: [recipeDefinitionVersionId], references: [id], onDelete: Restrict)
+  recipeName                  String?
+  recipeVersionNumber         Int?
+  supplierName                String? // Authoritative warehouse-entered supplier snapshot
+  receivedAt                  DateTime? // Set only by the first confirmed warehouse registration scan
+  composition                 Json                     @default("[]") // Immutable material/weight snapshot
+  status                      String                   @default("available") // BIG_BAG_STATUSES
+  initialKg                   Float? // «Вес склада» at card creation
+  currentKg                   Float?
+  lastMeasuredKg              Float?
+  lastActorRole               Role?
+  lastMeasuredAt              DateTime?
+  machineId                   String?
+  registrationStatus          String                   @default("pending_scan") // pending_scan | registered
+  location                    String                   @default("warehouse") // warehouse | production
+  locationRevision            Int                      @default(0)
+  lastWarehouseMeasuredKg     Float?
+  lastWarehouseMeasuredAt     DateTime?
+  lastWarehouseActorId        String?
+  priceKopecksPerKg           Int?
+  priceSource                 String?
+  priceEffectiveAt            DateTime?
+  createdByRole               Role?
+  createdAt                   DateTime                 @default(now())
+
+  shiftUsages ShiftBagUsage[]
+  scanToken   BigBagScanToken?
+  movements   BigBagMovement[]
+  printJobs   BigBagLabelPrintJob[]
+
+  @@index([status, createdAt, id], map: "bbu_active_period_idx")
+  @@index([registrationStatus, location, status, createdAt, id], map: "bbu_lifecycle_idx")
+  @@index([baseRawMaterialDefinitionId])
+  @@index([recipeDefinitionVersionId])
+  @@index([batchCode])
+  @@map("big_bag_units")
+}
+
+/// Opaque stable QR identity. Mutable Big-Bag facts are resolved server-side after scan.
+model BigBagScanToken {
+  id        String     @id @default(cuid())
+  bigBagId  String     @unique
+  bigBag    BigBagUnit @relation(fields: [bigBagId], references: [id], onDelete: Restrict)
+  token     String     @unique @db.Char(68)
+  createdAt DateTime   @default(now())
+
+  @@map("big_bag_scan_tokens")
+}
+
+/// Append-only, idempotent Big-Bag movement/weight journal shared by warehouse and operator flows.
+model BigBagMovement {
+  id                  String     @id @default(cuid())
+  bigBagId            String
+  bigBag              BigBagUnit @relation(fields: [bigBagId], references: [id], onDelete: Restrict)
+  operationKey        String     @unique @db.Uuid
+  requestFingerprint  String     @db.Char(64)
+  kind                String
+  fromLocation        String?
+  toLocation          String
+  locationRevision    Int
+  operatorReportedKg  Float?
+  warehouseMeasuredKg Float?
+  differenceKg        Float?
+  differencePercent   Float?
+  actorId             String?
+  actorRole           Role
+  resultSnapshot      Json
+  createdAt           DateTime   @default(now())
+
+  @@index([bigBagId, createdAt, id])
+  @@map("big_bag_movements")
+}
+
+/// Durable print request; printer/Gateway transport details remain outside role projections.
+model BigBagLabelPrintJob {
+  id                 String                @id @default(cuid())
+  requestId          String                @unique @db.Uuid
+  bigBagId           String
+  bigBag             BigBagUnit            @relation(fields: [bigBagId], references: [id], onDelete: Restrict)
+  printerId          String?
+  channel            String                @default("gateway") // gateway | browser_system_print
+  status             String                @default("queued")
+  failureReason      String?
+  reason             String?
+  replacesPrintJobId String?
+  replacesPrintJob   BigBagLabelPrintJob?  @relation("BigBagPrintReplacements", fields: [replacesPrintJobId], references: [id], onDelete: Restrict)
+  reprints           BigBagLabelPrintJob[] @relation("BigBagPrintReplacements")
+  gatewayCommandId   String?
+  requestedById      String?
+  requestedByRole    Role
+  createdAt          DateTime              @default(now())
+  updatedAt          DateTime              @updatedAt
+
+  @@index([bigBagId, createdAt, id])
+  @@map("big_bag_label_print_jobs")
+}
+
+/// A big bag taken into one operator post-session (shift). Start/end weights are the
+/// operator's manual, audited entries; the delta feeds the shift balance anti-fraud
+/// check (design 2026-07-13 §7).
+model ShiftBagUsage {
+  id             String                 @id @default(cuid())
+  sessionId      String
+  session        OperatorPostSession    @relation(fields: [sessionId], references: [id])
+  bigBagId       String
+  bigBag         BigBagUnit             @relation(fields: [bigBagId], references: [id])
+  startKg        Float
+  endKg          Float?
+  addedReason    String?
+  releasedReason String?
+  sequence       Int                    @default(1)
+  createdAt      DateTime               @default(now())
+  closedAt       DateTime?
+  episodes       ShiftBagUsageEpisode[]
+
+  @@unique([sessionId, bigBagId])
+  @@index([bigBagId])
+  @@index([createdAt, id, closedAt], map: "sbu_analytics_period_idx")
+  @@index([bigBagId, createdAt, closedAt, id], map: "sbu_bag_period_idx")
+  @@index([closedAt, id], map: "sbu_closed_period_idx")
+  @@map("shift_bag_usages")
+}
+
+/// Immutable measured intervals for a stable session↔BigBag link. An open episode may only
+/// transition once to a closed fact; database guards reject rewrites and deletion of history.
+model ShiftBagUsageEpisode {
+  id        String        @id @default(cuid())
+  usageId   String
+  usage     ShiftBagUsage @relation(fields: [usageId], references: [id], onDelete: Restrict)
+  sequence  Int
+  startKg   Float
+  endKg     Float?
+  openedAt  DateTime      @default(now())
+  closedAt  DateTime?
+  closeKind String? // released | shift_closed
+
+  @@unique([usageId, sequence])
+  @@index([usageId, openedAt, id])
+  @@map("shift_bag_usage_episodes")
+}
+
+// ===========================================================================
+// Slice 5 — Warehouse mixed pallet & reserve (ТЗ §5.4, §11.5)
+// ===========================================================================
+
+/// Roll ownership is business-critical (ТЗ §5.4 WarehouseRoll).
+model WarehouseRoll {
+  id                           String                     @id @default(cuid())
+  rollCode                     String                     @unique
+  positionSnapshot             Json?
+  ownerCounterpartyId          String?
+  producedForStockOrderId      String?
+  producedForStockOrder        CommercialOrder?           @relation("ProducedForStockOrder", fields: [producedForStockOrderId], references: [id], onDelete: Restrict)
+  producedForOrderId           String?
+  producedForOrder             CommercialOrder?           @relation("ProducedForClientOrder", fields: [producedForOrderId], references: [id], onDelete: Restrict)
+  releasedFromOrderId          String?
+  releasedFromOrder            CommercialOrder?           @relation("ReleasedCancelledOrderStock", fields: [releasedFromOrderId], references: [id], onDelete: Restrict)
+  producedForPositionId        String?
+  producedForPosition          CommercialOrderPosition?   @relation("ProducedForClientPosition", fields: [producedForPositionId], references: [id], onDelete: Restrict)
+  producedByCoverageDecisionId String?                    @db.Uuid
+  producedByCoverageDecision   WarehouseCoverageDecision? @relation("WarehouseRollProducedCoverageDecision", fields: [producedByCoverageDecisionId], references: [id], onDelete: Restrict)
+  reservedForOrderId           String?
+  reservedForPositionId        String?
+  reservedForPosition          CommercialOrderPosition?   @relation("ReservedRollPosition", fields: [reservedForPositionId], references: [id])
+  reservedByProposalId         String?
+  reservedByProposal           WarehouseCoverProposal?    @relation("ReservedRollProposal", fields: [reservedByProposalId], references: [id])
+  currentCoverageFactId        String?                    @unique
+  currentCoverageFact          WarehouseRollCoverageFact? @relation("WarehouseRollCurrentCoverageFact", fields: [currentCoverageFactId], references: [id], onDelete: Restrict)
+  reservedByCoverageDecisionId String?                    @db.Uuid
+  reservedByCoverageDecision   WarehouseCoverageDecision? @relation("WarehouseRollReservedCoverageDecision", fields: [reservedByCoverageDecisionId], references: [id], onDelete: Restrict)
+  reservedAt                   DateTime?
+  receivedAt                   DateTime?
+  warehouseStatus              String                     @default("not_ready") // ROLL_WAREHOUSE_STATES
+  createdAt                    DateTime                   @default(now())
+  updatedAt                    DateTime                   @updatedAt
+  externalId                   String?                    @unique // 1С Ref_Key
+  sourceVersion                String? // 1С DataVersion
+
+  coverMatches           WarehouseCoverMatch[]
+  scanToken              RollScanToken?
+  coverageFacts          WarehouseRollCoverageFact[]          @relation("WarehouseRollCoverageFacts")
+  coverageMatches        WarehouseCoverageMatch[]
+  coverageMemberships    WarehouseCoverageRecheckMembership[]
+  reserveCreationCommand WarehouseReserveRollCommand?
+
+  @@index([reservedForOrderId])
+  @@index([reservedForPositionId])
+  @@index([reservedByProposalId])
+  @@index([producedForStockOrderId, warehouseStatus])
+  @@index([releasedFromOrderId, warehouseStatus])
+  @@index([producedForOrderId, warehouseStatus, producedByCoverageDecisionId, rollCode], map: "warehouse_rolls_client_production_idx")
+  @@index([warehouseStatus, ownerCounterpartyId, reservedForOrderId, currentCoverageFactId, rollCode, id], map: "warehouse_rolls_coverage_candidates_idx")
+  @@index([receivedAt, id], map: "warehouse_rolls_inventory_received_at_id_idx")
+  @@map("warehouse_rolls")
+}
+
+/// Idempotent platform-owned registration of one physical company-stock roll.
+/// The result snapshot contains only the bounded warehouse projection returned to the caller.
+model WarehouseReserveRollCommand {
+  id                 String                  @id @default(cuid())
+  operationKey       String                  @unique @db.Uuid
+  requestFingerprint String                  @db.Char(64)
+  rollId             String                  @unique
+  roll               WarehouseRoll           @relation(fields: [rollId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  sourceOrderId      String
+  sourceOrder        CommercialOrder         @relation("ReserveRollBatchOrder", fields: [sourceOrderId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  sourcePositionId   String                  @unique
+  sourcePosition     CommercialOrderPosition @relation("ReserveRollSourcePosition", fields: [sourcePositionId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actorRole          Role
+  actorId            String?
+  resultSnapshot     Json
+  createdAt          DateTime                @default(now())
+
+  @@index([sourceOrderId, createdAt, id])
+  @@map("warehouse_reserve_roll_commands")
+}
+
+/// Multi-order acceptance task. Each physical pallet belongs to exactly one order.
+/// operationCode = «название операции» (ПР-ДДММ-NN) for warehouse search (design 2026-07-13).
+model WarehouseAcceptanceTask {
+  id                 String                     @id @default(cuid())
+  mode               String // receiving | delivery | reserve
+  status             String                     @default("open") // open | partial | closed
+  operationCode      String?                    @unique
+  orderId            String?
+  positionId         String?
+  proposalId         String?
+  receivingScopeKey  String?                    @unique
+  deliveryScopeKey   String?                    @unique
+  coverageDecisionId String?                    @unique @db.Uuid
+  coverageDecision   WarehouseCoverageDecision? @relation(fields: [coverageDecisionId], references: [id], onDelete: Restrict)
+  createdAt          DateTime                   @default(now())
+  updatedAt          DateTime                   @updatedAt
+
+  rows                  ScanRow[]
+  operations            WarehouseOperation[]
+  coverageScopeCommands WarehouseCoverageCommand[]
+  pallets               WarehousePallet[]
+  palletListDocuments   PalletListDocument[]
+
+  @@index([orderId, status])
+  @@index([proposalId])
+  @@map("warehouse_acceptance_tasks")
+}
+
+model WarehouseRollCoverageFact {
+  id                    String   @id @default(cuid())
+  rollId                String
+  version               Int
+  source                String
+  specVersion           String
+  specFingerprint       String   @db.Char(64)
+  spec                  Json
+  sourceOrderId         String?
+  sourcePositionId      String?
+  sourceDispatchItemId  String?  @unique
+  sourceWeightCaptureId String?
+  actorKind             String
+  actorRole             Role?
+  actorId               String?
+  systemActorKey        String?
+  reason                String?
+  createdAt             DateTime @default(now()) @db.Timestamptz(3)
+
+  roll                WarehouseRoll                        @relation("WarehouseRollCoverageFacts", fields: [rollId], references: [id], onDelete: Restrict)
+  currentForRoll      WarehouseRoll?                       @relation("WarehouseRollCurrentCoverageFact")
+  sourceOrder         CommercialOrder?                     @relation("CoverageFactSourceOrder", fields: [sourceOrderId], references: [id], onDelete: Restrict)
+  sourcePosition      CommercialOrderPosition?             @relation("CoverageFactSourcePosition", fields: [sourcePositionId], references: [id], onDelete: Restrict)
+  sourceDispatchItem  RollDispatchItem?                    @relation("CoverageFactSourceDispatch", fields: [sourceDispatchItemId], references: [id], onDelete: Restrict)
+  sourceWeightCapture WeightCapture?                       @relation("CoverageFactSourceWeightCapture", fields: [sourceWeightCaptureId], references: [id], onDelete: Restrict)
+  actor               User?                                @relation("CoverageFactActor", fields: [actorId], references: [id], onDelete: Restrict)
+  matches             WarehouseCoverageMatch[]
+  memberships         WarehouseCoverageRecheckMembership[]
+
+  @@unique([rollId, version], map: "warehouse_coverage_facts_roll_version_idx")
+  @@map("warehouse_roll_coverage_facts")
+}
+
+model WarehouseCoverageInventoryEpoch {
+  id        Int      @id @default(1)
+  epoch     BigInt   @default(0)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  @@map("warehouse_coverage_inventory_epochs")
+}
+
+model WarehouseCoverageState {
+  orderId              String   @id
+  state                String   @default("calculating")
+  stateVersion         Int      @default(1)
+  generation           Int      @default(0)
+  currentCalculationId String?  @unique
+  currentDecisionId    String?  @unique @db.Uuid
+  createdAt            DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt            DateTime @updatedAt @db.Timestamptz(3)
+
+  order              CommercialOrder               @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  currentCalculation WarehouseCoverageCalculation? @relation("WarehouseCoverageStateCurrentCalculation", fields: [currentCalculationId], references: [id], onDelete: Restrict)
+  currentDecision    WarehouseCoverageDecision?    @relation("WarehouseCoverageStateCurrentDecision", fields: [currentDecisionId], references: [id], onDelete: Restrict)
+
+  @@index([state, orderId], map: "warehouse_coverage_states_state_order_idx")
+  @@map("warehouse_coverage_states")
+}
+
+model WarehouseCoverageCalculation {
+  id                        String   @id @default(cuid())
+  orderId                   String
+  generation                Int
+  orderVersion              Int
+  positionVersions          Json
+  orderFingerprint          String   @db.Char(64)
+  inventoryEpoch            BigInt
+  inventoryFingerprint      String   @db.Char(64)
+  inputFingerprint          String   @db.Char(64)
+  algorithmVersion          String
+  policyVersion             String
+  availability              String
+  reasonCodes               Json
+  requiredRollCount         Int
+  matchedRollCount          Int
+  uncertainRollCount        Int
+  verifiedCandidateRollIds  Json
+  uncertainCandidateRollIds Json
+  systemActorKey            String
+  calculatedAt              DateTime @default(now()) @db.Timestamptz(3)
+
+  order            CommercialOrder                      @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  matches          WarehouseCoverageMatch[]
+  decisions        WarehouseCoverageDecision[]
+  currentForState  WarehouseCoverageState?              @relation("WarehouseCoverageStateCurrentCalculation")
+  resultCommands   WarehouseCoverageCommand[]
+  memberships      WarehouseCoverageRecheckMembership[]
+  productionOrders ProductionOrder[]
+  resolutionCases  OrderResolutionCase[]
+
+  @@unique([orderId, generation], map: "warehouse_coverage_calculations_order_generation_uq")
+  @@map("warehouse_coverage_calculations")
+}
+
+model WarehouseCoverageMatch {
+  id             String   @id @default(cuid())
+  calculationId  String
+  orderId        String
+  generation     Int
+  positionId     String
+  rollId         String
+  coverageFactId String
+  slotIndex      Int
+  createdAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  calculation  WarehouseCoverageCalculation @relation(fields: [calculationId], references: [id], onDelete: Restrict)
+  order        CommercialOrder              @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  position     CommercialOrderPosition      @relation(fields: [positionId], references: [id], onDelete: Restrict)
+  roll         WarehouseRoll                @relation(fields: [rollId], references: [id], onDelete: Restrict)
+  coverageFact WarehouseRollCoverageFact    @relation(fields: [coverageFactId], references: [id], onDelete: Restrict)
+
+  @@unique([calculationId, rollId], map: "warehouse_coverage_matches_calculation_roll_uq")
+  @@unique([calculationId, positionId, slotIndex], map: "warehouse_coverage_matches_calculation_position_slot_uq")
+  @@map("warehouse_coverage_matches")
+}
+
+model WarehouseCoverageDecision {
+  id                      String   @id @db.Uuid
+  orderId                 String
+  calculationId           String
+  generation              Int
+  kind                    String
+  inputFingerprint        String   @db.Char(64)
+  sourceInventoryEpoch    BigInt
+  committedInventoryEpoch BigInt?
+  expectedRollCount       Int      @default(0)
+  actorKind               String
+  actorRole               Role?
+  actorId                 String?
+  systemActorKey          String?
+  createdAt               DateTime @default(now()) @db.Timestamptz(3)
+
+  order            CommercialOrder                      @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  calculation      WarehouseCoverageCalculation         @relation(fields: [calculationId], references: [id], onDelete: Restrict)
+  actor            User?                                @relation("CoverageDecisionActor", fields: [actorId], references: [id], onDelete: Restrict)
+  currentForState  WarehouseCoverageState?              @relation("WarehouseCoverageStateCurrentDecision")
+  reservedRolls    WarehouseRoll[]                      @relation("WarehouseRollReservedCoverageDecision")
+  producedRolls    WarehouseRoll[]                      @relation("WarehouseRollProducedCoverageDecision")
+  acceptanceTask   WarehouseAcceptanceTask?
+  resultCommands   WarehouseCoverageCommand[]
+  productionOrders ProductionOrder[]
+  resolutionCases  OrderResolutionCase[]
+  memberships      WarehouseCoverageRecheckMembership[]
+
+  @@unique([orderId, generation], map: "warehouse_coverage_decisions_order_generation_uq")
+  @@map("warehouse_coverage_decisions")
+}
+
+model WarehouseCoverageCommand {
+  id                  String   @id @default(cuid())
+  clientRequestId     String   @unique @db.Uuid
+  kind                String
+  orderId             String
+  scopeCaseId         String?
+  scopeTaskId         String?
+  requestFingerprint  String   @db.Char(64)
+  actorKind           String
+  actorRole           Role?
+  actorId             String?
+  systemActorKey      String?
+  safeResultKind      String
+  safeResult          Json
+  resultKind          String
+  resultCalculationId String?
+  resultDecisionId    String?  @db.Uuid
+  resultCaseId        String?
+  resultGeneration    Int?
+  resultStateVersion  Int
+  createdAt           DateTime @default(now()) @db.Timestamptz(3)
+
+  order             CommercialOrder               @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  scopeCase         OrderResolutionCase?          @relation("CoverageCommandScopeCase", fields: [scopeCaseId], references: [id], onDelete: Restrict)
+  scopeTask         WarehouseAcceptanceTask?      @relation(fields: [scopeTaskId], references: [id], onDelete: Restrict)
+  actor             User?                         @relation("CoverageCommandActor", fields: [actorId], references: [id], onDelete: Restrict)
+  resultCalculation WarehouseCoverageCalculation? @relation(fields: [resultCalculationId], references: [id], onDelete: Restrict)
+  resultDecision    WarehouseCoverageDecision?    @relation(fields: [resultDecisionId], references: [id], onDelete: Restrict)
+  resultCase        OrderResolutionCase?          @relation("CoverageCommandResultCase", fields: [resultCaseId], references: [id], onDelete: Restrict)
+
+  @@index([orderId, createdAt, id], map: "warehouse_coverage_commands_order_created_idx")
+  @@map("warehouse_coverage_commands")
+}
+
+model WarehouseCoverageRecheckMembership {
+  id                   String   @id @default(cuid())
+  caseId               String
+  orderId              String
+  rollId               String
+  sourceCalculationId  String
+  sourceDecisionId     String?  @db.Uuid
+  sourceCoverageFactId String?
+  sourceKind           String
+  reasonCodes          Json
+  createdAt            DateTime @default(now()) @db.Timestamptz(3)
+
+  case               OrderResolutionCase          @relation(fields: [caseId], references: [id], onDelete: Restrict)
+  order              CommercialOrder              @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  roll               WarehouseRoll                @relation(fields: [rollId], references: [id], onDelete: Restrict)
+  sourceCalculation  WarehouseCoverageCalculation @relation(fields: [sourceCalculationId], references: [id], onDelete: Restrict)
+  sourceDecision     WarehouseCoverageDecision?   @relation(fields: [sourceDecisionId], references: [id], onDelete: Restrict)
+  sourceCoverageFact WarehouseRollCoverageFact?   @relation(fields: [sourceCoverageFactId], references: [id], onDelete: Restrict)
+
+  @@unique([caseId, rollId], map: "warehouse_coverage_recheck_memberships_case_roll_uq")
+  @@map("warehouse_coverage_recheck_memberships")
+}
+
+/// One expected/scanned roll row on an acceptance task (ТЗ §6 scan statuses).
+model ScanRow {
+  id            String                  @id @default(cuid())
+  taskId        String
+  task          WarehouseAcceptanceTask @relation(fields: [taskId], references: [id])
+  rollCode      String
+  fromOrderId   String?
+  scanStatus    String                  @default("expected") // SCAN_STATUSES
+  lastScanAt    DateTime?
+  scannedByName String? // «Собрал» on the pallet list
+  operations    WarehouseOperation[]
+  palletItems   WarehousePalletItem[]
+
+  @@index([taskId])
+  @@map("scan_rows")
+}
+
+/// One physical pallet under construction or sealed for immutable document generation.
+model WarehousePallet {
+  id             String    @id @default(cuid())
+  palletCode     String    @unique
+  taskId         String
+  orderId        String
+  sequenceNo     Int
+  status         String    @default("open") // open | sealed | voided
+  closeRequestId String?   @unique @db.Uuid
+  openedAt       DateTime  @default(now())
+  openedById     String?
+  sealedAt       DateTime?
+  sealedById     String?
+  voidedAt       DateTime?
+  voidedById     String?
+  voidReason     String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  task     WarehouseAcceptanceTask @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  order    CommercialOrder         @relation(fields: [orderId], references: [id], onDelete: Restrict)
+  items    WarehousePalletItem[]
+  document PalletListDocument?
+
+  @@unique([id, orderId], map: "warehouse_pallets_id_order_id_key")
+  @@unique([orderId, sequenceNo], map: "warehouse_pallets_order_id_sequence_no_key")
+  @@index([taskId, status], map: "warehouse_pallets_task_id_status_idx")
+  @@map("warehouse_pallets")
+}
+
+/// Ordered membership of one accepted receiving scan in one physical pallet.
+model WarehousePalletItem {
+  id            String    @id @default(cuid())
+  palletId      String
+  scanRowId     String
+  orderId       String
+  rollCode      String
+  position      Int
+  acceptedAt    DateTime
+  assignedById  String?
+  releasedAt    DateTime?
+  releasedById  String?
+  releaseReason String?
+  createdAt     DateTime  @default(now())
+
+  pallet  WarehousePallet @relation(fields: [palletId, orderId], references: [id, orderId], onDelete: Restrict)
+  scanRow ScanRow         @relation(fields: [scanRowId], references: [id], onDelete: Restrict)
+
+  @@unique([palletId, position], map: "warehouse_pallet_items_pallet_id_position_key")
+  @@index([palletId, acceptedAt], map: "warehouse_pallet_items_pallet_id_accepted_at_idx")
+  @@map("warehouse_pallet_items")
+}
+
+/// Idempotency journal shared by pallet selection and pallet annulment commands.
+model WarehousePalletCommand {
+  id                 String   @id @default(cuid())
+  operationKey       String   @unique @db.Uuid
+  requestFingerprint String   @db.Char(64)
+  kind               String // set_selection | void_pallet | pallet_handoff_scan | pallet_delivery_scan
+  taskId             String
+  scanRowId          String?
+  palletId           String?
+  actorId            String?
+  resultSnapshot     Json
+  createdAt          DateTime @default(now())
+
+  @@index([taskId, createdAt, id], map: "warehouse_pallet_commands_task_created_idx")
+  @@map("warehouse_pallet_commands")
+}
+
+/// Immutable printable snapshot of one sealed pallet; legacy documents remain readable.
+model PalletListDocument {
+  id                  String    @id @default(cuid())
+  palletId            String
+  warehousePalletId   String?   @unique
+  acceptanceTaskId    String?
+  origin              String    @default("legacy") // legacy | physical_pallet
+  rollIds             Json      @default("[]")
+  orderIds            Json      @default("[]")
+  generatedByRole     Role
+  format              String    @default("pdf") // word | excel | pdf (discovery)
+  fieldSetStatus      String    @default("contract_only")
+  /// Draft field-set snapshot (PalletListPayload) — rows/totals/responsible/date.
+  payload             Json?
+  voidedAt            DateTime?
+  voidedById          String?
+  voidReasonCode      String?
+  voidNote            String?
+  createdAt           DateTime  @default(now())
+  layoutPublicationId String?
+
+  warehousePallet      WarehousePallet?            @relation(fields: [warehousePalletId], references: [id], onDelete: Restrict)
+  acceptanceTask       WarehouseAcceptanceTask?    @relation(fields: [acceptanceTaskId], references: [id], onDelete: Restrict)
+  scanToken            PalletScanToken?
+  printJobs            PalletPrintJob[]
+  printReconciliations PalletPrintReconciliation[]
+  layoutPublication    PalletLabelLayoutVersion?   @relation("PalletLabelLayoutDocumentProvenance", fields: [layoutPublicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([acceptanceTaskId, createdAt], map: "pallet_list_documents_task_created_at_idx")
+  @@index([layoutPublicationId], map: "pallet_list_documents_layout_publication_idx")
+  @@map("pallet_list_documents")
+}
+
+/// Immutable, append-only publication selected by greatest serialized version.
+model PalletLabelLayoutVersion {
+  id               String   @id @default(cuid())
+  profile          String
+  version          Int
+  definition       Json
+  contentHash      String   @db.Char(64)
+  sourceDocumentId String   @db.VarChar(200)
+  publishedById    String
+  reason           String
+  activatedAt      DateTime @default(now()) @db.Timestamptz(3)
+
+  publishedBy     User                              @relation("PalletLabelLayoutVersionPublisher", fields: [publishedById], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  documents       PalletListDocument[]              @relation("PalletLabelLayoutDocumentProvenance")
+  publishCommands PalletLabelLayoutPublishCommand[] @relation("PalletLabelLayoutPublishCommandResult")
+
+  @@unique([profile, version], map: "pallet_label_layout_versions_profile_version_key")
+  @@index([profile, activatedAt, id], map: "pallet_label_layout_versions_active_idx")
+  @@index([sourceDocumentId], map: "pallet_label_layout_versions_source_idx")
+  @@index([publishedById], map: "pallet_label_layout_versions_publisher_idx")
+  @@map("pallet_label_layout_versions")
+}
+
+/// Append-only idempotency journal for publish-and-activate commands.
+model PalletLabelLayoutPublishCommand {
+  id                          String   @id @default(cuid())
+  operationKey                String   @unique @db.Uuid
+  requestFingerprint          String   @db.Char(64)
+  profile                     String
+  expectedActivePublicationId String?
+  sourceDocumentId            String   @db.VarChar(200)
+  actorId                     String
+  resultPublicationId         String
+  resultSnapshot              Json
+  createdAt                   DateTime @default(now()) @db.Timestamptz(3)
+
+  actor             User                     @relation("PalletLabelLayoutPublishCommandActor", fields: [actorId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  resultPublication PalletLabelLayoutVersion @relation("PalletLabelLayoutPublishCommandResult", fields: [resultPublicationId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([profile, createdAt, id], map: "pallet_label_layout_publish_commands_profile_created_idx")
+  @@index([sourceDocumentId], map: "pallet_label_layout_publish_commands_source_idx")
+  @@index([actorId], map: "pallet_label_layout_publish_commands_actor_idx")
+  @@index([resultPublicationId], map: "pallet_label_layout_publish_commands_result_idx")
+  @@map("pallet_label_layout_publish_commands")
+}
+
+/// Stable opaque QR identity for one immutable pallet-list document.
+model PalletScanToken {
+  documentId String             @id
+  document   PalletListDocument @relation(fields: [documentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  token      String             @unique @default(dbgenerated("('plt_' || replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(68)
+  createdAt  DateTime           @default(now())
+
+  @@map("pallet_scan_tokens")
+}
+
+model PalletPrintJob {
+  id                   String                     @id @default(cuid())
+  palletListDocumentId String
+  document             PalletListDocument         @relation(fields: [palletListDocumentId], references: [id])
+  requestId            String                     @unique
+  printerId            String
+  gatewayCommandId     String?
+  status               String                     @default("queued") // queued | submitted | failed | delivery_unknown
+  failureReason        String?
+  reason               String?
+  replacesJobId        String?
+  replacesJob          PalletPrintJob?            @relation("PalletPrintReplacement", fields: [replacesJobId], references: [id])
+  replacementJobs      PalletPrintJob[]           @relation("PalletPrintReplacement")
+  createdAt            DateTime                   @default(now())
+  completedAt          DateTime?
+  reconciliation       PalletPrintReconciliation?
+
+  @@index([palletListDocumentId, createdAt])
+  @@index([printerId, createdAt])
+  @@map("pallet_print_jobs")
+}
+
+/// Immutable admin decision resolving a physically ambiguous pallet-label delivery. The stored
+/// result is a whitelisted business projection; QR tokens, bitmaps and gateway diagnostics are banned.
+model PalletPrintReconciliation {
+  id                   String             @id @default(cuid())
+  operationKey         String             @unique @db.Uuid
+  printJobId           String             @unique
+  printJob             PalletPrintJob     @relation(fields: [printJobId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  palletListDocumentId String
+  document             PalletListDocument @relation(fields: [palletListDocumentId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  actorId              String
+  actor                User               @relation("PalletPrintReconciliationActor", fields: [actorId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  outcome              String
+  reason               String
+  result               Json
+  createdAt            DateTime           @default(now())
+
+  @@index([palletListDocumentId, createdAt])
+  @@map("pallet_print_reconciliations")
+}
+
+/// Raw material stock — warehouse fact is operational truth (ТЗ §5.4, §3).
+model RawMaterialStock {
+  id                      String                 @id @default(cuid())
+  materialId              String                 @unique
+  label                   String
+  actualQty               Float                  @default(0)
+  unit                    String                 @default("кг")
+  package                 String?
+  factStatus              String                 @default("warehouse_fact") // warehouse_fact | manual | source
+  updatedAt               DateTime               @updatedAt
+  revision                Int                    @default(1) // DB trigger increments when the outbound 1С stock fields change
+  externalId              String?                @unique // 1С Ref_Key
+  sourceVersion           String? // 1С DataVersion
+  rawMaterialDefinitionId String?                @unique
+  rawMaterialDefinition   RawMaterialDefinition? @relation(fields: [rawMaterialDefinitionId], references: [id], onDelete: Restrict)
+
+  @@map("raw_material_stocks")
+}
+
+/// Conservative idempotency journal for the sole platform → 1С stock posting command.
+/// A unique versioned snapshot claim prevents two browser tabs from creating duplicate 1С
+/// documents without blocking a legitimate later A → B → A stock revision.
+model OneCStockPushOperation {
+  id           String    @id @default(cuid())
+  operationKey String    @unique @db.Uuid
+  actorId      String
+  actor        User      @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  snapshotHash String    @unique @db.Char(64)
+  status       String    @default("in_progress") // in_progress | succeeded | outcome_unknown
+  safeResult   Json?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  completedAt  DateTime?
+
+  @@index([actorId, createdAt])
+  @@map("onec_stock_push_operations")
+}
+
+// ===========================================================================
+// Slice 6 — Finance manual/source layer (ТЗ §5.5, §11.6)
+// ===========================================================================
+
+/// Separate invoice/payment/installment from order status (ТЗ §5.5).
+model FinanceOrder {
+  id                     String          @id @default(cuid())
+  commercialOrderId      String          @unique
+  commercialOrder        CommercialOrder @relation(fields: [commercialOrderId], references: [id])
+  invoiceStatus          String          @default("not_invoiced") // not_invoiced | invoiced
+  invoiceSyncState       String          @default("not_synced")
+  invoiceNumber          String?
+  invoiceCurrency        String?
+  invoiceCandidates      Json?
+  invoiceSourceCheckedAt DateTime?
+  paymentStatus          String          @default("unpaid") // PAYMENT_STATUSES
+  amountValue            Decimal?        @db.Decimal(18, 2)
+  amountLabel            String?
+  paymentTermsType       String?
+  invoiceIssuedAt        DateTime?
+  sourceStatus           String          @default("ready") // SOURCE_HEALTH_STATUSES
+  productionClearedAt    DateTime?
+  createdAt              DateTime        @default(now())
+  updatedAt              DateTime        @updatedAt
+
+  policy                PaymentPolicy?
+  schedules             PaymentSchedule[]
+  operations            PaymentOperation[]
+  paymentUpdateCommands FinancePaymentUpdateCommand[]
+  snapshots             SourceSnapshot[]
+  syncJournals          SyncJournal[]
+  paymentAllocations    FinancePaymentAllocation[]
+  paymentCorrections    FinancePaymentCorrectionCommand[]
+
+  externalId    String? @unique // 1С Ref_Key
+  sourceVersion String? // 1С DataVersion
+
+  @@map("finance_orders")
+}
+
+model PaymentPolicy {
+  id                         String               @id @default(cuid())
+  financeOrderId             String               @unique
+  financeOrder               FinanceOrder         @relation(fields: [financeOrderId], references: [id], onDelete: Cascade)
+  installmentDays            Int
+  capturedProductionLeadDays Int                  @default(2)
+  invoiceExternalId          String?
+  invoiceSourceVersion       String?
+  capturedInvoiceAmount      Decimal?             @db.Decimal(18, 2)
+  capturedInvoiceCurrency    String?
+  revision                   Int                  @default(1)
+  stages                     PaymentPolicyStage[]
+  createdAt                  DateTime             @default(now())
+  updatedAt                  DateTime             @updatedAt
+
+  @@map("payment_policies")
+}
+
+model PaymentPolicyStage {
+  id                    String           @id @default(cuid())
+  paymentPolicyId       String
+  paymentPolicy         PaymentPolicy    @relation(fields: [paymentPolicyId], references: [id], onDelete: Cascade)
+  sequence              Int
+  trigger               String
+  percentageBasisPoints Int
+  offsetDays            Int
+  label                 String?
+  schedule              PaymentSchedule?
+  createdAt             DateTime         @default(now())
+  updatedAt             DateTime         @updatedAt
+
+  @@unique([paymentPolicyId, sequence])
+  @@map("payment_policy_stages")
+}
+
+/// Installment starts the day AFTER warehouse shipment (ТЗ §5.5 business rule).
+model PaymentSchedule {
+  id                    String                     @id @default(cuid())
+  financeOrderId        String
+  financeOrder          FinanceOrder               @relation(fields: [financeOrderId], references: [id])
+  paymentPolicyStageId  String?                    @unique
+  paymentPolicyStage    PaymentPolicyStage?        @relation(fields: [paymentPolicyStageId], references: [id])
+  percentageBasisPoints Int?
+  offsetDays            Int?
+  kind                  String                     @default("legacy") // legacy | invoice_prepayment | post_delivery
+  startsAt              DateTime?
+  terms                 String?
+  dueDate               DateTime?
+  amount                Decimal                    @db.Decimal(18, 2)
+  status                String                     @default("unpaid") // PAYMENT_STATUSES
+  source                String                     @default("manual_platform") // SOURCE_KINDS
+  createdAt             DateTime                   @default(now())
+  allocations           FinancePaymentAllocation[]
+  operations            PaymentOperation[]
+
+  @@index([dueDate, status])
+  @@index([financeOrderId, kind, status])
+  @@map("payment_schedules")
+}
+
+/// Operation types: invoice | cash | cash_to_non_cash | manual_adjustment | unknown (ТЗ §5.5).
+model PaymentOperation {
+  id                  String                    @id @default(cuid())
+  financeOrderId      String
+  financeOrder        FinanceOrder              @relation(fields: [financeOrderId], references: [id])
+  operationKey        String
+  operationType       String // PAYMENT_OPERATION_TYPES
+  amount              Decimal                   @db.Decimal(18, 2)
+  source              String                    @default("manual_platform")
+  createdByRole       Role
+  reconciled          Boolean                   @default(false)
+  createdAt           DateTime                  @default(now())
+  externalId          String?                   @unique // 1С Ref_Key
+  sourceVersion       String? // 1С DataVersion
+  paymentAllocationId String?                   @unique
+  paymentAllocation   FinancePaymentAllocation? @relation(fields: [paymentAllocationId], references: [id], onDelete: Restrict)
+  paymentScheduleId   String?
+  paymentSchedule     PaymentSchedule?          @relation(fields: [paymentScheduleId], references: [id], onDelete: Restrict)
+  reversesOperationId String?                   @unique
+  reversesOperation   PaymentOperation?         @relation("PaymentOperationReversal", fields: [reversesOperationId], references: [id], onDelete: Restrict)
+  reversal            PaymentOperation?         @relation("PaymentOperationReversal")
+
+  @@unique([financeOrderId, operationKey])
+  @@index([paymentScheduleId])
+  @@map("payment_operations")
+}
+
+/// Current safe projection of a 1С incoming bank receipt.
+/// The original payload remains in SourceSnapshot and is never exposed to a business role.
+model PaymentReceipt {
+  id                       String    @id @default(cuid())
+  externalId               String    @unique
+  sourceVersion            String?
+  number                   String
+  receivedAt               DateTime?
+  amount                   Decimal   @db.Decimal(18, 2)
+  currency                 String
+  counterpartyExternalId   String?
+  invoiceExternalId        String?
+  invoiceNumberReference   String?
+  orderReference           String?
+  posted                   Boolean   @default(false)
+  deleted                  Boolean   @default(false)
+  sourceStatus             String    @default("fresh")
+  matchState               String    @default("pending")
+  matchKind                String?
+  candidateFinanceOrderIds Json?
+  lastMatchedAt            DateTime?
+  capturedAt               DateTime
+  createdAt                DateTime  @default(now())
+  updatedAt                DateTime  @updatedAt
+
+  allocations FinancePaymentAllocation[]
+  commands    FinancePaymentAllocationCommand[]
+
+  @@index([receivedAt])
+  @@index([invoiceExternalId])
+  @@index([orderReference])
+  @@map("finance_payment_receipts")
+}
+
+/// Append-only allocation fact. A cancellation is a new negative row linked by `reversesId`.
+model FinancePaymentAllocation {
+  id             String                           @id @default(cuid())
+  allocationKey  String                           @unique @db.Char(64)
+  receiptId      String
+  receipt        PaymentReceipt                   @relation(fields: [receiptId], references: [id], onDelete: Restrict)
+  financeOrderId String
+  financeOrder   FinanceOrder                     @relation(fields: [financeOrderId], references: [id], onDelete: Restrict)
+  scheduleId     String?
+  schedule       PaymentSchedule?                 @relation(fields: [scheduleId], references: [id], onDelete: Restrict)
+  amount         Decimal                          @db.Decimal(18, 2)
+  status         String                           @default("applied")
+  matchKind      String
+  reason         String?                          @db.VarChar(500)
+  reversesId     String?                          @unique
+  reverses       FinancePaymentAllocation?        @relation("FinanceAllocationReversal", fields: [reversesId], references: [id], onDelete: Restrict)
+  reversedBy     FinancePaymentAllocation?        @relation("FinanceAllocationReversal")
+  commandId      String?
+  command        FinancePaymentAllocationCommand? @relation(fields: [commandId], references: [id], onDelete: Restrict)
+  createdByRole  Role?
+  createdById    String?
+  createdAt      DateTime                         @default(now())
+  operation      PaymentOperation?
+
+  @@index([receiptId, createdAt])
+  @@index([financeOrderId, createdAt])
+  @@index([scheduleId, createdAt])
+  @@map("finance_payment_allocations")
+}
+
+/// Idempotency claim for a manual reconciliation command that may create several allocations.
+model FinancePaymentAllocationCommand {
+  id                 String                     @id @default(cuid())
+  receiptId          String
+  receipt            PaymentReceipt             @relation(fields: [receiptId], references: [id], onDelete: Restrict)
+  operationKey       String                     @unique @db.Uuid
+  requestFingerprint String                     @db.Char(64)
+  reason             String                     @db.VarChar(500)
+  actorRole          Role
+  actorId            String?
+  result             Json?
+  createdAt          DateTime                   @default(now())
+  allocations        FinancePaymentAllocation[]
+
+  @@index([receiptId, createdAt])
+  @@map("finance_payment_allocation_commands")
+}
+
+/// Durable command claim for finance payment-status updates. This is an idempotency journal,
+/// not a money movement; actual payment facts remain in PaymentOperation.
+model FinancePaymentUpdateCommand {
+  id                 String       @id @default(cuid())
+  financeOrderId     String
+  financeOrder       FinanceOrder @relation(fields: [financeOrderId], references: [id], onDelete: Restrict)
+  operationKey       String       @db.Uuid
+  requestFingerprint String       @db.Char(64)
+  actorRole          Role
+  requestedStatus    String?
+  previousStatus     String?
+  amountPaid         Decimal?     @db.Decimal(18, 2)
+  result             Json?
+  createdAt          DateTime     @default(now())
+
+  @@unique([financeOrderId, operationKey])
+  @@map("finance_payment_update_commands")
+}
+
+/// Idempotency claim for compensating a manual payment fact or schedule confirmation.
+model FinancePaymentCorrectionCommand {
+  id                 String       @id @default(cuid())
+  financeOrderId     String
+  financeOrder       FinanceOrder @relation(fields: [financeOrderId], references: [id], onDelete: Restrict)
+  operationKey       String       @db.Uuid
+  requestFingerprint String       @db.Char(64)
+  targetKind         String
+  targetId           String
+  targetKey          String       @unique
+  reason             String       @db.VarChar(500)
+  actorRole          Role
+  actorId            String?
+  result             Json?
+  createdAt          DateTime     @default(now())
+
+  @@unique([financeOrderId, operationKey])
+  @@index([financeOrderId, createdAt])
+  @@map("finance_payment_correction_commands")
+}
+
+/// Source snapshot is evidence, not proof of live sync (ТЗ §8). rawPayload is
+/// ADMIN-DIAGNOSTICS ONLY — never selected into finance/business projections.
+model SourceSnapshot {
+  id                String        @id @default(cuid())
+  financeOrderId    String?
+  financeOrder      FinanceOrder? @relation(fields: [financeOrderId], references: [id])
+  subjectType       String? // OneCSubjectType: counterparty|invoice|payment|shipment|stock
+  subjectId         String?
+  externalId        String? // 1С Ref_Key
+  sourceVersion     String? // 1С DataVersion
+  sourceKind        String // SOURCE_KINDS
+  ownerRole         Role
+  capturedAt        DateTime?
+  importedAt        DateTime?
+  checkedAt         DateTime?
+  staleness         String? // fresh | stale | unknown
+  parsed            Json?
+  rawPayload        Json?
+  sourceFingerprint String?       @unique
+  createdAt         DateTime      @default(now())
+
+  @@index([subjectType, subjectId])
+  @@index([externalId])
+  @@map("source_snapshots")
+}
+
+/// One execution of a bounded 1С preview/apply/scheduled synchronization.
+model OneCSyncRun {
+  id             String    @id @default(cuid())
+  mode           String
+  status         String
+  activeScopeKey String?   @unique
+  actorId        String?
+  actorRole      Role?
+  counters       Json?
+  errorCode      String?
+  recovery       String?
+  startedAt      DateTime  @default(now())
+  completedAt    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @default(now()) @updatedAt
+
+  @@index([status, startedAt])
+  @@map("onec_sync_runs")
+}
+
+/// Current typed mirror of Catalog_Номенклатура. Identity is always 1С Ref_Key.
+model OneCNomenclatureItem {
+  externalId              String                 @id
+  sourceVersion           String?
+  code                    String
+  article                 String?
+  name                    String
+  fullName                String?
+  kindExternalId          String?
+  kindName                String?
+  unitExternalId          String?
+  unitName                String?
+  deleted                 Boolean                @default(false)
+  archived                Boolean                @default(false)
+  capturedAt              DateTime
+  syncedAt                DateTime               @default(now())
+  rawMaterialDefinitionId String?                @unique
+  rawMaterialDefinition   RawMaterialDefinition? @relation(fields: [rawMaterialDefinitionId], references: [id], onDelete: SetNull)
+
+  invoiceLines  OneCInvoiceLine[]
+  shipmentLines OneCShipmentLine[]
+  stockBalances OneCStockBalance[]
+
+  @@index([kindName, archived, deleted])
+  @@index([code])
+  @@map("onec_nomenclature_items")
+}
+
+model OneCOrganization {
+  externalId    String   @id
+  sourceVersion String?
+  code          String
+  name          String
+  fullName      String?
+  inn           String?
+  kpp           String?
+  deleted       Boolean  @default(false)
+  capturedAt    DateTime
+  syncedAt      DateTime @default(now())
+
+  stockBalances OneCStockBalance[]
+
+  @@index([code])
+  @@map("onec_organizations")
+}
+
+model OneCWarehouse {
+  externalId    String   @id
+  sourceVersion String?
+  code          String
+  name          String
+  warehouseType String?
+  deleted       Boolean  @default(false)
+  capturedAt    DateTime
+  syncedAt      DateTime @default(now())
+
+  @@index([code])
+  @@map("onec_warehouses")
+}
+
+model OneCInvoice {
+  externalId             String    @id
+  sourceVersion          String?
+  number                 String
+  date                   DateTime?
+  posted                 Boolean   @default(false)
+  deleted                Boolean   @default(false)
+  counterpartyExternalId String?
+  organizationExternalId String?
+  currencyExternalId     String?
+  currency               String?
+  orderReference         String?
+  subtotal               Decimal?  @db.Decimal(18, 2)
+  taxTotal               Decimal?  @db.Decimal(18, 2)
+  total                  Decimal   @db.Decimal(18, 2)
+  capturedAt             DateTime
+  syncedAt               DateTime  @default(now())
+
+  lines     OneCInvoiceLine[]
+  payments  OneCPayment[]
+  shipments OneCShipment[]
+
+  @@index([date])
+  @@index([counterpartyExternalId])
+  @@map("onec_invoices")
+}
+
+model OneCInvoiceLine {
+  id                     String                @id @default(cuid())
+  invoiceExternalId      String
+  invoice                OneCInvoice           @relation(fields: [invoiceExternalId], references: [externalId], onDelete: Cascade)
+  lineNumber             Int
+  nomenclatureExternalId String?
+  nomenclature           OneCNomenclatureItem? @relation(fields: [nomenclatureExternalId], references: [externalId], onDelete: SetNull)
+  name                   String?
+  quantity               Decimal               @db.Decimal(18, 6)
+  price                  Decimal               @db.Decimal(18, 2)
+  amount                 Decimal               @db.Decimal(18, 2)
+  unitExternalId         String?
+  taxRate                String?
+  taxAmount              Decimal?              @db.Decimal(18, 2)
+
+  @@unique([invoiceExternalId, lineNumber])
+  @@index([nomenclatureExternalId])
+  @@map("onec_invoice_lines")
+}
+
+model OneCPayment {
+  externalId              String       @id
+  sourceVersion           String?
+  number                  String
+  date                    DateTime?
+  posted                  Boolean      @default(false)
+  deleted                 Boolean      @default(false)
+  counterpartyExternalId  String?
+  organizationExternalId  String?
+  amount                  Decimal      @db.Decimal(18, 2)
+  currency                String?
+  orderReference          String?
+  invoiceNumberReference  String?
+  documentBasisExternalId String?
+  documentBasisType       String?
+  invoiceExternalId       String?
+  invoice                 OneCInvoice? @relation(fields: [invoiceExternalId], references: [externalId], onDelete: SetNull)
+  capturedAt              DateTime
+  syncedAt                DateTime     @default(now())
+
+  @@index([date])
+  @@index([counterpartyExternalId])
+  @@index([invoiceExternalId])
+  @@map("onec_payments")
+}
+
+model OneCShipment {
+  externalId             String       @id
+  sourceVersion          String?
+  number                 String
+  date                   DateTime?
+  posted                 Boolean      @default(false)
+  deleted                Boolean      @default(false)
+  counterpartyExternalId String?
+  organizationExternalId String?
+  total                  Decimal      @db.Decimal(18, 2)
+  invoiceExternalId      String?
+  invoice                OneCInvoice? @relation(fields: [invoiceExternalId], references: [externalId], onDelete: SetNull)
+  capturedAt             DateTime
+  syncedAt               DateTime     @default(now())
+
+  lines OneCShipmentLine[]
+
+  @@index([date])
+  @@index([counterpartyExternalId])
+  @@index([invoiceExternalId])
+  @@map("onec_shipments")
+}
+
+model OneCShipmentLine {
+  id                     String                @id @default(cuid())
+  shipmentExternalId     String
+  shipment               OneCShipment          @relation(fields: [shipmentExternalId], references: [externalId], onDelete: Cascade)
+  lineNumber             Int
+  nomenclatureExternalId String?
+  nomenclature           OneCNomenclatureItem? @relation(fields: [nomenclatureExternalId], references: [externalId], onDelete: SetNull)
+  name                   String?
+  quantity               Decimal               @db.Decimal(18, 6)
+  price                  Decimal               @db.Decimal(18, 2)
+  amount                 Decimal               @db.Decimal(18, 2)
+  unitExternalId         String?
+
+  @@unique([shipmentExternalId, lineNumber])
+  @@index([nomenclatureExternalId])
+  @@map("onec_shipment_lines")
+}
+
+/// Accounting evidence only. It never overwrites RawMaterialStock physical fact.
+model OneCStockBalance {
+  id                     String               @id @default(cuid())
+  accountExternalId      String
+  accountCode            String
+  organizationExternalId String
+  organization           OneCOrganization     @relation(fields: [organizationExternalId], references: [externalId], onDelete: Restrict)
+  nomenclatureExternalId String
+  nomenclature           OneCNomenclatureItem @relation(fields: [nomenclatureExternalId], references: [externalId], onDelete: Restrict)
+  quantity               Decimal              @db.Decimal(18, 6)
+  amount                 Decimal              @db.Decimal(18, 2)
+  capturedAt             DateTime
+  syncedAt               DateTime             @default(now())
+
+  @@unique([accountExternalId, organizationExternalId, nomenclatureExternalId])
+  @@index([accountCode])
+  @@map("onec_stock_balances")
+}
+
+/// Current typed mirror of Document_ОтчетПроизводстваЗаСмену.
+/// It is accounting evidence and never mutates physical production facts.
+model OneCProductionReport {
+  externalId             String    @id
+  sourceVersion          String?
+  number                 String
+  date                   DateTime?
+  posted                 Boolean   @default(false)
+  deleted                Boolean   @default(false)
+  organizationExternalId String?
+  warehouseExternalId    String?
+  departmentExternalId   String?
+  capturedAt             DateTime
+  syncedAt               DateTime  @default(now())
+
+  outputLines   OneCProductionOutputLine[]
+  materialLines OneCProductionMaterialLine[]
+
+  @@index([date, posted, deleted])
+  @@map("onec_production_reports")
+}
+
+model OneCProductionOutputLine {
+  id                     String               @id @default(cuid())
+  reportExternalId       String
+  report                 OneCProductionReport @relation(fields: [reportExternalId], references: [externalId], onDelete: Cascade)
+  lineNumber             Int
+  nomenclatureExternalId String?
+  unitExternalId         String?
+  unitName               String?
+  quantity               Decimal              @db.Decimal(18, 6)
+
+  @@unique([reportExternalId, lineNumber])
+  @@index([reportExternalId])
+  @@index([nomenclatureExternalId])
+  @@index([unitExternalId])
+  @@map("onec_production_output_lines")
+}
+
+model OneCProductionMaterialLine {
+  id                     String               @id @default(cuid())
+  reportExternalId       String
+  report                 OneCProductionReport @relation(fields: [reportExternalId], references: [externalId], onDelete: Cascade)
+  lineNumber             Int
+  nomenclatureExternalId String?
+  productExternalId      String?
+  unitExternalId         String?
+  unitName               String?
+  quantity               Decimal              @db.Decimal(18, 6)
+
+  @@unique([reportExternalId, lineNumber])
+  @@index([reportExternalId])
+  @@index([nomenclatureExternalId])
+  @@index([productExternalId])
+  @@index([unitExternalId])
+  @@map("onec_production_material_lines")
+}
+
+/// Manual review and retry are first-class states (ТЗ §5.5 SyncJournal).
+model SyncJournal {
+  id                 String        @id @default(cuid())
+  financeOrderId     String?
+  financeOrder       FinanceOrder? @relation(fields: [financeOrderId], references: [id])
+  operationKey       String?       @unique
+  requestFingerprint String?       @db.Char(64)
+  activeScopeKey     String?       @unique
+  entity             String
+  status             String        @default("waiting") // SOURCE_HEALTH_STATUSES
+  ownerRole          Role
+  recovery           String?
+  retries            Int           @default(0)
+  sourceSnapshotId   String?
+  leaseExpiresAt     DateTime?
+  completedAt        DateTime?
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+
+  @@map("sync_journals")
+}
+
+// ===========================================================================
+// Slice 7 — Director / Admin projections (ТЗ §5.6, §11.7)
+// ===========================================================================
+
+/// Decision queue with drilldown, not decorative KPI only (ТЗ §5.6 DirectorDecision).
+model DirectorDecision {
+  id        String   @id @default(cuid())
+  scope     String // finance | production | warehouse
+  objectId  String?
+  evidence  String?
+  ownerRole Role     @default(director)
+  status    String   @default("pending") // pending | approved | returned
+  severity  String   @default("info") // info | warning | critical
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("director_decisions")
+}
+
+/// Penalty — payroll linkage is OUT of scope (ТЗ §5.2). Author + audit history kept.
+model Penalty {
+  id                      String   @id @default(cuid())
+  employeeId              String?
+  employee                User?    @relation("PenaltyEmployee", fields: [employeeId], references: [id], onDelete: SetNull)
+  targetRole              Role
+  amount                  Float
+  reason                  String
+  sourceObjectId          String?
+  sourceProductionOrderId String?
+  sourceOrderNumber       String?
+  sourceRollCode          String?
+  authorRole              Role
+  status                  String   @default("issued") // issued | disputed | cancelled
+  createdAt               DateTime @default(now())
+
+  @@index([targetRole])
+  @@index([employeeId])
+  @@index([sourceProductionOrderId])
+  @@map("penalties")
+}
+
+/// Device runtime — contract-only until device discovery (ТЗ §5.6, §9). rawPayload is
+/// ADMIN-DIAGNOSTICS ONLY (ТЗ §8); business roles never receive it.
+model DeviceRuntime {
+  id                     String                  @id @default(cuid())
+  code                   String?                 @unique
+  label                  String?
+  kind                   String // scale | scanner | printer
+  connectionKind         String?
+  driverName             String?
+  driverVersion          String?
+  configFingerprint      String?
+  isEnabled              Boolean                 @default(true)
+  status                 String                  @default("offline") // DEVICE_STATUSES
+  ownerRole              Role?
+  lastSeenAt             DateTime?
+  lastProbeAt            DateTime?
+  lastTestAt             DateTime?
+  parsedPayload          Json?
+  rawPayload             Json?
+  recovery               String?
+  postId                 String?
+  post                   Post?                   @relation(fields: [postId], references: [id])
+  operatorRollOperations OperatorRollOperation[]
+  warehouseOperations    WarehouseOperation[]
+  createdAt              DateTime                @default(now())
+  updatedAt              DateTime                @updatedAt
+
+  @@index([postId])
+  @@index([postId, kind, isEnabled])
+  @@map("device_runtimes")
+}
+
+/// Immutable safe result of an operational check. Raw integration/device payloads are stored in
+/// their dedicated admin-diagnostics models and never copied here.
+model OperationalCheck {
+  id            String   @id @default(cuid())
+  scope         String
+  targetType    String
+  targetId      String?
+  status        String
+  latencyMs     Int?
+  summary       Json
+  diagnosticRef String?
+  actorId       String?
+  startedAt     DateTime
+  completedAt   DateTime
+  createdAt     DateTime @default(now())
+
+  @@index([scope, completedAt])
+  @@index([targetType, targetId])
+  @@map("operational_checks")
+}
+
+/// Mutable current incident projection. Every lifecycle transition is retained as an append-only
+/// DomainEvent, so resolving/reopening never destroys the audit history.
+model OperationalIncident {
+  id               String    @id @default(cuid())
+  fingerprint      String    @unique
+  scope            String
+  targetType       String
+  targetId         String?
+  severity         String
+  status           String    @default("open")
+  title            String
+  message          String
+  recovery         String
+  detectedAt       DateTime  @default(now())
+  lastSeenAt       DateTime  @default(now())
+  acknowledgedAt   DateTime?
+  acknowledgedById String?
+  resolvedAt       DateTime?
+  resolvedById     String?
+
+  @@index([scope, status])
+  @@index([severity, status])
+  @@map("operational_incidents")
+}
+
+/// Role templates — the frontend is NOT the backend RBAC implementation (ТЗ §5.6, §11.1).
+model AccessTemplate {
+  id                String   @id @default(cuid())
+  role              Role
+  name              String
+  setupStatus       String   @default("draft") // draft | active
+  assignments       Json     @default("[]")
+  capabilityGrants  Json     @default("[]")
+  capabilityDenials Json     @default("[]")
+  version           Int      @default(1)
+  isSystem          Boolean  @default(false)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("access_templates")
+}
+
+// ===========================================================================
+// V2 S2 — Shop topology: machine-posts (Variant B)
+// ===========================================================================
+
+/// A machine-post (станок-пост): one industrial PC per machine, with its own scale,
+/// printer and scanner bound locally (device architecture, Variant B). Hardware is
+/// counted by posts (=7), not operators. A new machine is a new Post row — no code
+/// change. agentStatus/lastSeenAt are populated by the gateway heartbeat (S4).
+model Post {
+  id                   String    @id @default(cuid())
+  code                 String    @unique
+  name                 String
+  status               String    @default("active") // POST_STATUSES
+  commissioningState   String    @default("uncommissioned")
+  commissionedAt       DateTime?
+  agentStatus          String    @default("unknown") // POST_AGENT_STATUSES
+  lastSeenAt           DateTime?
+  agentProtocolVersion Int?
+  agentPackageVersion  String?
+  agentReleaseCommit   String?
+  agentBootId          String?
+  agentStartedAt       DateTime?
+  agentCapabilities    Json?
+  agentCompatibility   String    @default("unknown")
+  agentTokenHash       String?   @unique
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  devices                            DeviceRuntime[]
+  dispatchItems                      RollDispatchItem[]
+  operatorSessions                   OperatorPostSession[]
+  operatorMachineAssignments         OperatorShiftMachineAssignment[] @relation("OperatorMachineAssignmentCurrentPost")
+  previousOperatorMachineAssignments OperatorShiftMachineAssignment[] @relation("OperatorMachineAssignmentPreviousPost")
+  machineChangesFrom                 OperatorMachineChange[]          @relation("OperatorMachineChangeFromPost")
+  machineChangesTo                   OperatorMachineChange[]          @relation("OperatorMachineChangeToPost")
+  commands                           GatewayCommand[]
+  events                             GatewayEvent[]
+  problems                           ProductionProblem[]
+  operatorRollOperations             OperatorRollOperation[]
+  operatorLabelPrintJobs             LabelPrintJob[]
+  labelPrintReconciliations          LabelPrintReconciliation[]
+  warehouseBrowserSessions           Session[]                        @relation("WarehouseBrowserPost")
+  warehouseOperations                WarehouseOperation[]
+  operatorShiftCloseCommands         OperatorShiftCloseCommand[]
+  defectBagPrintJobs                 DefectBagLabelPrintJob[]
+  defectBagMovements                 DefectBagMovement[]
+
+  @@index([commissioningState, agentCompatibility])
+  @@map("posts")
+}
+
+/// Internal-only immutable mapping from a physical label payload to its roll. The token is
+/// consumed by operator/warehouse services and is never included in a business-role projection.
+model RollScanToken {
+  rollCode  String        @id
+  roll      WarehouseRoll @relation(fields: [rollCode], references: [rollCode], onDelete: Restrict, onUpdate: Restrict)
+  token     String        @unique @default(dbgenerated("('prt_' || replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(68)
+  createdAt DateTime      @default(now())
+
+  @@map("roll_scan_tokens")
+}
+
+/// Durable idempotency/evidence journal for warehouse physical mutations. Raw scanner/device
+/// payloads never belong here; `safeResult` is a whitelisted business response only.
+model WarehouseOperation {
+  id                 String                  @id @default(cuid())
+  operationKey       String                  @unique @db.Uuid
+  kind               String
+  status             String                  @default("in_progress")
+  taskId             String
+  task               WarehouseAcceptanceTask @relation(fields: [taskId], references: [id], onDelete: Restrict)
+  scanRowId          String
+  scanRow            ScanRow                 @relation(fields: [scanRowId], references: [id], onDelete: Restrict)
+  rollCode           String
+  actorId            String
+  actor              User                    @relation(fields: [actorId], references: [id], onDelete: Restrict)
+  sessionId          String
+  session            Session                 @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  postId             String?
+  post               Post?                   @relation(fields: [postId], references: [id], onDelete: Restrict)
+  deviceId           String?
+  device             DeviceRuntime?          @relation(fields: [deviceId], references: [id], onDelete: Restrict)
+  captureChannel     String                  @default("machine_post_gateway")
+  requestFingerprint String
+  safeResult         Json?
+  httpStatus         Int?
+  errorCode          String?
+  attempt            Int                     @default(1)
+  leaseToken         String?                 @db.Uuid
+  leaseExpiresAt     DateTime?
+  createdAt          DateTime                @default(now())
+  completedAt        DateTime?
+
+  weightCapture WeightCapture?
+
+  @@index([taskId, createdAt])
+  @@index([rollCode, createdAt])
+  @@index([leaseExpiresAt])
+  @@map("warehouse_operations")
+}
+
+/// Durable platform → post command journal. A poll claims a command with a lease; the result
+/// must carry the same lease token. The database remains authoritative across API restarts.
+model GatewayCommand {
+  id                String    @id @default(cuid())
+  postId            String
+  post              Post      @relation(fields: [postId], references: [id])
+  kind              String // read_scale | print | device_test | device_recover
+  payload           Json?
+  status            String    @default("queued") // queued | in_flight | done | failed | expired | delivery_unknown
+  result            Json?
+  resultFingerprint String?
+  deadlineAt        DateTime  @default(dbgenerated("((clock_timestamp() AT TIME ZONE 'UTC') + '00:00:30'::interval)"))
+  leaseToken        String?
+  leaseExpiresAt    DateTime?
+  attempt           Int       @default(0)
+  createdAt         DateTime  @default(dbgenerated("(clock_timestamp() AT TIME ZONE 'UTC')"))
+  resolvedAt        DateTime?
+
+  @@index([postId, status, deadlineAt])
+  @@index([postId, kind, createdAt, id], map: "gateway_commands_post_kind_created_id_idx")
+  @@index([status, leaseExpiresAt])
+  @@map("gateway_commands")
+}
+
+/// Unsolicited event pushed by a post's agent (V2 S4): weight | scan | status | heartbeat.
+/// eventId is client-generated and UNIQUE — both the idempotency key and the offline-buffer
+/// key (re-sent events dedupe). rawPayload is admin-diagnostics only (ТЗ §8).
+model GatewayEvent {
+  id         String   @id @default(cuid())
+  postId     String
+  post       Post     @relation(fields: [postId], references: [id])
+  eventId    String
+  kind       String // weight | scan | status | heartbeat
+  payload    Json?
+  rawPayload Json?
+  receivedAt DateTime @default(now())
+
+  // eventId is unique PER POST (not globally) so one post cannot squat another
+  // post's idempotency keys (security review: cross-tenant eventId squatting).
+  @@unique([postId, eventId])
+  @@index([postId])
+  @@map("gateway_events")
+}
+
+/// Work shift (V2 S3). Groups operator-post sessions; an open shift is created on the
+/// first session of the period if none is open.
+model Shift {
+  id                 String    @id @default(cuid())
+  label              String
+  plannedStartAt     DateTime?
+  plannedEndAt       DateTime?
+  startedAt          DateTime?
+  endedAt            DateTime?
+  status             String    @default("planned") // planned | open | closed
+  operationKey       String?   @unique @db.Uuid
+  requestFingerprint String?   @db.Char(64)
+  commandResult      Json?
+  createdAt          DateTime  @default(now())
+
+  sessions           OperatorPostSession[]
+  machineAssignments OperatorShiftMachineAssignment[]
+  machineChanges     OperatorMachineChange[]
+  dispatchItems      RollDispatchItem[]
+  closeCommands      OperatorShiftCloseCommand[]
+
+  @@map("shifts")
+}
+
+/// Production plan for one operator's machine during a shift. The plan is locked when
+/// the operator opens the corresponding post session. Breakdown moves remain audited facts.
+model OperatorShiftMachineAssignment {
+  id                 String    @id @default(cuid())
+  shiftId            String
+  shift              Shift     @relation(fields: [shiftId], references: [id])
+  operatorId         String
+  operator           User      @relation("OperatorMachineAssignmentOperator", fields: [operatorId], references: [id])
+  postId             String
+  post               Post      @relation("OperatorMachineAssignmentCurrentPost", fields: [postId], references: [id])
+  previousPostId     String?
+  previousPost       Post?     @relation("OperatorMachineAssignmentPreviousPost", fields: [previousPostId], references: [id])
+  status             String    @default("planned") // OPERATOR_MACHINE_ASSIGNMENT_STATUSES
+  lockedAt           DateTime?
+  cancelledAt        DateTime?
+  cancellationReason String?   @db.VarChar(500)
+  breakdownReason    String?
+  reassignedAt       DateTime?
+  createdById        String?
+  createdBy          User?     @relation("OperatorMachineAssignmentCreator", fields: [createdById], references: [id])
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+
+  machineChanges      OperatorMachineChange[]
+  cancellationCommand OperatorShiftMachineAssignmentCancellationCommand?
+  closeCommand        OperatorShiftCloseCommand?
+
+  // PostgreSQL adds partial uniqueness for active assignment statuses. Prisma cannot
+  // express the predicate, so the mapped declarations preserve compound client keys.
+  @@unique([id, operatorId, shiftId, postId], map: "operator_shift_machine_assignments_close_owner_key")
+  @@unique([shiftId, operatorId], map: "operator_shift_machine_assignments_active_shift_operator_uq")
+  @@unique([shiftId, postId], map: "operator_shift_machine_assignments_active_shift_post_uq")
+  @@index([operatorId, status])
+  @@map("operator_shift_machine_assignments")
+}
+
+/// Durable intentional machine move. It is separate from breakdown reassignment and remains
+/// recoverable across API restarts while the operator records final/start Big-Bag evidence.
+model OperatorMachineChange {
+  id                       String                         @id @default(cuid())
+  assignmentId             String
+  assignment               OperatorShiftMachineAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  shiftId                  String
+  shift                    Shift                          @relation(fields: [shiftId], references: [id], onDelete: Restrict)
+  operatorId               String
+  operator                 User                           @relation("OperatorMachineChangeOperator", fields: [operatorId], references: [id], onDelete: Restrict)
+  fromPostId               String
+  fromPost                 Post                           @relation("OperatorMachineChangeFromPost", fields: [fromPostId], references: [id], onDelete: Restrict)
+  toPostId                 String
+  toPost                   Post                           @relation("OperatorMachineChangeToPost", fields: [toPostId], references: [id], onDelete: Restrict)
+  reason                   String
+  status                   String                         @default("requested")
+  operationKey             String                         @unique(map: "operator_machine_changes_operation_key_key")
+  requestedAt              DateTime                       @default(now())
+  readyAt                  DateTime?
+  completedAt              DateTime?
+  cancelledAt              DateTime?
+  cancelOperationKey       String?                        @unique @db.Uuid
+  cancelRequestFingerprint String?                        @db.Char(64)
+  cancellationReason       String?                        @db.VarChar(500)
+  cancelledById            String?
+  updatedAt                DateTime                       @updatedAt
+
+  @@index([assignmentId, status])
+  @@index([shiftId, status])
+  @@index([operatorId, status])
+  @@index([fromPostId, status])
+  @@index([toPostId, status])
+  @@map("operator_machine_changes")
+}
+
+/// One durable claim per untouched planned assignment cancellation.
+model OperatorShiftMachineAssignmentCancellationCommand {
+  id                 String                         @id @default(cuid())
+  assignmentId       String                         @unique
+  assignment         OperatorShiftMachineAssignment @relation(fields: [assignmentId], references: [id], onDelete: Restrict)
+  operationKey       String                         @unique @db.Uuid
+  requestFingerprint String                         @db.Char(64)
+  reason             String                         @db.VarChar(500)
+  actorRole          Role
+  actorId            String?
+  result             Json?
+  createdAt          DateTime                       @default(now())
+
+  @@map("operator_shift_machine_assignment_cancellation_commands")
+}
+
+/// "Who is at this post right now" (V2 S3). 15–20 operators rotate across the 5 fixed
+/// posts by shift; their weigh/QR/handover actions are attributed to operator + post.
+/// At most one ACTIVE session per operator; several operators may share one post.
+/// A PostgreSQL partial unique index for active operator rows is installed by migrations;
+/// Prisma cannot represent its `WHERE status = 'active'` predicate without forbidding history.
+model OperatorPostSession {
+  id         String    @id @default(cuid())
+  operatorId String
+  operator   User      @relation(fields: [operatorId], references: [id])
+  postId     String
+  post       Post      @relation(fields: [postId], references: [id])
+  shiftId    String?
+  shift      Shift?    @relation(fields: [shiftId], references: [id])
+  status     String    @default("active") // active | closed
+  startedAt  DateTime  @default(now())
+  endedAt    DateTime?
+
+  bagUsages              ShiftBagUsage[]
+  operatorRollOperations OperatorRollOperation[]
+  weightCaptures         WeightCapture[]
+  labelPrintJobs         LabelPrintJob[]
+  closeCommand           OperatorShiftCloseCommand?
+  defectBags             DefectBag[]
+  defectBagPrintJobs     DefectBagLabelPrintJob[]
+
+  @@unique([id, operatorId, shiftId, postId], map: "operator_post_sessions_close_owner_key")
+  @@index([operatorId])
+  @@index([postId])
+  @@index([status, endedAt, id], map: "ops_closed_period_idx")
+  @@map("operator_post_sessions")
+}
+
+/// Immutable idempotency record and exact business result for one completed operator shift.
+model OperatorShiftCloseCommand {
+  id                 String                         @id @default(cuid())
+  operationKey       String                         @unique @db.Uuid
+  requestFingerprint String                         @db.Char(64)
+  operatorId         String
+  operator           User                           @relation("OperatorShiftCloseCommandOperator", fields: [operatorId], references: [id], onDelete: Restrict)
+  sessionId          String                         @unique
+  session            OperatorPostSession            @relation(fields: [sessionId, operatorId, shiftId, postId], references: [id, operatorId, shiftId, postId], onDelete: Restrict)
+  shiftId            String
+  shift              Shift                          @relation(fields: [shiftId], references: [id], onDelete: Restrict)
+  postId             String
+  post               Post                           @relation(fields: [postId], references: [id], onDelete: Restrict)
+  assignmentId       String                         @unique
+  assignment         OperatorShiftMachineAssignment @relation(fields: [assignmentId, operatorId, shiftId, postId], references: [id, operatorId, shiftId, postId], onDelete: Restrict)
+  actorRole          Role
+  resultSnapshot     Json
+  createdAt          DateTime                       @default(now())
+
+  @@unique([sessionId, operatorId, shiftId, postId], map: "operator_shift_close_commands_session_owner_key")
+  @@unique([assignmentId, operatorId, shiftId, postId], map: "operator_shift_close_commands_assignment_owner_key")
+  @@index([operatorId, createdAt, id])
+  @@index([shiftId, createdAt, id])
+  @@map("operator_shift_close_commands")
+}
+
+/// One tared bag of defects accumulated during an operator's post-session.
+model DefectBag {
+  id                String              @id @default(cuid())
+  code              String              @unique
+  postSessionId     String
+  postSession       OperatorPostSession @relation(fields: [postSessionId], references: [id], onDelete: Restrict)
+  status            String              @default("weighed") // DEFECT_BAG_STATUSES
+  defectType        String?             // DEFECT_BAG_TYPES; nullable only for historical rows
+  weightKg          Float
+  recordedDefectKg  Float
+  differenceKg      Float
+  captureChannel    String              @default("machine_post_scale") // machine_post_scale | operator_manual
+  scaleDeviceId     String?
+  scaleStatus       String?
+  scaleStable       Boolean?
+  weighOperationKey String              @unique @db.Uuid
+  weighedAt         DateTime            @default(now())
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
+
+  scanToken      DefectBagScanToken?
+  labelPrintJobs DefectBagLabelPrintJob[]
+  movements      DefectBagMovement[]
+
+  @@index([status, weighedAt, id])
+  @@index([postSessionId, weighedAt, id])
+  @@map("defect_bags")
+}
+
+/// Private exact-scan token. It is sent only to the printer and warehouse scan boundary.
+model DefectBagScanToken {
+  defectBagId String    @id
+  defectBag   DefectBag @relation(fields: [defectBagId], references: [id], onDelete: Restrict)
+  token       String    @unique @default(dbgenerated("('bbt_' || replace(gen_random_uuid()::text, '-', '') || replace(gen_random_uuid()::text, '-', ''))")) @db.VarChar(68)
+  createdAt   DateTime  @default(now())
+
+  @@map("defect_bag_scan_tokens")
+}
+
+/// Durable physical print attempt. QR bytes never belong in this record.
+model DefectBagLabelPrintJob {
+  id               String                  @id @default(cuid())
+  operationKey     String                  @unique @db.Uuid
+  defectBagId      String
+  defectBag        DefectBag               @relation(fields: [defectBagId], references: [id], onDelete: Restrict)
+  printerId        String
+  status           String                  @default("queued") // queued | submitted | failed | delivery_unknown
+  reason           String?
+  replacesJobId    String?                 @unique
+  replacesJob      DefectBagLabelPrintJob? @relation("DefectBagPrintRetry", fields: [replacesJobId], references: [id], onDelete: Restrict)
+  replacedByJob    DefectBagLabelPrintJob? @relation("DefectBagPrintRetry")
+  actorId          String
+  actor            User                    @relation("DefectBagLabelPrintActor", fields: [actorId], references: [id], onDelete: Restrict)
+  postSessionId    String
+  postSession      OperatorPostSession     @relation(fields: [postSessionId], references: [id], onDelete: Restrict)
+  postId           String
+  post             Post                    @relation(fields: [postId], references: [id], onDelete: Restrict)
+  leaseToken       String                  @db.Uuid
+  leaseExpiresAt   DateTime
+  attempt          Int                     @default(1)
+  gatewayCommandId String?
+  failureReason    String?
+  completedAt      DateTime?
+  createdAt        DateTime                @default(now())
+
+  @@index([defectBagId, createdAt])
+  @@index([postSessionId, createdAt])
+  @@map("defect_bag_label_print_jobs")
+}
+
+/// Append-only receipt/shipment fact for one defect bag.
+model DefectBagMovement {
+  id           String    @id @default(cuid())
+  operationKey String    @unique @db.Uuid
+  defectBagId  String
+  defectBag    DefectBag @relation(fields: [defectBagId], references: [id], onDelete: Restrict)
+  kind         String // receive | ship
+  actorId      String
+  actor        User      @relation("DefectBagMovementActor", fields: [actorId], references: [id], onDelete: Restrict)
+  sessionId    String
+  session      Session   @relation(fields: [sessionId], references: [id], onDelete: Restrict)
+  postId        String?
+  post          Post?     @relation(fields: [postId], references: [id], onDelete: Restrict)
+  deviceId      String?
+  captureChannel String    @default("warehouse_browser_hid")
+  createdAt     DateTime   @default(now())
+
+  @@unique([defectBagId, kind])
+  @@index([kind, createdAt, id])
+  @@map("defect_bag_movements")
+}

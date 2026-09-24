@@ -1,0 +1,310 @@
+.commercial-problems {
+  display: grid;
+  align-content: start;
+  grid-column: 2 / -1;
+  gap: 18px;
+  min-width: 0;
+  min-height: 0;
+  padding: 24px;
+  overflow: auto;
+}
+
+.commercial-problems-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.commercial-problems-header h1 {
+  margin: 0;
+}
+
+.commercial-problems-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.commercial-problems-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.commercial-problems-filters button,
+.commercial-problems-load-more,
+.commercial-problems-state button,
+.commercial-problems-load-error button,
+.commercial-problem-row header button,
+.commercial-problem-resolution-actions button,
+.commercial-problem-resolution-submit {
+  min-height: 36px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface);
+  color: var(--text-primary);
+  cursor: pointer;
+}
+
+.commercial-problems-filters button,
+.commercial-problems-state button,
+.commercial-problems-load-error button,
+.commercial-problem-row header button,
+.commercial-problem-resolution-actions button,
+.commercial-problem-resolution-submit {
+  padding: 7px 12px;
+}
+
+.commercial-problems-filters button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.commercial-problems-state {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  margin: 0;
+  padding: 20px 0;
+}
+
+.commercial-problems-list {
+  display: grid;
+  gap: 10px;
+}
+
+.commercial-problem-row {
+  display: grid;
+  gap: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  background: var(--color-surface);
+}
+
+.commercial-problem-row header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.commercial-problem-row header > div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 12px;
+}
+
+.commercial-problem-row header > div:first-child > span,
+.commercial-problem-row dt {
+  color: var(--text-muted);
+}
+
+.commercial-problem-row-actions {
+  justify-content: flex-end;
+}
+
+.commercial-problem-row-actions [data-problem-status] {
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--color-surface-elevated, var(--color-surface));
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.commercial-problem-row-actions [data-problem-status='open'] {
+  color: var(--color-warning, #f6b73c);
+}
+
+.commercial-problem-row dl {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(120px, 1fr));
+  gap: 8px 16px;
+  margin: 0;
+}
+
+.commercial-problem-row dl div {
+  min-width: 0;
+}
+
+.commercial-problem-row dt {
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.commercial-problem-row dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.commercial-problems-load-more {
+  justify-self: start;
+  padding: 8px 16px;
+}
+
+.commercial-problems-load-error {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.plenki-modal.commercial-problem-dialog {
+  width: min(760px, 100%);
+}
+
+.commercial-problem-dialog-body > div {
+  display: grid;
+  gap: 18px;
+}
+
+.commercial-problem-dialog-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+}
+
+.commercial-problem-dialog-facts > div {
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: var(--color-surface-elevated, var(--color-surface));
+}
+
+.commercial-problem-dialog-facts dt {
+  margin-bottom: 4px;
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.commercial-problem-dialog-facts dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.commercial-problem-dialog-reason {
+  grid-column: 1 / -1;
+}
+
+.commercial-problem-resolution {
+  display: grid;
+  gap: 14px;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border);
+}
+
+.commercial-problem-resolution-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.commercial-problem-resolution-actions button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.commercial-problem-resolution-form,
+.commercial-problem-resolution-form label {
+  display: grid;
+  gap: 8px;
+}
+
+.commercial-problem-resolution-form textarea {
+  width: 100%;
+  min-height: 96px;
+  resize: vertical;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  background: var(--color-surface);
+  color: var(--text-primary);
+  font: inherit;
+}
+
+.commercial-problem-resolution-error {
+  margin: 0;
+  color: var(--color-critical, #ff6b7a);
+}
+
+.commercial-problem-resolution-submit {
+  justify-self: end;
+}
+
+.commercial-problem-resolution-submit:not(:disabled) {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--color-surface);
+}
+
+.commercial-problem-resolution button:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+@media (max-width: 900px) {
+  .commercial-problems {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 760px) {
+  .commercial-problems {
+    padding: 16px;
+  }
+
+  .commercial-problems-header,
+  .commercial-problem-row header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .commercial-problems-header-actions {
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+
+  .commercial-problem-row dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .commercial-problem-row-actions {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 390px) {
+  .commercial-problems-filters {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .commercial-problems-filters button,
+  .commercial-problem-row header button,
+  .commercial-problems-load-more {
+    width: 100%;
+  }
+
+  .commercial-problem-row dl {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-problem-dialog-facts {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-problem-dialog-reason {
+    grid-column: auto;
+  }
+
+  .commercial-problem-resolution-actions,
+  .commercial-problem-resolution-submit {
+    display: grid;
+    width: 100%;
+  }
+}

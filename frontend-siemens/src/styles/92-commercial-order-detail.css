@@ -1,0 +1,298 @@
+.commercial-live-detail {
+  display: grid;
+  gap: 18px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+}
+
+.commercial-cover-panel-v2 {
+  display: grid;
+  gap: 12px;
+}
+
+.commercial-cover-panel-v2 > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+}
+
+.commercial-cover-panel-v2 > header h4 {
+  margin: 3px 0 0;
+}
+.commercial-cover-state { margin: 3px 0 0; color: var(--text-secondary); }
+.commercial-coverage-type { padding: 12px; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); }
+.commercial-coverage-type > header { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 8px 16px; }
+.commercial-coverage-type h5, .commercial-coverage-type p { margin: 0; }
+.commercial-coverage-type p { margin-top: 4px; color: var(--text-secondary); }
+.commercial-coverage-type-tokens { display: flex; flex-wrap: wrap; gap: 5px; margin: 0; padding: 0; list-style: none; }
+.commercial-coverage-type-tokens li { padding: 4px 7px; border-radius: var(--radius-pill); background: var(--surface-inset); color: var(--text-secondary); font-size: 13px; }
+.commercial-coverage-type-details { margin-top: 10px; }
+.commercial-coverage-type-details > summary { width: max-content; max-width: 100%; color: var(--text-secondary); cursor: pointer; }
+.commercial-coverage-comparison { margin: 8px 0 0; }
+.commercial-coverage-comparison > div { display: grid; grid-template-columns: minmax(120px, .7fr) repeat(2, minmax(0, 1fr)); gap: 8px; padding: 8px; border-top: 1px solid var(--border-subtle); }
+.commercial-coverage-comparison dt { color: var(--text-muted); font-size: 13px; }
+.commercial-coverage-comparison dd { display: grid; gap: 2px; min-width: 0; margin: 0; }
+.commercial-coverage-comparison dd span { color: var(--text-muted); font-size: 12px; }
+.commercial-coverage-comparison .is-different { background: var(--surface-inset); }
+.commercial-cover-panel-v2 > header > span {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.commercial-cover-panel-v2 .commercial-cover-summary {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+}
+.commercial-cover-panel-v2 .commercial-cover-summary dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+.commercial-cover-panel-v2 .commercial-cover-summary dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+.commercial-cover-owner {
+  margin: 0;
+  color: var(--text-secondary);
+}
+.commercial-cover-owner strong {
+  color: var(--text-primary);
+}
+.commercial-cover-reasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.commercial-cover-reasons li {
+  padding: 5px 8px;
+  border-left: 3px solid var(--state-info-border);
+  background: var(--state-info-bg);
+  color: var(--state-info-text);
+}
+.commercial-cover-remediation {
+  justify-self: start;
+  min-height: 40px;
+  padding: 9px 12px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-md);
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+}
+.commercial-cover-panel-v2,
+.commercial-order-overview {
+  min-width: 0;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  background: var(--surface-1);
+}
+
+.commercial-order-overview > header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px 16px;
+}
+
+.commercial-order-overview > header time {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.commercial-status-rail,
+.commercial-fulfillment dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  margin: 16px 0 0;
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--border-subtle);
+}
+
+.commercial-status-step,
+.commercial-fulfillment dl > div {
+  min-width: 0;
+  padding: 10px;
+  background: var(--surface-inset);
+}
+
+.commercial-status-step dt,
+.commercial-fulfillment dt {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.commercial-status-step dd,
+.commercial-fulfillment dd {
+  margin: 4px 0 0;
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.commercial-status-step.is-info dd {
+  color: var(--state-info-text);
+}
+
+.commercial-status-step.is-success dd {
+  color: var(--state-success-text);
+}
+
+.commercial-status-step.is-warning dd {
+  color: var(--state-warning-text);
+}
+
+.commercial-status-step.is-critical dd {
+  color: var(--state-critical-text);
+}
+
+.commercial-next-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 14px;
+  padding: 14px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.commercial-next-action > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.commercial-next-action > div > span,
+.commercial-next-action small {
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.commercial-next-action strong {
+  overflow-wrap: anywhere;
+  color: var(--text-primary);
+}
+
+.commercial-next-action button {
+  min-height: 44px;
+  white-space: normal;
+}
+
+.commercial-next-action.is-action {
+  border-color: var(--accent);
+  box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.commercial-next-action.is-action button {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.commercial-next-action.is-waiting {
+  border-color: var(--state-info-border);
+  background: var(--state-info-bg);
+}
+
+.commercial-next-action.is-disabled {
+  border-color: var(--state-disabled-border);
+  background: var(--state-disabled-bg);
+  color: var(--state-disabled-text);
+}
+
+.commercial-fulfillment {
+  margin-top: 14px;
+}
+
+.commercial-fulfillment > p {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 6px 16px;
+}
+
+.commercial-fulfillment > p span {
+  color: var(--text-secondary);
+}
+
+.commercial-fulfillment ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.commercial-fulfillment li {
+  padding: 5px 8px;
+  border-left: 3px solid var(--state-warning-border);
+  background: var(--state-warning-bg);
+  color: var(--state-warning-text);
+}
+
+@media (max-width: 1100px) {
+  .commercial-cover-panel-v2 .commercial-cover-summary,
+  .commercial-status-rail,
+  .commercial-fulfillment dl {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 390px) {
+  .commercial-coverage-comparison > div,
+  .commercial-cover-panel-v2 .commercial-cover-summary,
+  .commercial-status-rail,
+  .commercial-fulfillment dl {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-next-action button {
+    width: 100%;
+  }
+}
+.commercial-finance-note-panel {
+  display: grid;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  background: var(--surface-1);
+}
+
+.commercial-finance-note-panel header {
+  display: grid;
+  gap: 3px;
+}
+
+.commercial-finance-note-panel header span,
+.commercial-finance-note-panel small {
+  color: var(--text-secondary);
+}
+
+.commercial-finance-note-panel header h3,
+.commercial-finance-note-panel p {
+  margin: 0;
+}
+
+.commercial-finance-note-panel > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}

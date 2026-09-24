@@ -1,0 +1,10 @@
+Package: plenka-gateway-agent
+Version: @VERSION@
+Section: utils
+Priority: optional
+Architecture: amd64
+Depends: adduser, cups, cups-client, libc6 (>= 2.36), libstdc++6
+Maintainer: PlenkaCover release engineering
+Description: PlenkaCover outbound-only industrial post gateway
+ Connects one Ubuntu machine post to its local Massa-K scale and MERTECH printer.
+ The browser-owned HID scanner and operator session remain separate from the agent credential.

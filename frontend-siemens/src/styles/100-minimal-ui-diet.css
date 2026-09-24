@@ -1,0 +1,152 @@
+.production-orders-hub-header .production-state-badge,
+.admin-access-header > span,
+.warehouse-inventory-table-actions small,
+.management-section-header > strong,
+.commercial-section-meta .commercial-owner-chip,
+.commercial-section-meta .commercial-state-badge.state-ready,
+.finance-header-meta .finance-state-badge.severity-info,
+.admin-state-badge.is-muted {
+  display: none;
+}
+
+.admin-access-header,
+.management-section-header,
+.warehouse-inventory-table-head {
+  border-bottom-color: var(--border-subtle);
+  background: transparent;
+}
+
+.production-workbench-header,
+.warehouse-inventory-object-context,
+.admin-access-header {
+  padding-bottom: 8px;
+}
+
+.production-orders-hub-tabs {
+  gap: 4px;
+}
+
+.production-orders-hub-tabs button,
+.management-period-chip,
+.management-period-calendar-toggle,
+.warehouse-inventory-table-actions button,
+.admin-access-header .compact-action-button {
+  min-height: 34px;
+  border-radius: var(--radius-sm);
+  box-shadow: none;
+}
+
+.warehouse-inventory-main,
+.warehouse-inventory-detail,
+.admin-access-surface,
+.management-center,
+.management-control-board,
+.management-period-chart-panel,
+.management-period-signals,
+.management-production-report {
+  box-shadow: none;
+}
+
+.management-control-board,
+.admin-access-surface,
+.warehouse-inventory-main,
+.warehouse-inventory-detail {
+  border-color: var(--border-subtle);
+}
+
+.management-executive-kpis {
+  gap: 8px;
+  padding: 8px 0 10px;
+}
+
+.management-executive-kpis .plenki-metric-card {
+  min-height: 64px;
+}
+
+.management-period-summary-strip {
+  gap: 0;
+  margin: 6px 0;
+  background: transparent;
+}
+
+.management-period-summary {
+  min-height: 68px;
+  padding: 10px;
+  box-shadow: none;
+}
+
+.management-period-summary.tone-production,
+.management-period-summary.tone-risk,
+.management-period-summary.tone-money {
+  box-shadow: none;
+}
+
+.management-period-summary span {
+  text-transform: none;
+}
+
+.plenki-toolbar .eyebrow,
+.admin-section-title .eyebrow {
+  display: none;
+}
+
+.plenki-toolbar-meta span {
+  color: var(--text-muted);
+  font-size: 12px;
+}
+
+.admin-user-actions {
+  flex-wrap: nowrap;
+}
+
+.admin-user-actions .compact-action-button {
+  min-width: 110px;
+  white-space: nowrap;
+}
+
+.admin-device-row .admin-user-actions {
+  flex-wrap: wrap;
+}
+
+.admin-device-row .admin-user-actions .compact-action-button {
+  flex: 1 1 104px;
+  min-width: 0;
+}
+
+.plenki-metric-strip + .warehouse-inventory-layout,
+.plenki-metric-strip + .production-orders-table-panel,
+.plenki-metric-strip + .admin-users-table {
+  margin-top: 0;
+}
+
+@media (max-width: 760px) {
+  .admin-access-surface > .admin-access-header {
+    order: 1;
+  }
+
+  .admin-access-surface > .plenki-metric-strip {
+    order: 2;
+  }
+
+  .admin-access-surface > .admin-save-feedback {
+    order: 3;
+  }
+
+  .admin-access-surface > .admin-users-table,
+  .admin-access-surface > .admin-template-workbench {
+    order: 4;
+  }
+
+  .admin-user-actions {
+    flex-wrap: wrap;
+  }
+
+  .admin-user-actions .compact-action-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .plenki-toolbar-meta {
+    display: none;
+  }
+}

@@ -1,0 +1,44 @@
+html,
+body,
+#root {
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  overflow: hidden;
+  background: var(--bg-app);
+}
+
+.commercial-pipeline-qa {
+  display: grid;
+  grid-template-columns: minmax(270px, 0.72fr) minmax(0, 1.28fr);
+  width: 100%;
+  min-width: 0;
+  height: 100dvh;
+  overflow: hidden;
+}
+
+.commercial-pipeline-qa > aside,
+.commercial-pipeline-qa > main {
+  min-width: 0;
+  min-height: 0;
+  border: 1px solid var(--border-subtle);
+  background: var(--surface-0);
+}
+
+.commercial-pipeline-qa > main {
+  overflow: auto;
+}
+
+@media (max-width: 600px) {
+  .commercial-pipeline-qa {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .commercial-pipeline-qa > aside {
+    display: none;
+  }
+}

@@ -1,0 +1,31 @@
+{
+"odata.metadata": "https://msk1.1cfresh.com:443/a/ea_demo/4099533/odata/standard.odata/$metadata#Catalog_Контрагенты",
+"value": [{
+"Ref_Key": "a102099c-0676-11f1-822d-fa163e0359d3",
+"DataVersion": "AAAAAAAAAAA=",
+"Description": "ООО \"Интернет Решения\"",
+"НаименованиеПолное": "ООО \"Интернет Решения\"",
+"ИНН": "7704217370",
+"КПП": "997750001",
+"Code": "00-000002",
+"DeletionMark": false
+},{
+"Ref_Key": "a102099b-0676-11f1-822d-fa163e0359d3",
+"DataVersion": "AAAAAAAAAAA=",
+"Description": "ООО \"РВБ\"",
+"НаименованиеПолное": "ООО \"РВБ\"",
+"ИНН": "9714053621",
+"КПП": "507401001",
+"Code": "00-000001",
+"DeletionMark": false
+},{
+"Ref_Key": "92ab0ff1-0034-11f1-88b4-fa163e28b800",
+"DataVersion": "AAAAAAAAAAA=",
+"Description": "ООО \"РВБ\"",
+"НаименованиеПолное": "ООО \"РВБ\"",
+"ИНН": "9714053621",
+"КПП": "507401001",
+"Code": "00-000001",
+"DeletionMark": false
+}]
+}

@@ -1,0 +1,20 @@
+{
+"odata.metadata": "https://msk1.1cfresh.com:443/a/ea_demo/4099533/odata/standard.odata/$metadata#Document_РеализацияТоваровУслуг",
+"value": [{
+"Ref_Key": "b1dc8043-1e91-11e6-a31d-14dae9b19a48",
+"DataVersion": "AAAAAAAAAAA=",
+"Number": "0000-000603",
+"Date": "2024-01-09T12:00:00",
+"Posted": true,
+"Контрагент_Key": "9e1d8954-1dc5-11e6-a31d-14dae9b19a48",
+"СуммаДокумента": 138330
+},{
+"Ref_Key": "b1dc8048-1e91-11e6-a31d-14dae9b19a48",
+"DataVersion": "AAAAAAAAAAA=",
+"Number": "0000-000602",
+"Date": "2024-01-09T12:00:00",
+"Posted": true,
+"Контрагент_Key": "9e1d895a-1dc5-11e6-a31d-14dae9b19a48",
+"СуммаДокумента": 302160
+}]
+}

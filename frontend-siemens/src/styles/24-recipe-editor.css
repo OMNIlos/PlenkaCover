@@ -1,0 +1,231 @@
+.plenki-modal.recipe-editor {
+  width: min(760px, calc(100vw - 32px));
+  max-width: 100%;
+  min-width: 0;
+  max-height: calc(100vh - 32px);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  overflow: hidden;
+}
+
+.recipe-editor-header,
+.recipe-editor-footer {
+  min-width: 0;
+  flex: 0 0 auto;
+}
+
+.recipe-editor-header > div:first-child {
+  min-width: 0;
+}
+
+.recipe-editor-header h3 {
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-header .plenki-modal-head-actions {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.recipe-editor-header .plenki-modal-head-actions > * {
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
+.recipe-editor-body {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  align-content: start;
+  gap: var(--space-4);
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+.recipe-editor-header button,
+.recipe-editor-footer button,
+.recipe-editor-catalog-error button,
+.recipe-editor-add-product {
+  min-height: 36px;
+  max-width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0 var(--space-3);
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--action-secondary-bg);
+  color: var(--action-secondary-text);
+  font-weight: 700;
+  line-height: 1.2;
+  text-align: center;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-footer .primary-button {
+  border-color: var(--action-recommended-border);
+  background: var(--action-recommended-bg);
+  color: var(--action-recommended-text);
+}
+
+.recipe-editor-header button:disabled,
+.recipe-editor-footer button:disabled,
+.recipe-editor-catalog-error button:disabled,
+.recipe-editor-add-product:disabled {
+  cursor: not-allowed;
+  opacity: 0.56;
+}
+
+.recipe-editor-name {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+}
+
+.recipe-editor-name > span,
+.recipe-editor-name > small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-name input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.recipe-editor-catalog-error {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--state-critical-border);
+  border-radius: var(--radius-md);
+  background: var(--state-critical-bg);
+}
+
+.recipe-editor-catalog-error > span {
+  min-width: 0;
+  flex: 1 1 220px;
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-ingredients {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-3);
+}
+
+.recipe-editor-ingredient {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(72px, 96px) 36px;
+  align-items: start;
+  gap: var(--space-3);
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.recipe-editor-ingredient.is-active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.recipe-editor-ingredient > label {
+  min-width: 0;
+  display: grid;
+  gap: var(--space-2);
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-ingredient > label > span,
+.recipe-editor-ingredient > label > small {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-ingredient :where(input, select) {
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.recipe-editor-ingredient > .plenki-icon-button {
+  align-self: end;
+}
+
+.recipe-editor-add-product {
+  justify-self: start;
+}
+
+.recipe-editor-total {
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-weight: 700;
+}
+
+.recipe-editor-total > span,
+.recipe-editor-total > small,
+.recipe-editor-submit-error {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.recipe-editor-submit-error {
+  margin: 0;
+  color: var(--state-critical-text);
+}
+
+.recipe-editor-footer {
+  flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .recipe-editor-header {
+    align-items: flex-start;
+  }
+
+  .recipe-editor-header .plenki-modal-head-actions {
+    flex: 0 1 auto;
+  }
+
+  .recipe-editor-ingredient {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .recipe-editor-ingredient > .plenki-icon-button {
+    justify-self: end;
+  }
+
+  .recipe-editor-catalog-error {
+    align-items: stretch;
+  }
+
+  .recipe-editor-catalog-error button {
+    width: 100%;
+  }
+
+  .recipe-editor-footer {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .recipe-editor-footer button {
+    width: 100%;
+    min-width: 0;
+  }
+}

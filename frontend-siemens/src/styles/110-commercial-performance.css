@@ -1,0 +1,402 @@
+.commercial-performance-workspace {
+  grid-column: 2 / -1;
+  min-width: 0;
+  min-height: 0;
+  padding: 20px;
+  overflow: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: 16px;
+  background: var(--surface-1);
+}
+
+@media (min-width: 901px) {
+  .app-shell:has(> .commercial-performance-workspace) {
+    height: calc(100dvh - var(--app-chrome-height));
+    min-height: 0;
+    overflow: hidden;
+  }
+
+  .app-shell > .commercial-performance-workspace {
+    height: 100%;
+    max-height: 100%;
+    min-height: 0;
+    overflow: auto;
+  }
+}
+
+.commercial-performance-workspace > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.commercial-performance-workspace h1,
+.commercial-performance-workspace h2,
+.commercial-performance-workspace p {
+  margin: 0;
+}
+
+.commercial-performance-workspace h1 {
+  margin-top: 4px;
+  font-size: clamp(24px, 3vw, 36px);
+}
+
+.commercial-performance-workspace header p,
+.commercial-performance-refresh small {
+  color: var(--text-secondary);
+}
+
+.commercial-performance-refresh {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.commercial-performance-range,
+.commercial-performance-view-controls {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.commercial-performance-range {
+  margin-bottom: 18px;
+}
+
+.commercial-performance-range label {
+  display: grid;
+  gap: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.commercial-performance-range input,
+.commercial-performance-range select,
+.commercial-performance-range button,
+.commercial-performance-view-controls button {
+  height: 40px;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+.commercial-performance-range button,
+.commercial-performance-view-controls button {
+  cursor: pointer;
+}
+
+.commercial-performance-view-controls {
+  margin-bottom: 12px;
+}
+
+.commercial-performance-view-controls button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--surface-3);
+}
+
+.commercial-performance-refresh button,
+.commercial-performance-workspace > button {
+  min-height: 40px;
+  padding: 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+.commercial-performance-metrics {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.commercial-performance-metrics article {
+  display: grid;
+  min-height: 72px;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.commercial-performance-metrics span {
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.commercial-performance-metrics strong {
+  font-size: clamp(18px, 1.6vw, 24px);
+  line-height: 1.1;
+}
+
+.commercial-performance-series {
+  margin-top: 18px;
+}
+
+.commercial-performance-content {
+  overflow-x: auto;
+}
+
+.commercial-performance-content table {
+  width: 100%;
+  margin-top: 12px;
+  border-collapse: collapse;
+}
+
+.commercial-performance-content th,
+.commercial-performance-content td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.commercial-performance-content th {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.app-shell[data-active-role='director']
+  .commercial-performance-content
+  tr[data-order-status='defect']
+  > td {
+  background: color-mix(in srgb, var(--state-critical-bg) 78%, var(--surface-1));
+}
+
+.app-shell[data-active-role='director']
+  .commercial-performance-content
+  tr:is([data-order-status='in_production'], [data-order-status='processing'])
+  > td {
+  background: color-mix(in srgb, var(--state-warning-bg) 78%, var(--surface-1));
+}
+
+.app-shell[data-active-role='director']
+  .commercial-performance-content
+  tr:is(
+    [data-order-status='ready_for_warehouse'],
+    [data-order-status='warehouse_handed_off'],
+    [data-order-status='warehouse_accepted'],
+    [data-order-status='warehouse_delivered'],
+    [data-order-status='reserve']
+  )
+  > td {
+  background: color-mix(in srgb, var(--state-success-bg) 78%, var(--surface-1));
+}
+
+.warehouse-business-table td:first-child {
+  white-space: normal;
+}
+
+.warehouse-business-table ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.commercial-performance-content .director-analytics-sort-button {
+  min-height: 32px;
+}
+
+.production-roll-drilldown-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0;
+  border: 0;
+  color: var(--text-primary);
+  font: inherit;
+  font-weight: 700;
+  background: transparent;
+  cursor: pointer;
+}
+
+.production-roll-drilldown-chevron {
+  display: inline-grid;
+  width: 18px;
+  height: 18px;
+  place-items: center;
+  flex: 0 0 18px;
+  font-size: 10px;
+  line-height: 1;
+  transform-origin: center;
+  transition: transform 120ms ease;
+}
+
+.production-roll-drilldown-chevron[data-expanded='true'] {
+  transform: rotate(90deg);
+}
+
+.commercial-performance-content td.production-roll-drilldown-cell {
+  padding: 0 12px 16px;
+  white-space: normal;
+  background: var(--surface-2);
+}
+
+.production-roll-drilldown-table {
+  min-width: 1060px;
+  margin-top: 0;
+}
+
+.production-roll-drilldown-table td:first-child {
+  vertical-align: middle;
+}
+
+.production-roll-drilldown-table td:first-child strong,
+.production-roll-drilldown-table td:first-child small {
+  display: block;
+}
+
+.production-roll-drilldown-table td:first-child small {
+  margin-top: 3px;
+  color: var(--text-secondary);
+}
+
+.production-roll-parameters {
+  display: flex;
+  min-width: 260px;
+  flex-wrap: wrap;
+  gap: 6px;
+  white-space: normal;
+}
+
+.production-roll-parameter-chip {
+  display: inline-flex;
+  padding: 4px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 8px;
+  color: var(--text-primary);
+  background: var(--surface-1);
+  white-space: nowrap;
+  word-break: keep-all;
+  overflow-wrap: normal;
+}
+
+.production-roll-drilldown-message {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 72px;
+  color: var(--text-secondary);
+}
+
+.production-roll-drilldown-message button,
+.production-roll-drilldown-pagination button {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  color: var(--text-primary);
+  background: var(--surface-1);
+}
+
+.production-roll-drilldown-pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: 12px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .production-roll-drilldown-chevron {
+    transition: none;
+  }
+}
+
+.commercial-performance-empty {
+  padding: 32px 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.commercial-performance-pagination {
+  display: flex;
+  justify-content: center;
+  padding-top: 18px;
+}
+
+.commercial-performance-pagination button {
+  min-height: 40px;
+  padding: 0 18px;
+  border: 1px solid var(--border-strong);
+  border-radius: 10px;
+  color: var(--text-primary);
+  background: var(--surface-2);
+}
+
+@media (max-width: 1024px) {
+  .commercial-performance-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .commercial-performance-workspace {
+    grid-column: 1;
+  }
+}
+
+@media (max-width: 640px) {
+  .commercial-performance-workspace {
+    padding: 14px;
+  }
+
+  .commercial-performance-workspace > header,
+  .commercial-performance-refresh {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .commercial-performance-metrics {
+    grid-template-columns: 1fr;
+  }
+
+  .warehouse-business-table table,
+  .warehouse-business-table tbody,
+  .warehouse-business-table tr,
+  .warehouse-business-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .warehouse-business-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+  }
+
+  .warehouse-business-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .warehouse-business-table td {
+    display: grid;
+    grid-template-columns: minmax(90px, 32%) minmax(0, 1fr);
+    gap: 10px;
+    padding: 8px 12px;
+    border: 0;
+    white-space: normal;
+  }
+
+  .warehouse-business-table td::before {
+    color: var(--text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    content: attr(data-label);
+  }
+}

@@ -1,0 +1,334 @@
+/* Selected State Diet
+   Active navigation, selected objects, semantic severity and keyboard focus use separate visual markers.
+   References: shadcn/21st segmented tabs for active tabs; quiet rail pattern for selected work objects. */
+
+:where(
+  .demo-role-button,
+  .section-nav-button,
+  .role-top-nav button,
+  .mobile-section-nav-item,
+  .mobile-nav-drawer-item,
+  .filter-chip,
+  .finance-command-mode-row button,
+  .finance-registry-filter-row button,
+  .director-tabs button,
+  .role-button
+) {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+:where(
+  .demo-role-button,
+  .section-nav-button,
+  .role-top-nav button,
+  .mobile-section-nav-item,
+  .mobile-nav-drawer-item,
+  .filter-chip,
+  .finance-command-mode-row button,
+  .finance-registry-filter-row button,
+  .director-tabs button,
+  .role-button
+):hover {
+  border-color: transparent;
+  color: var(--text-primary);
+  background: var(--selection-surface-hover);
+  box-shadow: none;
+}
+
+:where(
+  .demo-role-button,
+  .section-nav-button,
+  .role-top-nav button,
+  .mobile-section-nav-item,
+  .mobile-nav-drawer-item,
+  .filter-chip,
+  .finance-command-mode-row button,
+  .finance-registry-filter-row button,
+  .director-tabs button,
+  .role-button
+).is-active {
+  border-color: transparent;
+  color: var(--text-primary);
+  background: var(--selection-surface);
+  box-shadow: none;
+}
+
+:where(
+  .demo-role-button,
+  .section-nav-button,
+  .role-top-nav button,
+  .mobile-section-nav-item,
+  .mobile-nav-drawer-item,
+  .filter-chip,
+  .finance-command-mode-row button,
+  .finance-registry-filter-row button,
+  .director-tabs button,
+  .role-button
+):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.demo-role-button.is-active,
+.role-top-nav button.is-active,
+.finance-command-mode-row button.is-active,
+.finance-registry-filter-row button.is-active,
+.director-tabs button.is-active,
+.role-button.is-active {
+  box-shadow: inset 0 -2px 0 var(--selection-rail);
+}
+
+.section-nav-button.is-active,
+.mobile-section-nav-item.is-active,
+.mobile-nav-drawer-item.is-active {
+  background: var(--selection-surface-quiet);
+}
+
+.section-nav-button.is-active::before {
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  background: var(--selection-rail);
+}
+
+.section-nav-button.is-active .section-nav-visual,
+.mobile-section-nav-item.is-active .section-nav-visual,
+.mobile-nav-drawer-item.is-active .section-nav-visual {
+  color: var(--text-secondary);
+}
+
+.mobile-section-nav-item.is-active::before,
+.mobile-nav-drawer-item.is-active::before {
+  position: absolute;
+  left: 0;
+  top: 10px;
+  bottom: 10px;
+  width: 2px;
+  border-radius: 0 999px 999px 0;
+  background: var(--selection-rail);
+  content: "";
+}
+
+.role-nav-total,
+.section-nav-badge,
+.mobile-section-nav-item .section-nav-badge,
+.mobile-nav-drawer-item .section-nav-badge {
+  color: var(--state-info-text);
+  background: color-mix(in srgb, var(--state-info-bg) 56%, var(--surface-inset));
+  box-shadow: none;
+}
+
+.queue-row,
+.finance-queue-card {
+  border-color: transparent;
+  border-left-color: transparent;
+  background: var(--surface-quiet);
+  box-shadow: inset 2px 0 0 var(--selection-rail-muted);
+}
+
+.queue-row:hover,
+.finance-queue-card:hover {
+  border-color: transparent;
+  border-left-color: transparent;
+  background: var(--selection-surface-hover);
+  box-shadow: inset 2px 0 0 var(--selection-rail-muted);
+}
+
+.queue-row.is-selected,
+.finance-queue-card.is-selected {
+  border-color: transparent;
+  border-left-color: transparent;
+  background: var(--selection-surface-quiet);
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--selection-rail) 62%, transparent),
+    var(--selection-shadow);
+}
+
+.queue-row:active,
+.finance-queue-card:active {
+  background: color-mix(in srgb, var(--selection-surface) 76%, var(--surface-inset));
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--selection-rail) 58%, transparent);
+}
+
+.queue-row:focus-within,
+.finance-queue-card:focus-within {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.queue-row.severity-warning,
+.finance-queue-card.severity-warning,
+.finance-queue-card.variant-installment {
+  border-color: transparent;
+  border-left-color: transparent;
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--state-warning-border) 62%, transparent);
+}
+
+.app-shell[data-active-role="production"] .queue-row.severity-warning {
+  background: var(--surface-quiet);
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--state-info-border) 72%, transparent);
+}
+
+.app-shell[data-active-role="production"] .queue-row.severity-warning strong {
+  color: var(--text-primary);
+}
+
+.queue-row.severity-critical,
+.finance-queue-card.severity-critical,
+.finance-queue-card.variant-exception {
+  border-color: transparent;
+  border-left-color: transparent;
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--state-critical-border) 68%, transparent);
+}
+
+.queue-row.is-selected.severity-warning,
+.finance-queue-card.is-selected.severity-warning,
+.finance-queue-card.is-selected.variant-installment {
+  border-color: transparent;
+  border-left-color: transparent;
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--selection-rail) 58%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--state-warning-border) 18%, transparent),
+    var(--selection-shadow);
+}
+
+.queue-row.is-selected.severity-critical,
+.finance-queue-card.is-selected.severity-critical,
+.finance-queue-card.is-selected.variant-exception {
+  border-color: transparent;
+  border-left-color: transparent;
+  box-shadow:
+    inset 2px 0 0 color-mix(in srgb, var(--selection-rail) 58%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--state-critical-border) 18%, transparent),
+    var(--selection-shadow);
+}
+
+.finance-command-mode-row button.is-live {
+  border-color: transparent;
+  color: var(--text-secondary);
+  background: var(--surface-quiet);
+}
+
+.finance-command-counter:hover,
+.finance-command-counter:focus-visible {
+  border-color: transparent;
+  background: var(--selection-surface-hover);
+  box-shadow: inset 0 -2px 0 var(--selection-rail-muted);
+}
+
+.finance-calendar-day.is-active,
+.finance-calendar-day.has-selected-object,
+.finance-calendar-agenda-item.is-selected,
+.finance-ledger-row.is-selected {
+  border-color: transparent;
+  background: var(--selection-surface-quiet);
+  box-shadow: inset 0 -2px 0 var(--selection-rail);
+}
+
+.finance-ledger-row.is-selected td:first-child {
+  box-shadow: inset 2px 0 0 var(--selection-rail);
+}
+
+.director-table tbody tr.is-selected,
+.director-workbench .operator-orders-row.is-selected {
+  border-color: transparent;
+  border-left-color: transparent;
+  background: var(--selection-surface-quiet);
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--selection-rail) 72%, transparent);
+}
+
+.director-table tbody tr.is-selected.severity-warning,
+.director-workbench .operator-orders-row.is-selected.severity-warning {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--state-warning-border) 64%, transparent);
+}
+
+.director-table tbody tr.is-selected.severity-critical,
+.director-workbench .operator-orders-row.is-selected.severity-critical {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--state-critical-border) 68%, transparent);
+}
+
+.director-table tbody tr.has-attention:not(.is-selected).severity-warning {
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--state-warning-border) 42%, transparent);
+}
+
+.director-table tbody tr.has-attention:not(.is-selected).severity-critical {
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--state-critical-border) 46%, transparent);
+}
+
+.finance-command-grid.is-section-detail .finance-selected-command,
+.detail-view.role-finance .detail-header,
+.director-drawer {
+  border-color: transparent;
+  border-left-color: transparent;
+  box-shadow: inset 1px 0 0 var(--selection-rail-muted);
+}
+
+.finance-command-grid.is-section-detail .finance-selected-command {
+  background: color-mix(in srgb, var(--surface-1) 78%, var(--surface-inset));
+}
+
+.finance-workbench.severity-warning .finance-command-grid.is-section-detail .finance-selected-command {
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--state-warning-border) 34%, transparent);
+}
+
+.finance-workbench.severity-critical .finance-command-grid.is-section-detail .finance-selected-command {
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--state-critical-border) 38%, transparent);
+}
+
+.director-drawer.severity-warning,
+.director-drawer.severity-critical {
+  border-color: transparent;
+  border-left-color: transparent;
+}
+
+.director-drawer.severity-warning {
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--state-warning-border) 34%, transparent);
+}
+
+.director-drawer.severity-critical {
+  box-shadow: inset 1px 0 0 color-mix(in srgb, var(--state-critical-border) 38%, transparent);
+}
+
+.detail-view.role-finance .detail-header {
+  background: color-mix(in srgb, var(--surface-2) 62%, var(--surface-inset));
+}
+
+.detail-view.role-finance .detail-header .detail-header-actions {
+  box-shadow: none;
+}
+
+.finance-workbench.severity-warning,
+.finance-workbench.severity-critical {
+  border-color: transparent;
+  border-left-color: transparent;
+}
+
+.finance-workbench.severity-warning {
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--state-warning-border) 62%, transparent);
+}
+
+.finance-workbench.severity-critical {
+  box-shadow: inset 2px 0 0 color-mix(in srgb, var(--state-critical-border) 68%, transparent);
+}
+
+.finance-workbench .finance-state-badge.severity-warning,
+.finance-workbench .finance-state-badge.severity-critical {
+  box-shadow: none;
+}
+
+@media (max-width: 900px) {
+  .mobile-section-nav-item.is-active,
+  .mobile-nav-drawer-item.is-active,
+  .section-nav-button.is-active {
+    background: var(--selection-surface-quiet);
+    box-shadow: none;
+  }
+
+  .queue-row.is-selected,
+  .finance-queue-card.is-selected {
+    box-shadow:
+      inset 1px 0 0 color-mix(in srgb, var(--selection-rail) 62%, transparent),
+      var(--selection-shadow);
+  }
+}

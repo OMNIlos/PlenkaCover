@@ -1,0 +1,97 @@
+.app-shell[data-active-role="warehouse"] .warehouse-scan {
+  gap: 10px;
+  border-color: var(--border-default);
+}
+
+@media (max-width: 760px) {
+  .app-shell[data-active-role="warehouse"] .warehouse-scan {
+    gap: 8px;
+    margin-top: 8px;
+    padding: 10px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-prompt {
+    gap: 8px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-prompt .workbench-visual-row {
+    grid-template-columns: 44px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-prompt .step-illustration {
+    width: 44px;
+    height: 44px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-prompt h3 {
+    margin-top: 2px;
+    font-size: 18px;
+    line-height: 1.16;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-stage-ladder {
+    gap: 5px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-stage {
+    grid-template-columns: 22px minmax(0, 1fr);
+    min-height: 50px;
+    gap: 2px 6px;
+    padding: 6px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-stage span {
+    width: 22px;
+    height: 22px;
+    font-size: 11px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-stage strong {
+    font-size: 12px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-stage small {
+    grid-column: 2;
+    font-size: 11px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .warehouse-scan-mode {
+    min-height: 42px;
+    padding: 7px 8px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-alert-row {
+    gap: 6px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .warehouse-scan-result,
+  .app-shell[data-active-role="warehouse"] .warehouse-blocker {
+    padding: 7px 8px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-focus-strip {
+    gap: 5px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .scan-focus-strip div {
+    min-height: 48px;
+    padding: 7px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .warehouse-action-deck {
+    gap: 8px;
+  }
+
+  .app-shell[data-active-role="warehouse"] .warehouse-actions-secondary .action-stack {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell[data-active-role="warehouse"] .warehouse-actions-secondary .blocked-next-step {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell[data-active-role="warehouse"] .warehouse-actions-secondary {
+    margin-top: 0;
+  }
+}

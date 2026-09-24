@@ -1,0 +1,1178 @@
+.management-control-header.is-report {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+}
+
+.management-report-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  min-width: 0;
+}
+
+.management-report-actions button,
+.management-production-report > button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 38px;
+  padding: 8px 11px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.management-report-actions button:hover,
+.management-production-report > button:hover {
+  border-color: var(--accent);
+  background: var(--surface-hover);
+}
+
+.management-executive-kpis {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(150px, 1fr));
+  gap: 10px;
+  min-width: 0;
+  padding: 14px 0 16px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.management-report-kpi {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  min-width: 0;
+  min-height: 132px;
+  padding: 12px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+  box-shadow: inset 3px 0 0 transparent;
+}
+
+.management-report-kpi.tone-money {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--accent) 64%, transparent);
+}
+
+.management-report-kpi.tone-production {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--state-success-border) 52%, transparent);
+}
+
+.management-report-kpi.tone-risk {
+  box-shadow: inset 3px 0 0 color-mix(in srgb, var(--state-critical-border) 64%, transparent);
+}
+
+.management-report-kpi span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.management-report-kpi strong {
+  color: var(--text-primary);
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.management-report-kpi p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+}
+
+.management-report-kpi button {
+  justify-self: start;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.management-report-kpi button:hover,
+.management-report-kpi button:focus-visible {
+  color: var(--accent);
+}
+
+.management-report-kpi b {
+  justify-self: start;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.management-period-comparison,
+.management-period-table-panel {
+  display: grid;
+  gap: 12px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.management-period-toolbar {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.management-period-toolbar > div:first-child {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.management-period-toolbar strong,
+.management-period-panel-head strong {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.15;
+}
+
+.management-period-toolbar small {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.management-period-controls {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 0;
+}
+
+.management-period-comparison .management-section-header {
+  align-items: start;
+  gap: 12px;
+}
+
+.management-period-comparison .management-section-header > div:first-child {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.management-period-selector {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 7px;
+  min-width: 0;
+}
+
+.management-period-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  padding: 5px 9px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  background: var(--surface-inset);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.15;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.management-period-chip.is-selected {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--border-default));
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--accent) 10%, var(--surface-inset));
+}
+
+.management-period-chip.is-comparison {
+  border-style: dashed;
+}
+
+.management-period-calendar-wrap {
+  position: relative;
+  min-width: 0;
+}
+
+.management-period-calendar-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 30px;
+  padding: 5px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.15;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.management-period-calendar-toggle:hover,
+.management-period-calendar-toggle:focus-visible,
+.management-period-calendar-toggle.is-selected {
+  border-color: color-mix(in srgb, var(--accent) 62%, var(--border-default));
+  background: var(--surface-hover);
+}
+
+.management-period-calendar {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  z-index: 20;
+  width: min(660px, calc(100vw - 320px));
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-md);
+  background: var(--surface-panel);
+  box-shadow: var(--shadow-dialog);
+}
+
+.management-period-calendar-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 14px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.management-period-calendar-head > div {
+  display: grid;
+  gap: 3px;
+}
+
+.management-period-calendar-head strong {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 900;
+}
+
+.management-period-calendar-head span,
+.management-period-calendar-foot span {
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 750;
+}
+
+.management-period-calendar-head button {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 20px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.management-period-calendar-body {
+  display: grid;
+  grid-template-columns: 132px minmax(0, 1fr);
+  min-height: 320px;
+}
+
+.management-period-calendar-presets {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  padding: 12px;
+  border-right: 1px solid var(--border-subtle);
+  background: var(--surface-inset);
+}
+
+.management-period-calendar-presets button {
+  min-height: 32px;
+  padding: 7px 9px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  text-align: left;
+  cursor: pointer;
+}
+
+.management-period-calendar-presets button:hover,
+.management-period-calendar-presets button.is-selected {
+  border-color: var(--border-default);
+  background: var(--surface-2);
+  color: var(--text-primary);
+}
+
+.management-period-calendar-main {
+  display: grid;
+  gap: 12px;
+  padding: 12px 14px;
+}
+
+.management-period-date-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.management-period-date-fields label {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+
+.management-period-date-fields span {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.management-period-date-fields input {
+  width: 100%;
+  height: 34px;
+  padding: 0 9px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 850;
+}
+
+.management-period-date-fields input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.management-period-months {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.management-period-month {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+
+.management-period-month > strong {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.management-period-weekdays,
+.management-period-days {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 3px;
+}
+
+.management-period-weekdays span {
+  display: grid;
+  place-items: center;
+  height: 18px;
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 900;
+}
+
+.management-period-days button,
+.management-period-days span {
+  height: 28px;
+  border-radius: var(--radius-sm);
+}
+
+.management-period-days button {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.management-period-days button:hover {
+  background: var(--surface-hover);
+  color: var(--text-primary);
+}
+
+.management-period-days button.is-range {
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+  color: var(--text-primary);
+}
+
+.management-period-days button.is-edge {
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.management-period-days button:disabled {
+  background: transparent;
+  color: var(--text-muted);
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.management-period-calendar-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.management-period-calendar-foot button {
+  min-height: 32px;
+  padding: 6px 10px;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.management-period-dashboard {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+
+.management-period-summary-strip {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.management-period-summary {
+  display: grid;
+  align-content: start;
+  gap: 5px;
+  min-width: 0;
+  min-height: 92px;
+  padding: 11px 12px;
+  border: 0;
+  border-right: 1px solid var(--border-subtle);
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  box-shadow: inset 0 3px 0 transparent;
+  cursor: pointer;
+}
+
+.management-period-summary:last-child {
+  border-right: 0;
+}
+
+.management-period-summary:hover,
+.management-period-summary:focus-visible {
+  background: var(--surface-hover);
+  outline: none;
+}
+
+.management-period-summary.tone-production {
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--state-success-border) 54%, transparent);
+}
+
+.management-period-summary.tone-risk {
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--state-critical-border) 64%, transparent);
+}
+
+.management-period-summary.tone-money {
+  box-shadow: inset 0 3px 0 color-mix(in srgb, var(--accent) 62%, transparent);
+}
+
+.management-period-summary span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.management-period-summary strong {
+  color: var(--text-primary);
+  font-size: 20px;
+  font-weight: 900;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.management-period-summary em,
+.management-period-signal-row em {
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+  line-height: 1.2;
+}
+
+.management-period-dashboard-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(260px, 0.65fr);
+  gap: 12px;
+  min-width: 0;
+}
+
+.management-period-chart-panel,
+.management-period-signals {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.management-period-panel-head {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  min-width: 0;
+}
+
+.management-period-panel-head > div:first-child {
+  display: grid;
+  gap: 3px;
+}
+
+.management-period-granularity {
+  display: grid;
+  grid-template-columns: auto minmax(96px, auto);
+  align-items: center;
+  gap: 5px;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.management-period-granularity select {
+  min-height: 30px;
+  padding: 4px 24px 4px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.1;
+  cursor: pointer;
+}
+
+.management-period-granularity select:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.management-period-chart {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 9px;
+  min-height: 230px;
+  padding: 10px 6px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.management-period-chart-column {
+  display: grid;
+  grid-template-rows: minmax(160px, 1fr) auto;
+  gap: 7px;
+  min-width: 0;
+  align-items: end;
+}
+
+.management-period-chart-bars {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  gap: 4px;
+  height: 100%;
+  min-height: 160px;
+}
+
+.management-period-chart-bars i,
+.management-period-chart-bars em {
+  display: block;
+  min-height: 4px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+}
+
+.management-period-chart-bars i {
+  background: var(--accent);
+}
+
+.management-period-chart-bars em {
+  background: color-mix(in srgb, var(--text-muted) 42%, transparent);
+}
+
+.management-period-chart-column > span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 850;
+  text-align: center;
+}
+
+.management-period-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.management-period-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.management-period-legend i,
+.management-period-legend em {
+  width: 9px;
+  height: 9px;
+  border-radius: 2px;
+}
+
+.management-period-legend i {
+  background: var(--accent);
+}
+
+.management-period-legend em {
+  background: color-mix(in srgb, var(--text-muted) 42%, transparent);
+}
+
+.management-period-signal-list {
+  display: grid;
+  gap: 8px;
+}
+
+.management-period-signal-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 5px 10px;
+  align-items: baseline;
+  min-width: 0;
+  min-height: 66px;
+  padding: 10px 11px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.management-period-signal-row:hover,
+.management-period-signal-row:focus-visible {
+  border-color: var(--border-default);
+  background: var(--surface-hover);
+  outline: none;
+}
+
+.management-period-signal-row span {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.management-period-signal-row strong {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+
+.management-period-signal-row em {
+  grid-column: 1 / -1;
+}
+
+.management-period-delta {
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.management-period-table button {
+  justify-self: start;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-primary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.2;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+.management-period-table button:hover,
+.management-period-table button:focus-visible {
+  color: var(--accent);
+}
+
+.management-period-table-wrap {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.management-period-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+}
+
+.management-period-table th,
+.management-period-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: left;
+  vertical-align: top;
+}
+
+.management-period-table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.management-period-table td strong {
+  color: var(--text-primary);
+}
+
+.management-finance-report,
+.management-production-report {
+  display: grid;
+  gap: 10px;
+  min-width: 0;
+  padding-top: 16px;
+}
+
+.management-report-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(290px, 0.34fr);
+  gap: 14px;
+  align-items: start;
+  min-width: 0;
+}
+
+.management-report-table-wrap {
+  min-width: 0;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.management-report-table {
+  width: 100%;
+  min-width: 980px;
+  border-collapse: collapse;
+}
+
+.management-report-table th,
+.management-report-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.3;
+  text-align: left;
+  vertical-align: top;
+}
+
+.management-report-table th {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.management-report-table th button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 5px;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.management-report-table th button:hover,
+.management-report-table th button.is-active {
+  color: var(--text-primary);
+}
+
+.management-report-table th button b {
+  color: var(--accent);
+  font-size: 12px;
+  line-height: 1;
+}
+
+.management-report-table th.num button {
+  justify-content: flex-end;
+}
+
+.management-report-table .num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.management-report-table td.is-strong {
+  color: var(--text-primary);
+  font-weight: 900;
+}
+
+.management-report-table tbody tr {
+  cursor: pointer;
+}
+
+.management-report-table tbody tr:hover {
+  background: var(--surface-hover);
+}
+
+.management-report-order,
+.management-report-stack {
+  display: grid;
+  gap: 2px;
+}
+
+.management-report-order {
+  padding: 0;
+  border: 0;
+  color: inherit;
+  background: transparent;
+  font: inherit;
+  text-align: left;
+}
+
+.management-report-order strong,
+.management-report-stack strong {
+  color: var(--text-primary);
+}
+
+.management-report-order span,
+.management-report-stack small {
+  color: var(--text-muted);
+}
+
+.management-risk-pill {
+  display: inline-flex;
+  padding: 4px 7px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-pill);
+  color: var(--text-primary);
+  font-size: 11px;
+  font-weight: 900;
+  white-space: nowrap;
+}
+
+.management-risk-pill.severity-critical {
+  border-color: var(--state-critical-border);
+}
+
+.management-risk-pill.severity-warning {
+  border-color: var(--state-warning-border);
+}
+
+.management-production-report {
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.management-production-list {
+  display: grid;
+  gap: 9px;
+}
+
+.management-production-row {
+  display: grid;
+  gap: 8px;
+  padding: 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.management-production-row span,
+.management-production-row dt {
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-transform: uppercase;
+}
+
+.management-production-row strong {
+  color: var(--text-primary);
+  font-size: 24px;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.management-production-row dl {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0;
+}
+
+.management-production-row dd {
+  margin: 2px 0 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 1500px) {
+  .management-report-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .management-production-list {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 1240px) {
+  .management-executive-kpis {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 920px) {
+  .management-executive-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .management-period-summary-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .management-period-summary:nth-child(3n) {
+    border-right: 0;
+  }
+
+  .management-period-dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .management-control-header.is-report,
+  .management-report-layout,
+  .management-production-list {
+    grid-template-columns: 1fr;
+  }
+
+  .management-executive-kpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .management-report-kpi {
+    min-height: 116px;
+    padding: 10px 9px;
+  }
+
+  .management-report-kpi strong {
+    font-size: 22px;
+  }
+
+  .management-period-toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .management-period-controls,
+  .management-period-selector {
+    justify-content: flex-start;
+  }
+
+  .management-period-calendar {
+    position: fixed;
+    inset: 84px 10px auto;
+    width: auto;
+    max-height: calc(100vh - 100px);
+    overflow: auto;
+  }
+
+  .management-period-calendar-body,
+  .management-period-months,
+  .management-period-date-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .management-period-summary-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .management-period-summary,
+  .management-period-summary:nth-child(3n) {
+    border-right: 1px solid var(--border-subtle);
+  }
+
+  .management-period-summary:nth-child(even) {
+    border-right: 0;
+  }
+
+  .management-period-panel-head {
+    display: grid;
+  }
+
+  .management-period-granularity {
+    justify-self: start;
+  }
+
+  .management-period-chart {
+    min-height: 190px;
+    gap: 6px;
+  }
+
+  .management-period-chart-column {
+    grid-template-rows: minmax(128px, 1fr) auto;
+  }
+
+  .management-period-chart-bars {
+    min-height: 128px;
+  }
+
+  .management-report-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .management-report-actions button {
+    justify-content: center;
+  }
+
+  .management-report-table,
+  .management-period-table {
+    min-width: 0;
+  }
+
+  .management-report-table thead,
+  .management-period-table thead {
+    display: none;
+  }
+
+  .management-report-table,
+  .management-report-table tbody,
+  .management-report-table tr,
+  .management-report-table td,
+  .management-period-table,
+  .management-period-table tbody,
+  .management-period-table tr,
+  .management-period-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .management-report-table tr,
+  .management-period-table tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .management-report-table td,
+  .management-period-table td {
+    display: grid;
+    grid-template-columns: minmax(96px, 0.38fr) minmax(0, 1fr);
+    gap: 10px;
+    border-bottom: 0;
+    text-align: left;
+  }
+
+  .management-report-table td::before,
+  .management-period-table td::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    text-transform: uppercase;
+  }
+
+  .management-report-table .num {
+    text-align: left;
+  }
+}
+
+@media (max-width: 340px) {
+  .management-executive-kpis {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,736 @@
+.finance-installment-entry {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--state-info-border);
+  background: var(--surface-2);
+}
+
+.finance-installment-entry > div {
+  display: grid;
+  gap: 2px;
+}
+
+.finance-installment-entry span {
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+.finance-installment-entry button {
+  min-height: 36px;
+  border: 1px solid var(--state-info-border);
+  border-radius: 7px;
+  padding: 0 14px;
+  color: var(--text-primary);
+  background: color-mix(in srgb, var(--state-info-bg) 34%, var(--surface-2));
+  cursor: pointer;
+  font-weight: 800;
+}
+
+.finance-installment-wizard-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1200;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: color-mix(in srgb, var(--surface-inset) 78%, transparent);
+  backdrop-filter: blur(4px);
+}
+
+.finance-installment-wizard {
+  display: grid;
+  grid-template-rows: auto auto minmax(0, 1fr) auto;
+  width: min(1040px, 100%);
+  max-height: min(92vh, 780px);
+  overflow: hidden;
+  border: 1px solid var(--border-default);
+  border-radius: 18px;
+  background: var(--surface-1);
+  box-shadow: var(--shadow-dialog);
+}
+
+.finance-installment-wizard.finance-invoice-wizard {
+  grid-template-rows: auto minmax(0, 1fr) auto;
+}
+
+.finance-installment-wizard-header,
+.finance-installment-wizard-actions {
+  position: relative;
+  z-index: 4;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 22px 28px;
+  background: color-mix(in srgb, var(--surface-1) 94%, transparent);
+}
+
+.finance-installment-wizard-header {
+  top: 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.finance-installment-wizard-header span,
+.finance-installment-context span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.finance-installment-wizard-header h2 {
+  margin: 4px 0 0;
+  font-size: 26px;
+  line-height: 1.15;
+}
+
+.finance-installment-wizard-header button,
+.finance-installment-wizard-actions button,
+.finance-payment-policy-editor button {
+  min-height: 42px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  color: var(--text-primary);
+  background: var(--surface-2);
+  cursor: pointer;
+}
+
+.finance-installment-wizard-header button {
+  width: 42px;
+  padding: 0;
+  font-size: 26px;
+}
+
+.finance-installment-stepper {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
+  gap: 10px;
+  padding: 18px 28px 0;
+}
+
+.finance-installment-stepper > span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  color: var(--text-secondary);
+  background: var(--surface-2);
+  font-size: 14px;
+  font-weight: 650;
+}
+
+.finance-installment-stepper > span b {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface-3);
+  font-size: 13px;
+}
+
+.finance-installment-stepper > span.is-active {
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1px var(--state-info-border);
+}
+
+.finance-installment-stepper > span.is-active b,
+.finance-installment-stepper > span.is-done b {
+  color: var(--surface-1);
+  background: var(--state-info-border);
+}
+
+.finance-installment-stepper > small {
+  display: none;
+}
+
+.finance-installment-wizard-body {
+  min-height: 320px;
+  overflow: auto;
+  padding: 28px;
+}
+
+.finance-installment-conditions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(280px, 330px);
+  gap: 24px;
+}
+
+.finance-installment-main,
+.finance-installment-review-panel,
+.finance-installment-review {
+  display: grid;
+  align-content: start;
+  gap: 22px;
+  min-width: 0;
+}
+
+.finance-installment-section-heading {
+  display: grid;
+  gap: 6px;
+}
+
+.finance-installment-section-heading > span {
+  color: var(--state-info-border);
+  font-size: 14px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.finance-installment-section-heading h3 {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 22px;
+  line-height: 1.25;
+}
+
+.finance-installment-section-heading p {
+  max-width: 640px;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.55;
+}
+
+.finance-invoice-wizard-step {
+  display: grid;
+  align-content: start;
+  gap: 24px;
+  min-width: 0;
+}
+
+.finance-invoice-amount-field {
+  grid-column: auto;
+  grid-row: auto;
+  grid-template-columns: minmax(260px, 440px);
+}
+
+.finance-invoice-amount-field label > span {
+  color: var(--text-primary);
+  font-weight: 700;
+}
+
+.finance-invoice-review-cards {
+  display: grid;
+  grid-template-columns: minmax(220px, 0.8fr) minmax(280px, 1.2fr);
+  gap: 14px;
+}
+
+.finance-invoice-review-cards article {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  min-height: 126px;
+  padding: 22px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.finance-invoice-review-cards span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.finance-invoice-review-cards strong {
+  color: var(--text-primary);
+  font-size: 22px;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.finance-manual-invoice-amount {
+  display: grid;
+  gap: 7px;
+  max-width: 440px;
+}
+
+.finance-manual-invoice-amount > span,
+.finance-manual-payment-presets > span {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 750;
+}
+
+.finance-manual-invoice-amount input {
+  min-height: 48px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+  background: var(--surface-inset);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 750;
+}
+
+.finance-manual-invoice-amount small {
+  color: var(--text-secondary);
+}
+
+.finance-manual-payment-presets {
+  display: grid;
+  gap: 10px;
+}
+
+.finance-manual-payment-presets > p {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.finance-manual-payment-presets > .finance-payment-policy-editor {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+}
+
+.finance-payment-preview-status {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.finance-installment-context {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+  padding: 22px;
+  border: 1px solid var(--border-subtle);
+  border-left: 4px solid var(--state-info-border);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.finance-installment-context {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.finance-installment-context strong {
+  font-size: 22px;
+  line-height: 1.35;
+  font-variant-numeric: tabular-nums;
+}
+
+.finance-installment-context small {
+  margin-top: 12px;
+  color: var(--text-secondary);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.finance-installment-fields {
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.finance-installment-fields label {
+  display: grid;
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 15px;
+}
+
+.finance-installment-fields input,
+.finance-installment-fields select,
+.finance-installment-fields textarea,
+.finance-payment-policy-editor input,
+.finance-payment-policy-editor select {
+  width: 100%;
+  min-height: 48px;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 10px 14px;
+  color: var(--text-primary);
+  background: var(--surface-2);
+  font-size: 16px;
+}
+
+.finance-installment-fields .finance-installment-reason {
+  grid-column: 1 / -1;
+}
+
+.finance-installment-reason textarea {
+  min-height: 76px;
+  resize: vertical;
+}
+
+.finance-installment-reason-card {
+  display: grid;
+  align-content: start;
+  gap: 10px;
+  padding: 22px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--surface-2) 72%, var(--surface-1));
+}
+
+.finance-installment-reason-card > span {
+  color: var(--text-primary);
+  font-size: 16px;
+  font-weight: 750;
+}
+
+.finance-installment-reason-card textarea {
+  width: 100%;
+  min-height: 132px;
+  resize: vertical;
+  border: 1px solid var(--border-default);
+  border-radius: 10px;
+  padding: 14px;
+  color: var(--text-primary);
+  background: var(--surface-2);
+  font: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+.finance-installment-reason-card textarea:focus-visible,
+.finance-installment-fields input:focus-visible,
+.finance-payment-policy-editor input:focus-visible,
+.finance-payment-policy-editor select:focus-visible,
+.finance-payment-policy-editor button:focus-visible {
+  outline: 2px solid var(--state-info-border);
+  outline-offset: 2px;
+}
+
+.finance-installment-review-ready {
+  display: grid;
+  gap: 5px;
+  padding: 20px 22px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.finance-installment-review-ready strong {
+  font-size: 17px;
+}
+
+.finance-installment-review-ready span {
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.finance-payment-policy-editor,
+.finance-policy-stage-list {
+  display: grid;
+  gap: 14px;
+}
+
+.finance-policy-template-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.finance-policy-template-actions button,
+.finance-installment-add-row {
+  min-height: 40px;
+  padding: 0 14px;
+  font-weight: 750;
+}
+
+.finance-policy-term-field,
+.finance-policy-stage-fields label,
+.finance-policy-fixed-date {
+  display: grid;
+  gap: 7px;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.finance-policy-input-unit {
+  display: grid;
+  grid-template-columns: minmax(160px, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.finance-policy-stage {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.finance-policy-stage > header,
+.finance-policy-stage > header > div {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.finance-policy-stage > header {
+  justify-content: space-between;
+}
+
+.finance-policy-stage > header b {
+  display: grid;
+  width: 30px;
+  height: 30px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--surface-1);
+  background: var(--state-info-border);
+}
+
+.finance-policy-stage > header button {
+  min-height: 40px;
+  padding: 0 12px;
+}
+
+.finance-policy-stage-fields {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(160px, 1fr));
+  gap: 12px;
+}
+
+.finance-policy-fixed-date strong {
+  min-height: 48px;
+  padding: 13px 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 10px;
+  color: var(--text-primary);
+  font-size: 14px;
+}
+
+.finance-policy-preview,
+.finance-policy-total {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  padding: 10px 12px;
+  border-left: 3px solid var(--border-default);
+  color: var(--text-secondary);
+  background: var(--surface-1);
+  font-variant-numeric: tabular-nums;
+}
+
+.finance-policy-preview.is-condition {
+  border-left-color: var(--state-info-border);
+}
+
+.finance-policy-preview.is-actual,
+.finance-policy-total {
+  border-left-color: var(--state-success-border);
+}
+
+.finance-policy-preview strong,
+.finance-policy-total strong {
+  color: var(--text-primary);
+}
+
+.finance-installment-error {
+  color: var(--state-warning-text);
+}
+
+.finance-installment-review-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 14px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+}
+
+.finance-installment-review-summary strong {
+  color: var(--text-primary);
+}
+
+.finance-installment-review-summary article {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+  min-height: 92px;
+  padding: 18px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 12px;
+  background: var(--surface-2);
+}
+
+.finance-installment-review-summary article > b {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--surface-1);
+  background: var(--state-info-border);
+  font-size: 14px;
+}
+
+.finance-installment-review-summary article > div {
+  display: grid;
+  gap: 4px;
+}
+
+.finance-installment-review-summary article strong {
+  font-size: 20px;
+}
+
+.finance-installment-review .finance-payment-calendar-band {
+  grid-template-columns: minmax(0, 1.3fr) minmax(260px, 0.7fr);
+}
+
+.finance-installment-complete {
+  display: grid;
+  justify-items: center;
+  align-content: center;
+  min-height: 300px;
+  text-align: center;
+}
+
+.finance-installment-complete > span {
+  display: grid;
+  width: 52px;
+  height: 52px;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--surface-1);
+  background: var(--state-success-border);
+  font-size: 26px;
+}
+
+.finance-installment-complete h3 {
+  margin: 14px 0 4px;
+  font-size: 24px;
+}
+
+.finance-installment-complete p,
+.finance-installment-complete small {
+  max-width: 520px;
+  color: var(--text-secondary);
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+.finance-installment-error {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--state-warning-border);
+  background: var(--state-warning-bg);
+  font-size: 14px;
+}
+
+.finance-installment-wizard-actions {
+  bottom: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.finance-installment-wizard-actions button {
+  min-width: 140px;
+  min-height: 46px;
+  padding: 0 20px;
+  font-size: 15px;
+}
+
+.finance-installment-wizard-actions button.is-primary {
+  border-color: var(--state-info-border);
+  color: var(--surface-1);
+  background: var(--state-info-border);
+  font-weight: 800;
+}
+
+.finance-installment-wizard button:disabled {
+  cursor: not-allowed;
+  opacity: 0.46;
+}
+
+@media (max-width: 720px) {
+  .finance-installment-wizard-overlay {
+    align-items: end;
+    padding: 0;
+  }
+
+  .finance-installment-wizard {
+    width: 100%;
+    max-height: 96dvh;
+    border-radius: 18px 18px 0 0;
+  }
+
+  .finance-installment-wizard-header,
+  .finance-installment-wizard-actions {
+    padding: 18px 20px;
+  }
+
+  .finance-installment-wizard-header h2 {
+    font-size: 23px;
+  }
+
+  .finance-installment-stepper {
+    grid-template-columns: 1fr;
+    padding: 14px 20px 0;
+  }
+
+  .finance-installment-stepper > span {
+    display: none;
+  }
+
+  .finance-installment-stepper > span.is-active,
+  .finance-installment-stepper > small {
+    display: flex;
+  }
+
+  .finance-installment-stepper > small {
+    justify-content: flex-end;
+    color: var(--text-secondary);
+  }
+
+  .finance-installment-wizard-body {
+    min-height: 0;
+    padding: 22px 20px;
+  }
+
+  .finance-installment-conditions,
+  .finance-installment-review .finance-payment-calendar-band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .finance-installment-context,
+  .finance-installment-fields {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .finance-installment-context {
+    order: -1;
+  }
+
+  .finance-installment-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .finance-policy-stage-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .finance-installment-review-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .finance-invoice-review-cards,
+  .finance-invoice-amount-field {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .finance-installment-fields .finance-installment-reason {
+    grid-column: 1;
+  }
+
+  .finance-installment-wizard-actions button {
+    min-width: 112px;
+  }
+}

@@ -1,0 +1,588 @@
+.director-payroll-surface {
+  container-type: inline-size;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  color: var(--text-primary);
+  overflow-wrap: anywhere;
+}
+
+.director-payroll-surface > *,
+.director-payroll-header > *,
+.director-payroll-content > *,
+.director-payroll-section,
+.director-payroll-table-wrap,
+.director-payroll-breakdown,
+.director-payroll-tariffs {
+  min-width: 0;
+}
+
+.director-payroll-header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: var(--space-3) var(--space-6);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.director-payroll-header h2,
+.director-payroll-section-heading h3,
+.director-payroll-tariff-group h4 {
+  margin: 0;
+  color: var(--text-primary);
+}
+
+.director-payroll-header h2 {
+  font-size: clamp(20px, 2vw, 28px);
+  line-height: 1.15;
+}
+
+.director-payroll-boundary {
+  max-width: 38ch;
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+  line-height: 1.4;
+  text-align: right;
+}
+
+.director-payroll-toolbar {
+  display: grid;
+  gap: var(--space-3);
+  min-width: 0;
+  padding: var(--space-3);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.director-payroll-presets,
+.director-payroll-custom-range {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: end;
+  gap: var(--space-2);
+  min-width: 0;
+}
+
+.director-payroll-presets button,
+.director-payroll-state button {
+  min-height: 40px;
+  padding: 8px 12px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font: inherit;
+  font-size: 13px;
+  font-weight: 850;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.director-payroll-presets button.is-active,
+.director-payroll-presets button[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface-2));
+  color: var(--text-primary);
+}
+
+.director-payroll-presets button:focus-visible,
+.director-payroll-state button:focus-visible,
+.director-payroll-custom-range input:focus-visible,
+.director-payroll-breakdown > summary:focus-visible,
+.director-payroll-tariffs > summary:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.director-payroll-custom-range label {
+  display: grid;
+  flex: 1 1 190px;
+  gap: var(--space-1);
+  min-width: 0;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.director-payroll-custom-range input {
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  padding: 8px 10px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  color: var(--text-primary);
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+}
+
+.director-payroll-validation,
+.director-payroll-state {
+  margin: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--state-info-border);
+  border-radius: var(--radius-sm);
+  background: var(--state-info-bg);
+  color: var(--state-info-text);
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.director-payroll-validation,
+.director-payroll-error {
+  border-color: var(--state-critical-border);
+  background: var(--state-critical-bg);
+  color: var(--state-critical-text);
+}
+
+.director-payroll-error {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.director-payroll-error p {
+  margin: 0;
+}
+
+.director-payroll-empty {
+  border-color: var(--border-default);
+  background: var(--surface-inset);
+  color: var(--text-secondary);
+}
+
+.director-payroll-content {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: var(--space-4);
+  min-width: 0;
+}
+
+.director-payroll-summary {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-2);
+  min-width: 0;
+  margin: 0;
+}
+
+.director-payroll-summary-fact {
+  display: grid;
+  align-content: start;
+  gap: var(--space-1);
+  min-width: 0;
+  min-height: 82px;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.director-payroll-summary-fact dt {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.director-payroll-summary-fact dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: clamp(20px, 2vw, 26px);
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.1;
+}
+
+.director-payroll-section {
+  display: grid;
+  gap: var(--space-2);
+}
+
+.director-payroll-section-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.director-payroll-section-heading h3 {
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.director-payroll-section-heading span {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 750;
+  font-variant-numeric: tabular-nums;
+}
+
+.director-payroll-table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.director-payroll-table,
+.director-payroll-detail-table,
+.director-payroll-tariff-table {
+  width: 100%;
+  min-width: 720px;
+  border-collapse: collapse;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.35;
+}
+
+.director-payroll-detail-table {
+  min-width: 920px;
+}
+
+.director-payroll-table th,
+.director-payroll-table td,
+.director-payroll-detail-table th,
+.director-payroll-detail-table td,
+.director-payroll-tariff-table th,
+.director-payroll-tariff-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  vertical-align: top;
+}
+
+.director-payroll-table th,
+.director-payroll-detail-table th,
+.director-payroll-tariff-table th {
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-weight: 850;
+  text-align: left;
+}
+
+.director-payroll-table tbody tr:last-child td,
+.director-payroll-detail-table tbody tr:last-child td,
+.director-payroll-tariff-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.director-payroll-table td:nth-child(n + 2),
+.director-payroll-table th:nth-child(n + 2),
+.director-payroll-detail-table td:nth-child(n + 3):nth-child(-n + 6),
+.director-payroll-detail-table th:nth-child(n + 3):nth-child(-n + 6),
+.director-payroll-tariff-table td:nth-child(n + 2),
+.director-payroll-tariff-table th:nth-child(n + 2) {
+  text-align: right;
+}
+
+.director-payroll-unresolved-table td,
+.director-payroll-unresolved-table th {
+  text-align: left;
+}
+
+.director-payroll-unresolved-table td:nth-child(3),
+.director-payroll-unresolved-table th:nth-child(3) {
+  text-align: right;
+}
+
+.director-payroll-unresolved-table {
+  border-top: 2px solid var(--state-warning-border);
+}
+
+.director-payroll-unresolved-table small {
+  display: block;
+  margin-top: var(--space-1);
+  color: var(--text-muted);
+  font-size: 13px;
+}
+
+.director-payroll-unresolved-table ul {
+  display: grid;
+  gap: var(--space-1);
+  margin: 0;
+  padding-left: 18px;
+  color: var(--state-warning-text);
+}
+
+.director-payroll-defect-evidence {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.35;
+}
+
+.director-payroll-defect-evidence strong {
+  color: var(--text-primary);
+}
+
+.director-payroll-defect-evidence span {
+  font-variant-numeric: tabular-nums;
+}
+
+.director-payroll-breakdown {
+  margin-top: 0;
+}
+
+.director-payroll-tariffs {
+  margin-top: var(--space-2);
+}
+
+.director-payroll-breakdown > summary,
+.director-payroll-tariffs > summary {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.director-payroll-breakdown .director-payroll-table-wrap {
+  margin-top: var(--space-2);
+}
+
+.director-payroll-detail-table caption {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+  font-weight: 800;
+  text-align: left;
+}
+
+.director-payroll-tariffs {
+  padding-top: var(--space-2);
+  border-top: 1px solid var(--border-subtle);
+}
+
+.director-payroll-tariffs > p {
+  margin: 0 0 var(--space-3);
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.director-payroll-tariff-group {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-3);
+}
+
+.director-payroll-tariff-group h4 {
+  font-size: 14px;
+  line-height: 1.35;
+}
+
+.director-payroll-special-rules {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-2);
+  margin: var(--space-3) 0 0;
+}
+
+.director-payroll-special-rules > div {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+  padding: 10px 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--surface-inset);
+}
+
+.director-payroll-special-rules dt {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.director-payroll-special-rules dd {
+  margin: 0;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1.4;
+}
+
+@media (max-width: 1180px) {
+  .director-payroll-summary {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .director-payroll-surface {
+    gap: var(--space-3);
+  }
+
+  .director-payroll-header {
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+  }
+
+  .director-payroll-boundary {
+    max-width: none;
+    text-align: left;
+  }
+
+  .director-payroll-presets button {
+    flex: 1 1 150px;
+    min-height: 44px;
+  }
+
+  .director-payroll-custom-range input,
+  .director-payroll-state button,
+  .director-payroll-breakdown > summary,
+  .director-payroll-tariffs > summary {
+    min-height: 44px;
+  }
+
+  .director-payroll-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .director-payroll-special-rules {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .director-payroll-table-wrap {
+    overflow-x: visible;
+    border: 0;
+    background: transparent;
+  }
+
+  .director-payroll-table,
+  .director-payroll-detail-table,
+  .director-payroll-tariff-table {
+    min-width: 0;
+  }
+
+  .director-payroll-table thead {
+    display: none;
+  }
+
+  .director-payroll-detail-table thead,
+  .director-payroll-tariff-table thead {
+    display: none;
+  }
+
+  .director-payroll-table,
+  .director-payroll-table tbody,
+  .director-payroll-table tr,
+  .director-payroll-table td,
+  .director-payroll-detail-table,
+  .director-payroll-detail-table tbody,
+  .director-payroll-detail-table tr,
+  .director-payroll-detail-table td,
+  .director-payroll-tariff-table,
+  .director-payroll-tariff-table tbody,
+  .director-payroll-tariff-table tr,
+  .director-payroll-tariff-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .director-payroll-table tbody:not([hidden]),
+  .director-payroll-detail-table tbody:not([hidden]),
+  .director-payroll-tariff-table tbody:not([hidden]) {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .director-payroll-table tr,
+  .director-payroll-detail-table tr,
+  .director-payroll-tariff-table tr {
+    padding: var(--space-1) 0;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    background: var(--surface-inset);
+  }
+
+  .director-payroll-unresolved-table {
+    border-top: 0;
+  }
+
+  .director-payroll-unresolved-table tr {
+    border-left: 3px solid var(--state-warning-border);
+  }
+
+  .director-payroll-table td,
+  .director-payroll-detail-table td,
+  .director-payroll-tariff-table td {
+    display: grid;
+    grid-template-columns: minmax(118px, 38%) minmax(0, 1fr);
+    gap: var(--space-2);
+    min-width: 0;
+    padding: 8px 10px;
+    border-bottom: 0;
+    text-align: left;
+    overflow-wrap: anywhere;
+  }
+
+  .director-payroll-table td::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  .director-payroll-detail-table td::before,
+  .director-payroll-tariff-table td::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.3;
+    text-align: left;
+  }
+
+  .director-payroll-table td:nth-child(n),
+  .director-payroll-detail-table td:nth-child(n),
+  .director-payroll-tariff-table td:nth-child(n) {
+    text-align: left;
+  }
+
+  .director-payroll-table td > strong,
+  .director-payroll-table td > small,
+  .director-payroll-table td > ul {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .director-payroll-breakdown {
+    grid-column: 1 / -1;
+  }
+
+  .director-payroll-detail-table caption {
+    display: block;
+    margin-bottom: var(--space-2);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+  }
+}

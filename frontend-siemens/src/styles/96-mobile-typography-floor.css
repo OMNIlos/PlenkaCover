@@ -1,0 +1,27 @@
+@media (max-width: 520px) {
+  :where(.app-shell[data-active-role="commercial"] :is(.commercial-next-action,.commercial-decision-header,.commercial-document-meta,.commercial-key-values,.commercial-cover-summary,.commercial-payment-shipment-strip,.commercial-payment-grid),.role-production :is(.production-workbench,.production-decision-strip,.production-actions,.production-command-grid,.production-operator-list,.production-priority-options),.finance-action-surface,.finance-primary-action-panel,.finance-now-block,.finance-timeline,.admin-system-focus,.admin-access-focus,.admin-access-surface,.admin-context-strip,.admin-evidence-panel,.admin-primary-safe-action,.admin-history-link-row,.operator-focus,.operator-runtime,.warehouse-scan-panel,.warehouse-workbench) :is(p,span,small,dt,dd,em,label,th,td,li),
+  :where(.app-shell[data-active-role="commercial"] .eyebrow,.admin-access-surface .eyebrow,.admin-assignment-form label,.admin-assignment-form label span) {
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  :where(.commercial-next-meta span,.commercial-cover-summary span,.commercial-payment-grid span,.commercial-mini-pill,.commercial-owner-chip,.commercial-disclosure-mark,.commercial-summary-mark,.commercial-state-badge,.production-state-badge,.finance-state-badge,.admin-state-badge) {
+    font-size: 13px;
+    line-height: 1.15;
+  }
+  .commercial-workbench .eyebrow,.production-workbench :is(.eyebrow,small),.production-actions.action-surface:not(.large-actions) h3,.production-state-badge,.finance-workbench .eyebrow,.operator-focus .eyebrow,.warehouse-workbench .eyebrow,.admin-diagnostics-workbench :is(.eyebrow,span),.admin-access-surface :is(.eyebrow,span),.admin-assignment-form span{font-size:13px;line-height:1.15;}
+  .app-shell[data-active-role="commercial"] .commercial-workbench :is(.eyebrow,.commercial-owner-chip,.commercial-state-badge){font-size:13px;line-height:1.15;}
+  .app-shell[data-active-role="commercial"] :is(.commercial-document-meta,.commercial-key-values,.commercial-cover-summary,.commercial-payment-shipment-strip) dt{font-size:13px;line-height:1.15;}
+  .app-shell[data-active-role="commercial"] :is(.commercial-cover-summary,.commercial-payment-grid) span{font-size:13px;line-height:1.15;}
+  .app-shell[data-active-role="commercial"] .commercial-state-badge{font-size:13px;line-height:1.15;}
+  .finance-workbench :is(.finance-header-meta span,.finance-command-source small,.finance-command-mode-row button,.finance-command-counter span,.finance-panel-heading span,.finance-ledger-table,.finance-ledger-table th,.finance-ledger-table td){font-size:13px;line-height:1.15;}
+  .app-shell[data-active-role="director"] .management-control-board :is(.eyebrow,dt,small,span,em),
+  .app-shell[data-active-role="director"] .management-report-table :is(small,span,em) {
+    font-size: 13px;
+    line-height: 1.2;
+  }
+  .role-production :is(.production-dispatch-summary-cell,.production-roll-assignment-summary) :is(span,small){font-size:13px;line-height:1.15;}
+  .role-production .production-priority-options{display:grid;grid-template-columns:1fr;overflow:visible;padding-bottom:0;scroll-snap-type:none;}
+  .role-production .production-priority-option{width:100%;min-height:0;flex:initial;scroll-snap-align:unset;}
+  .role-production .production-priority-option small{display:block;}
+}

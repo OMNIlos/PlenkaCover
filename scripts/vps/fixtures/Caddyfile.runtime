@@ -1,0 +1,10 @@
+{
+	admin off
+	auto_https off
+}
+
+import frontend-routes.caddy
+
+:8080 {
+	import plenka_frontend_routes
+}

@@ -1,0 +1,19 @@
+#!/bin/sh
+set -eu
+
+if command -v systemctl >/dev/null 2>&1; then
+  case "${1:-}" in
+    upgrade)
+      if systemctl is-active --quiet plenka-gateway.service; then
+        install -m 0600 /dev/null /run/plenka-gateway-agent.was-active
+      fi
+      systemctl stop plenka-gateway.service >/dev/null 2>&1 || true
+      ;;
+    remove|deconfigure)
+      rm -f /run/plenka-gateway-agent.was-active
+      systemctl disable --now plenka-gateway.service >/dev/null 2>&1 || true
+      ;;
+  esac
+fi
+
+exit 0

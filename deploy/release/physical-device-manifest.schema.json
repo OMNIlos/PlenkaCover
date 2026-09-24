@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://plenka.local/schemas/physical-device-manifest-v1.json",
+  "title": "Plenka Physical Device Release Manifest",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "createdAt", "backend", "frontend", "gateway", "protocol"],
+  "properties": {
+    "schemaVersion": {
+      "const": 1
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "backend": {
+      "$ref": "#/$defs/source"
+    },
+    "frontend": {
+      "$ref": "#/$defs/source"
+    },
+    "gateway": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["sourceCommit", "packageVersion", "packageSha256"],
+      "properties": {
+        "sourceCommit": {
+          "$ref": "#/$defs/commit"
+        },
+        "packageVersion": {
+          "type": "string",
+          "pattern": "^1:[0-9]+\\.[0-9]+\\.[0-9]+(?:[~+][0-9A-Za-z.+~-]+)?$"
+        },
+        "packageSha256": {
+          "$ref": "#/$defs/sha256"
+        }
+      }
+    },
+    "protocol": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["version", "requiredCapabilities", "agentCapabilities"],
+      "properties": {
+        "version": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "requiredCapabilities": {
+          "$ref": "#/$defs/capabilities"
+        },
+        "agentCapabilities": {
+          "$ref": "#/$defs/capabilities"
+        }
+      }
+    }
+  },
+  "$defs": {
+    "commit": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{40}(?:[0-9a-f]{24})?$"
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^sha256:[0-9a-f]{64}$"
+    },
+    "capabilities": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["commit", "imageDigest"],
+      "properties": {
+        "commit": {
+          "$ref": "#/$defs/commit"
+        },
+        "imageDigest": {
+          "$ref": "#/$defs/digest"
+        }
+      }
+    }
+  }
+}

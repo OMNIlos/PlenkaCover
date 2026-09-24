@@ -1,0 +1,110 @@
+.commercial-mobile-back {
+  display: none;
+}
+
+@media (max-width: 1100px) {
+  .commercial-live-filters,
+  .commercial-live-order-row {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-status-rail,
+  .commercial-fulfillment dl,
+  .commercial-position-list dl,
+  .commercial-secondary-facts dl,
+  :where(.commercial-live-decision-stack) .commercial-cover-summary,
+  :where(.commercial-live-decision-stack) .commercial-problem-impact dl,
+  .commercial-material-summary,
+  .commercial-material-plan {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
+  .commercial-live-list-panel,
+  .commercial-live-detail-panel,
+  .commercial-live-raw-shell {
+    grid-column: 1;
+  }
+
+  .commercial-live-list-panel,
+  .commercial-live-detail-panel {
+    overflow: visible;
+  }
+
+  .commercial-live-list-panel[data-mobile-active='false'],
+  .commercial-live-detail-panel[data-mobile-active='false'] {
+    display: none;
+  }
+
+  .commercial-live-list-panel[data-mobile-active='true'],
+  .commercial-live-detail-panel[data-mobile-active='true'] {
+    display: grid;
+  }
+
+  .commercial-mobile-back {
+    display: inline-flex;
+    align-items: center;
+    justify-self: start;
+    min-height: 44px;
+  }
+
+  .commercial-position-list > li {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-live-intake .intake-position-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (min-width: 901px) {
+  .commercial-live-list-panel,
+  .commercial-live-detail-panel {
+    display: grid;
+  }
+}
+
+@media (max-width: 390px) {
+  .commercial-live-intake-dialog {
+    width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+  }
+
+  .commercial-live-list-panel .panel-header,
+  .commercial-status-rail,
+  .commercial-fulfillment dl,
+  .commercial-position-list dl,
+  .commercial-secondary-facts dl,
+  :where(.commercial-live-decision-stack) .commercial-cover-summary,
+  :where(.commercial-live-decision-stack) .commercial-problem-impact dl,
+  .commercial-material-summary,
+  .commercial-material-plan,
+  .commercial-correction-delta {
+    grid-template-columns: 1fr;
+  }
+
+  .commercial-next-action,
+  .commercial-order-overview > header,
+  .commercial-order-positions > header {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .commercial-next-action button,
+  .commercial-live-primary-action {
+    width: 100%;
+    min-height: 44px;
+  }
+
+  .commercial-live-intake .intake-position-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .commercial-live-skeleton span {
+    animation: none;
+  }
+}

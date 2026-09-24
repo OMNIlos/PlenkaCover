@@ -1,0 +1,261 @@
+.app-shell[data-active-role='commercial'] .commercial-order-overview {
+  padding: 14px;
+}
+
+.commercial-pipeline {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  margin-top: 14px;
+}
+
+.commercial-pipeline > ol {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.commercial-pipeline-step {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr);
+  gap: 7px;
+  align-items: center;
+  min-width: 0;
+  min-height: 56px;
+  padding: 7px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-inset);
+}
+
+.commercial-pipeline-step > span:last-child {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.commercial-pipeline-step strong,
+.commercial-pipeline-step small {
+  overflow-wrap: anywhere;
+}
+
+.commercial-pipeline-step strong {
+  color: var(--text-primary);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.commercial-pipeline-step small {
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.15;
+}
+
+.commercial-pipeline-marker {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border: 1px solid var(--border-default);
+  border-radius: 50%;
+  color: var(--text-muted);
+  font-size: 11px;
+  font-weight: 900;
+}
+
+.commercial-pipeline-step.is-done .commercial-pipeline-marker {
+  border-color: var(--state-success-border);
+  background: var(--state-success-bg);
+  color: var(--state-success-text);
+}
+
+.commercial-pipeline-step.is-current {
+  border-color: var(--accent);
+  background: var(--surface-selected);
+  box-shadow: inset 0 -2px 0 var(--accent);
+}
+
+.commercial-pipeline-step.is-current .commercial-pipeline-marker {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-inverse);
+}
+
+.commercial-pipeline-step.is-current small {
+  color: var(--text-primary);
+}
+
+.commercial-pipeline-step.is-blocked {
+  border-color: var(--state-warning-border);
+  background: var(--state-warning-bg);
+}
+
+.commercial-pipeline-step.is-blocked .commercial-pipeline-marker,
+.commercial-pipeline-step.is-blocked small {
+  color: var(--state-warning-text);
+}
+
+.commercial-pipeline-step.is-issue {
+  border-color: var(--state-critical-border);
+  background: var(--state-critical-bg);
+}
+
+.commercial-pipeline-step.is-issue .commercial-pipeline-marker,
+.commercial-pipeline-step.is-issue small {
+  color: var(--state-critical-text);
+}
+
+.commercial-pipeline-step.is-next,
+.commercial-pipeline-step.is-skipped {
+  opacity: 0.58;
+}
+
+.commercial-pipeline-step.is-skipped {
+  background: transparent;
+}
+
+.commercial-pipeline-command {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.commercial-pipeline-command button {
+  min-height: 38px;
+  padding: 7px 16px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--text-inverse);
+  font-weight: 800;
+}
+
+.commercial-pipeline-feedback {
+  margin: 0;
+  color: var(--text-secondary);
+  font-size: 12px;
+  text-align: right;
+}
+
+.commercial-pipeline-feedback.is-error {
+  color: var(--state-critical-text);
+}
+
+.commercial-fulfillment {
+  padding-top: 10px;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.commercial-fulfillment-summary {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 4px 12px;
+}
+
+.commercial-fulfillment-summary span {
+  color: var(--text-secondary);
+}
+
+.commercial-fulfillment > details {
+  margin-top: 7px;
+}
+
+.commercial-fulfillment > details > summary,
+.commercial-cover-route-evidence > summary {
+  width: max-content;
+  max-width: 100%;
+  color: var(--text-secondary);
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.commercial-fulfillment > details[open] > summary,
+.commercial-cover-route-evidence[open] > summary {
+  margin-bottom: 8px;
+}
+
+.commercial-cover-route-evidence {
+  margin: 0;
+}
+
+.commercial-cover-route-evidence .commercial-cover-reasons {
+  margin-top: 8px;
+}
+
+.commercial-cover-route-evidence > p {
+  margin: 8px 0 0;
+  color: var(--text-muted);
+}
+
+.commercial-queue-action {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.commercial-queue-action strong,
+.commercial-queue-action small {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.commercial-queue-action strong {
+  color: var(--text-primary);
+  font-size: 13px;
+}
+
+.commercial-queue-action small {
+  color: var(--text-muted);
+  font-size: 11px;
+}
+
+.commercial-queue-priority.is-issue,
+.commercial-queue-action.is-issue {
+  color: var(--state-critical-text);
+}
+
+.commercial-queue-priority.is-waiting {
+  color: var(--state-info-text);
+}
+
+.app-shell[data-active-role='commercial'] :is(
+    .commercial-pipeline-step,
+    .commercial-cover-route-evidence
+  ) {
+  animation: none;
+  transition: none;
+}
+
+@media (max-width: 1500px) {
+  .commercial-pipeline > ol {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .commercial-pipeline-step {
+    min-height: 52px;
+  }
+}
+
+@media (max-width: 520px) {
+  .commercial-pipeline > ol {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 4px;
+  }
+
+  .commercial-pipeline-step {
+    grid-template-columns: 26px minmax(0, 1fr);
+    min-height: 44px;
+  }
+
+  .commercial-pipeline-command button {
+    width: 100%;
+  }
+
+  .commercial-pipeline-feedback {
+    text-align: left;
+  }
+}

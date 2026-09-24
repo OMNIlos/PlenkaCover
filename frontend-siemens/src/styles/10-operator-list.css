@@ -1,0 +1,243 @@
+
+.operator-order-card[draggable="true"] {
+  cursor: grab;
+}
+
+.operator-order-card.is-dragging {
+  opacity: 0.58;
+  transform: scale(0.99);
+}
+
+.operator-order-card.is-drop-target {
+  outline: 1px dashed var(--border-strong);
+  outline-offset: -5px;
+}
+
+.operator-order-card:hover,
+.operator-order-card.is-selected {
+  border-color: var(--border-default);
+  background: var(--selection-surface);
+}
+
+.operator-order-card.is-selected {
+  border-left-color: color-mix(in srgb, var(--selection-rail) 44%, var(--border-default));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.05),
+    inset 2px 0 0 color-mix(in srgb, var(--selection-rail) 44%, transparent),
+    var(--selection-shadow-raised);
+}
+
+.operator-order-card.severity-info:not(.is-selected) {
+  border-left-color: transparent;
+}
+
+.operator-order-card.severity-warning {
+  border-left-color: transparent;
+  background: var(--surface-1);
+  box-shadow:
+    inset 2px 0 0 var(--semantic-rail-warning),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.operator-order-card.severity-critical {
+  border-left-color: transparent;
+  background: color-mix(in srgb, var(--state-critical-bg) 8%, var(--surface-1));
+  box-shadow:
+    inset 2px 0 0 var(--semantic-rail-critical),
+    inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.operator-order-card.is-muted {
+  border-left-color: var(--border-default);
+  background: color-mix(in srgb, var(--surface-inset) 52%, var(--surface-1));
+  color: var(--text-secondary);
+}
+
+.operator-order-card-main {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  width: 100%;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.operator-card-head,
+.operator-card-progress,
+.operator-card-step {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.operator-card-head {
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.operator-card-identity {
+  display: grid;
+  min-width: 0;
+  gap: 2px;
+}
+
+.operator-card-identity strong {
+  color: var(--text-primary);
+  font-size: 18px;
+  font-weight: 850;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operator-card-identity span,
+.operator-card-code,
+.operator-card-recipe,
+.operator-card-step small {
+  color: var(--text-muted);
+}
+
+.operator-card-identity span {
+  font-size: 12px;
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operator-card-code {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border: 1px solid var(--border-default);
+  border-radius: 4px;
+  background: var(--surface-2);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+.operator-card-params {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  min-width: 0;
+}
+
+.operator-card-params span {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+  padding: 7px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  background: color-mix(in srgb, var(--surface-2) 76%, transparent);
+}
+
+.operator-card-params strong {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 850;
+  line-height: 1.1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.operator-card-params small {
+  color: var(--text-muted);
+  font-size: 10px;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.operator-card-progress {
+  gap: 8px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  font-weight: 750;
+}
+
+.operator-progress-line {
+  position: relative;
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--surface-inset);
+  overflow: hidden;
+}
+
+.operator-progress-line span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: color-mix(in srgb, var(--text-muted) 64%, var(--border-strong));
+}
+
+.operator-order-card.severity-warning .operator-progress-line span {
+  background: color-mix(in srgb, var(--text-muted) 70%, var(--border-strong));
+}
+
+.operator-order-card.is-muted .operator-progress-line span {
+  background: var(--text-muted);
+}
+
+.operator-card-step {
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 30px;
+  padding: 5px 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 5px;
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+
+.operator-order-card.severity-warning .operator-card-step {
+  border-color: var(--border-subtle);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+
+.operator-card-step.has-blocker {
+  border-color: var(--state-critical-border);
+  background: var(--state-critical-bg);
+  color: var(--state-critical-text);
+}
+
+.operator-order-card.is-muted .operator-card-step {
+  border-color: var(--border-default);
+  background: var(--surface-2);
+  color: var(--text-secondary);
+}
+
+.operator-card-step span {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 850;
+}
+
+.operator-card-step small {
+  flex: 0 0 auto;
+  font-size: 10px;
+  font-weight: 850;
+  text-transform: uppercase;
+}
+
+.operator-card-recipe {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11px;
+}

@@ -1,0 +1,328 @@
+:root {
+  color-scheme: dark;
+  font-family: Inter, "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --color-bg: var(--bg-app);
+  --color-surface: var(--surface-1);
+  --color-surface-raised: var(--surface-raised);
+  --color-border: var(--border-default);
+  --color-text: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --grid-columns: 12;
+  --grid-gutter: 16px;
+  --grid-margin: 24px;
+  --grid-max: 1760px;
+  --baseline: 8px;
+  --role-commercial: #0f8f88;
+  --role-production: #3366a8;
+  --role-operator: #2ec6b0;
+  --role-warehouse: #2f8f5f;
+  --role-director: #9a6a20;
+  --role-finance: #4e82b5;
+  --role-admin: #6b7785;
+  --bg-app: #0f141b;
+  --bg-grid-line: rgba(74, 90, 106, 0.1);
+  --surface-1: #151d26;
+  --surface-2: #1b2632;
+  --surface-3: #22313e;
+  --surface-raised: #18222c;
+  --surface-inset: #101820;
+  --surface-hover: #202d38;
+  --surface-selected: #183833;
+  --border-subtle: #2b3642;
+  --border-default: #3a4856;
+  --border-strong: #556777;
+  --border-muted: color-mix(in srgb, var(--border-subtle) 46%, transparent);
+  --surface-panel: color-mix(in srgb, var(--surface-1) 76%, var(--surface-inset));
+  --surface-quiet: color-mix(in srgb, var(--surface-1) 68%, transparent);
+  --surface-band: color-mix(in srgb, var(--surface-inset) 74%, var(--surface-1));
+  --surface-selected-quiet: color-mix(in srgb, var(--surface-selected) 54%, transparent);
+  --selection-surface: color-mix(in srgb, var(--surface-2) 76%, var(--surface-inset));
+  --selection-surface-quiet: color-mix(in srgb, var(--surface-2) 50%, transparent);
+  --selection-surface-hover: color-mix(in srgb, var(--surface-3) 46%, transparent);
+  --selection-rail: color-mix(in srgb, var(--accent) 78%, #8aa6b5);
+  --selection-rail-muted: color-mix(in srgb, var(--selection-rail) 34%, transparent);
+  --selection-ring: color-mix(in srgb, var(--selection-rail) 24%, transparent);
+  --selection-shadow: 0 1px 0 rgba(255, 255, 255, 0.035) inset, 0 8px 18px rgba(5, 12, 18, 0.18);
+  --selection-shadow-raised: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 12px 26px rgba(5, 12, 18, 0.26);
+  --semantic-rail-warning: color-mix(in srgb, var(--state-warning-border) 38%, transparent);
+  --semantic-rail-critical: color-mix(in srgb, var(--state-critical-border) 48%, transparent);
+  --rule-hairline: color-mix(in srgb, var(--border-subtle) 42%, transparent);
+  --rule-muted: color-mix(in srgb, var(--border-subtle) 62%, transparent);
+  --shadow-focus-only: 0 0 0 2px rgba(var(--accent-rgb), 0.24);
+  --text-primary: #f4f7fb;
+  --text-secondary: #c6d2dd;
+  --text-muted: #91a4b7;
+  --text-disabled: #73808d;
+  --text-inverse: #07141b;
+  --accent: #2ec6b0;
+  --accent-soft: #123a38;
+  --accent-rgb: 46, 198, 176;
+  --focus: #79d7ff;
+  --radius-xs: 3px;
+  --radius-sm: 5px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-overlay: 10px;
+  --radius-pill: 999px;
+  --state-info-bg: #172d40;
+  --state-info-border: #4f8fb8;
+  --state-info-text: #9fd4ff;
+  --state-success-bg: #12372d;
+  --state-success-border: #3faa83;
+  --state-success-text: #9be6c7;
+  --state-warning-bg: #342917;
+  --state-warning-border: #c99336;
+  --state-warning-text: #ffd27a;
+  --state-warning-rgb: 201, 147, 54;
+  --state-critical-bg: #3a2027;
+  --state-critical-border: #d45c66;
+  --state-critical-text: #ffb3bc;
+  --state-critical-rgb: 212, 92, 102;
+  --state-disabled-bg: #202832;
+  --state-disabled-border: #4a5663;
+  --state-disabled-text: #9aa7b2;
+  --office-bg: #f6f8fb;
+  --office-surface: #ffffff;
+  --office-surface-muted: #edf2f7;
+  --office-surface-inset: #eef3f7;
+  --office-surface-hover: #e8f0f6;
+  --office-surface-selected: #e0f1ee;
+  --office-border-subtle: #d8e0e8;
+  --office-border-default: #b9c5d1;
+  --office-border-strong: #7c8b9a;
+  --office-text-primary: #13202b;
+  --office-text-secondary: #314253;
+  --office-text-muted: #566574;
+  --office-text-disabled: #8793a0;
+  --office-accent: #0f8f88;
+  --office-accent-soft: #d9eeeb;
+  --office-accent-rgb: 15, 143, 136;
+  --office-focus: #006adc;
+  --office-state-info-bg: #e7f1f7;
+  --office-state-info-border: #7aaac3;
+  --office-state-info-text: #125a78;
+  --office-state-success-bg: #e4f4ec;
+  --office-state-success-border: #68ae89;
+  --office-state-success-text: #17623d;
+  --office-state-warning-bg: #fff4dc;
+  --office-state-warning-border: #d4a447;
+  --office-state-warning-text: #76520a;
+  --office-state-critical-bg: #fde8ea;
+  --office-state-critical-border: #d86b75;
+  --office-state-critical-text: #8f1d29;
+  --office-state-disabled-bg: #e6ebf0;
+  --office-state-disabled-border: #c2ccd6;
+  --office-state-disabled-text: #5c6670;
+  --office-action-primary-bg: #075f5a;
+  --office-action-primary-hover-bg: #064f4b;
+  --office-action-primary-active-bg: #043f3c;
+  --office-action-primary-border: #075f5a;
+  --office-action-primary-text: #ffffff;
+  --office-action-secondary-bg: #ffffff;
+  --office-action-secondary-hover-bg: #e8f0f6;
+  --office-action-secondary-active-bg: #dce7ef;
+  --office-action-secondary-border: #9aabba;
+  --office-action-secondary-text: #13202b;
+  --office-action-peer-bg: #125a78;
+  --office-action-peer-hover-bg: #0d4b65;
+  --office-action-peer-active-bg: #093a4f;
+  --office-action-peer-border: #125a78;
+  --office-action-peer-text: #ffffff;
+  --office-action-danger-bg: #8f1d29;
+  --office-action-danger-hover-bg: #781721;
+  --office-action-danger-active-bg: #62111a;
+  --office-action-danger-border: #8f1d29;
+  --office-action-danger-text: #ffffff;
+  --office-action-disabled-bg: #e2e8ee;
+  --office-action-disabled-border: #aebbc7;
+  --office-action-disabled-text: #344454;
+  --action-recommended-hover-bg: #075f5a;
+  --action-recommended-active-bg: #064f4b;
+  --action-peer-hover-bg: #176f90;
+  --action-peer-active-bg: #0f4b64;
+  --action-secondary-hover-bg: #243545;
+  --action-secondary-active-bg: #10202d;
+  --action-destructive-bg: #7d1f2d;
+  --action-destructive-hover-bg: #963043;
+  --action-destructive-active-bg: #601722;
+  --action-destructive-border: #e36d7a;
+  --action-destructive-text: #fff5f6;
+  --action-disabled-bg: #28313c;
+  --action-disabled-border: #657384;
+  --action-disabled-text: #d5dde6;
+  --action-subtext-on-dark: #dce7f0;
+  --action-subtext-on-light: #344454;
+  --office-shadow-rgb: 19, 32, 43;
+  --shadow-surface: 0 1px 0 rgba(255, 255, 255, 0.035) inset, 0 8px 20px rgba(var(--office-shadow-rgb), 0.08);
+  --shadow-raised: 0 1px 0 rgba(255, 255, 255, 0.045) inset, 0 14px 34px rgba(var(--office-shadow-rgb), 0.14);
+  --shadow-floating: 0 18px 42px rgba(var(--office-shadow-rgb), 0.34);
+  --shadow-dialog: 0 24px 70px rgba(var(--office-shadow-rgb), 0.48);
+  --action-recommended-bg: #08746f;
+  --action-recommended-border: #0aa29a;
+  --action-recommended-text: #ffffff;
+  --action-peer-bg: #172f3b;
+  --action-peer-border: var(--focus);
+  --action-peer-text: var(--text-primary);
+  --action-secondary-bg: #172431;
+  --action-secondary-border: #4e6172;
+  --action-secondary-text: var(--text-secondary);
+  --shadow-subtle: 0 1px 0 rgba(255, 255, 255, 0.04) inset;
+  --shadow-selected: inset 3px 0 0 var(--accent);
+  --ease-out-strong: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --motion-fast: 80ms;
+  --motion-ui: 100ms;
+  --press-scale: 1;
+  background: var(--bg-app);
+  color: var(--text-primary);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-variant-numeric: tabular-nums;
+}
+
+* {
+  box-sizing: border-box;
+  word-break: normal;
+  overflow-wrap: normal;
+  hyphens: none;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg-app);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+html,
+#root {
+  max-width: 100%;
+}
+
+button {
+  font: inherit;
+  transition:
+    border-color var(--motion-ui) var(--ease-standard),
+    background-color var(--motion-ui) var(--ease-standard),
+    color var(--motion-ui) var(--ease-standard);
+}
+
+button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+button:active:not(:disabled) {
+  transform: none;
+}
+
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea) {
+  border-radius: var(--radius-md);
+}
+
+:where(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  box-shadow: var(--shadow-focus-only);
+}
+
+.help-tooltip-target {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.help-tooltip-target:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.role-count-help,
+.filter-help-frame,
+.legend-help,
+.severity-help {
+  display: inline-flex;
+}
+
+.action-help-frame {
+  display: inline-flex;
+  min-width: 0;
+}
+
+.action-help-frame > button {
+  width: 100%;
+}
+
+:where(
+  .commercial-position-matrix,
+  .finance-ledger-table-wrap,
+  .finance-order-table-wrap,
+  .director-table-wrap,
+  .operator-orders-table,
+  .operator-roll-table,
+  .warehouse-roll-table,
+  .admin-action-led-table
+) {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-inline: contain;
+  scrollbar-width: thin;
+  -webkit-overflow-scrolling: touch;
+}
+
+.workbench-visual-row {
+  display: grid;
+  grid-template-columns: 66px minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+  min-width: 0;
+}
+
+.step-illustration {
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border: 1px solid var(--state-info-border);
+  border-radius: var(--radius-lg);
+  color: var(--state-info-text);
+  background: color-mix(in srgb, var(--state-info-bg) 72%, var(--surface-inset));
+  box-shadow: var(--shadow-surface);
+}
+
+.step-illustration.tone-warning {
+  border-color: var(--state-warning-border);
+  color: var(--state-warning-text);
+  background: color-mix(in srgb, var(--state-warning-bg) 72%, var(--surface-inset));
+}
+
+.step-illustration.tone-critical {
+  border-color: var(--state-critical-border);
+  color: var(--state-critical-text);
+  background: color-mix(in srgb, var(--state-critical-bg) 72%, var(--surface-inset));
+}
+
+.step-illustration ix-icon {
+  width: 44px;
+  height: 44px;
+  color: currentColor;
+}

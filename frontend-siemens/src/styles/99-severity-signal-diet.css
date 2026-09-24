@@ -1,0 +1,241 @@
+/*
+  Severity signal diet.
+  A warning or critical mismatch must not flood a whole card, row or workbench.
+  Severity stays local: pill, reason, blocker/problem block, or a thin rail.
+*/
+
+:root {
+  --severity-warning-rail: color-mix(in srgb, var(--state-warning-border) 62%, transparent);
+  --severity-critical-rail: color-mix(in srgb, var(--state-critical-border) 68%, transparent);
+  --severity-warning-wash: color-mix(in srgb, var(--state-warning-bg) 12%, transparent);
+  --severity-critical-wash: color-mix(in srgb, var(--state-critical-bg) 14%, transparent);
+}
+
+:is(
+  .queue-row,
+  .finance-queue-card,
+  .finance-ledger-row,
+  .production-workbench,
+  .production-decision-strip,
+  .production-dispatch-summary,
+  .production-dispatch-card,
+  .production-roll-dispatch-row,
+  .production-priority-option,
+  .template-diff-row,
+  .commercial-primary-action,
+  .operator-order-card,
+  .operator-orders-row,
+  .operator-roll-row,
+  .warehouse-roll-row,
+  .warehouse-inventory-row,
+  .warehouse-inventory-summary-card,
+  .admin-keyline,
+  .director-drawer,
+  .director-table tbody tr
+).severity-warning,
+:is(
+  .queue-row,
+  .finance-queue-card,
+  .finance-ledger-row,
+  .production-workbench,
+  .production-decision-strip,
+  .production-dispatch-summary,
+  .production-dispatch-card,
+  .production-roll-dispatch-row,
+  .production-priority-option,
+  .template-diff-row,
+  .commercial-primary-action,
+  .operator-order-card,
+  .operator-orders-row,
+  .operator-roll-row,
+  .warehouse-roll-row,
+  .warehouse-inventory-row,
+  .warehouse-inventory-summary-card,
+  .admin-keyline,
+  .director-drawer,
+  .director-table tbody tr
+).severity-critical {
+  background-image: none;
+}
+
+:is(
+  .queue-row,
+  .finance-queue-card,
+  .finance-ledger-row,
+  .production-workbench,
+  .production-decision-strip,
+  .production-dispatch-summary,
+  .production-dispatch-card,
+  .production-roll-dispatch-row,
+  .template-diff-row,
+  .commercial-primary-action,
+  .operator-order-card,
+  .operator-orders-row,
+  .operator-roll-row,
+  .warehouse-roll-row,
+  .warehouse-inventory-row,
+  .warehouse-inventory-summary-card,
+  .admin-keyline,
+  .director-drawer,
+  .director-table tbody tr
+).severity-warning {
+  border-color: var(--border-subtle);
+  background-color: var(--surface-quiet, var(--surface-1));
+  box-shadow: inset 3px 0 0 var(--severity-warning-rail);
+}
+
+:is(
+  .queue-row,
+  .finance-queue-card,
+  .finance-ledger-row,
+  .production-workbench,
+  .production-decision-strip,
+  .production-dispatch-summary,
+  .production-dispatch-card,
+  .production-roll-dispatch-row,
+  .template-diff-row,
+  .commercial-primary-action,
+  .operator-order-card,
+  .operator-orders-row,
+  .operator-roll-row,
+  .warehouse-roll-row,
+  .warehouse-inventory-row,
+  .warehouse-inventory-summary-card,
+  .admin-keyline,
+  .director-drawer,
+  .director-table tbody tr
+).severity-critical {
+  border-color: var(--border-subtle);
+  background-color: var(--surface-quiet, var(--surface-1));
+  box-shadow: inset 3px 0 0 var(--severity-critical-rail);
+}
+
+:is(
+  .production-workbench,
+  .production-decision-strip,
+  .finance-workbench,
+  .commercial-workbench,
+  .director-workbench,
+  .admin-workbench
+)[data-object-severity="warning"] {
+  border-color: var(--border-subtle);
+  box-shadow: inset 3px 0 0 var(--severity-warning-rail);
+}
+
+:is(
+  .production-workbench,
+  .production-decision-strip,
+  .finance-workbench,
+  .commercial-workbench,
+  .director-workbench,
+  .admin-workbench
+)[data-object-severity="critical"] {
+  border-color: var(--border-subtle);
+  box-shadow: inset 3px 0 0 var(--severity-critical-rail);
+}
+
+:is(
+  .queue-row,
+  .finance-queue-card,
+  .finance-ledger-row,
+  .production-workbench,
+  .production-decision-strip,
+  .production-dispatch-card,
+  .production-roll-dispatch-row,
+  .template-diff-row,
+  .commercial-primary-action,
+  .operator-order-card,
+  .operator-orders-row,
+  .operator-roll-row,
+  .warehouse-roll-row,
+  .warehouse-inventory-row,
+  .warehouse-inventory-summary-card,
+  .admin-keyline,
+  .director-drawer
+):is(.severity-warning, .severity-critical) :is(h2, h3, h4, strong) {
+  color: var(--text-primary);
+}
+
+.finance-workbench[data-object-severity="warning"] :is(h2, h3, h4, strong),
+.finance-workbench[data-object-severity="critical"] :is(h2, h3, h4, strong) {
+  color: var(--text-primary);
+}
+
+:is(.production-state-badge, .production-priority-pill, .severity-pill, .finance-state-badge, .commercial-state-badge, .commercial-mini-pill, .order-stage-pill, .management-risk-pill):is(.severity-warning, .severity-critical, .state-warning, .state-critical, .state-blocked),
+:is(.production-command-panel, .production-inline-problem, .finance-inline-problem, .finance-now-block, .commercial-problem-block, .operator-blocker, .warehouse-blocker, .warehouse-scan-result):is(.severity-warning, .severity-critical) {
+  box-shadow: none;
+}
+
+.production-priority-option.priority-warning {
+  background: var(--surface-inset);
+  box-shadow: inset 3px 0 0 var(--severity-warning-rail);
+}
+
+.production-priority-option.priority-critical {
+  background: var(--surface-inset);
+  box-shadow: inset 3px 0 0 var(--severity-critical-rail);
+}
+
+.production-priority-option.priority-warning.is-selected,
+.production-priority-option.priority-critical.is-selected {
+  background: color-mix(in srgb, var(--surface-selected-quiet) 72%, var(--surface-inset));
+}
+
+.operator-table-terminal .operator-focus.operator-focus-compact.is-priority {
+  grid-area: row-actions;
+}
+
+.role-operator .operator-terminal.operator-table-terminal {
+  grid-template-areas:
+    "summary"
+    "row-actions"
+    "secondary-actions"
+    "order-mass"
+    "rolls"
+    "focus"
+    "details";
+}
+
+@media (max-width: 900px) {
+  .role-operator .operator-terminal.operator-table-terminal {
+    grid-template-areas:
+      "summary"
+      "row-actions"
+      "secondary-actions"
+      "order-mass"
+      "rolls"
+      "focus"
+      "details";
+  }
+
+  .operator-table-terminal .operator-focus.operator-focus-compact.is-priority {
+    grid-area: row-actions;
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "main"
+      "actions";
+  }
+
+  .production-operator-load-row > span,
+  .production-operator-load-row small {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 520px) {
+  .role-operator :is(.operator-focus, .operator-runtime) :is(span, small, em, b) {
+    font-size: max(13px, 1em);
+  }
+
+  .role-operator .operator-table-terminal .operator-roll-row.is-head {
+    display: none;
+  }
+
+  .role-operator .operator-table-terminal .operator-roll-table.is-primary {
+    padding-top: 8px;
+  }
+
+  .role-operator .operator-table-terminal .operator-roll-table .operator-panel-title {
+    display: none;
+  }
+}

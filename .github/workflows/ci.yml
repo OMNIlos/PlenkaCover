@@ -1,0 +1,107 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-lint-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm audit --omit=dev --audit-level=high
+      # Verify generation explicitly; the API prebuild hook also keeps direct builds deterministic.
+      - run: npm run db:generate
+      - run: npm run build
+      - run: npm run lint
+      - run: npm run test:physical-release
+      - name: Stage gateway package and verify compiled release metadata
+        shell: bash
+        run: |
+          set -euo pipefail
+          stage_dir="$(mktemp -d)"
+          ./scripts/gateway/build-deb.sh --stage-only "$stage_dir"
+          test -s "$stage_dir/root/usr/share/doc/plenka-gateway-agent/BUILD-INFO"
+      - run: npm test
+
+  e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run db:generate
+      - run: npm run build
+      - name: Start isolated PostgreSQL
+        shell: bash
+        run: |
+          set -euo pipefail
+          database_password="$(openssl rand -hex 32)"
+          database_name="plenka_e2e_ci"
+          database_marker="$(node -e "process.stdout.write(require('node:crypto').randomUUID())")"
+          echo "::add-mask::${database_password}"
+          database_url="postgresql://plenka:${database_password}@127.0.0.1:5433/${database_name}?schema=public"
+          echo "::add-mask::${database_url}"
+          echo "DATABASE_URL=${database_url}" >> "$GITHUB_ENV"
+          echo "PLENKA_E2E_DATABASE_NAME=${database_name}" >> "$GITHUB_ENV"
+          echo "PLENKA_E2E_DATABASE_MARKER=${database_marker}" >> "$GITHUB_ENV"
+          echo "PLENKA_E2E_POSTGRES_CONTAINER=plenka-e2e-postgres" >> "$GITHUB_ENV"
+          docker run --detach --rm \
+            --name plenka-e2e-postgres \
+            --env POSTGRES_USER=plenka \
+            --env "POSTGRES_PASSWORD=${database_password}" \
+            --env "POSTGRES_DB=${database_name}" \
+            --publish 127.0.0.1:5433:5432 \
+            --health-cmd "pg_isready -U plenka -d ${database_name}" \
+            --health-interval 1s \
+            --health-timeout 3s \
+            --health-retries 30 \
+            postgres:16-alpine >/dev/null
+          for attempt in {1..30}; do
+            health="$(docker inspect --format '{{.State.Health.Status}}' plenka-e2e-postgres 2>/dev/null || true)"
+            if [[ "${health}" == "healthy" ]]; then
+              docker exec plenka-e2e-postgres \
+                psql --username plenka --dbname postgres --set=ON_ERROR_STOP=1 \
+                --command="COMMENT ON DATABASE \"${database_name}\" IS 'plenka:e2e-disposable:v1:${database_marker}';" \
+                >/dev/null
+              exit 0
+            fi
+            sleep 1
+          done
+          echo '::error::PostgreSQL did not become healthy'
+          exit 1
+      # Production-shaped auth gate: test profile never accepts x-role.
+      - run: npm run test:e2e:auth-runtime -w @plenka/api
+      # Legacy full-flow harnesses intentionally exercise the explicit development mock.
+      - run: npm run test:e2e -w @plenka/api
+      - run: npm run test:e2e -w @plenka/api
+      - name: Stop isolated PostgreSQL
+        if: always()
+        run: docker rm --force plenka-e2e-postgres >/dev/null 2>&1 || true
+
+  deployment-contracts:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Run VPS deployment contracts
+        run: ./scripts/vps/test/run.sh
+      - name: Validate Compose topology from the tracked example
+        run: ./scripts/vps/check-compose.sh --example-only
+      - name: Validate Caddy configuration
+        run: ./scripts/vps/check-caddy.sh
+      - name: Build backend runtime image target
+        run: docker build --target runtime --tag plenka-api:ci .
+      - name: Build backend migration image target
+        run: docker build --target migration --tag plenka-migration:ci .

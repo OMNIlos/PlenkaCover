@@ -1,0 +1,22 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: plenka-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: plenka
+      POSTGRES_PASSWORD: plenka
+      POSTGRES_DB: plenka
+    ports:
+      # Host 5433 → container 5432: avoids clashing with another local Postgres on 5432.
+      - '5433:5432'
+    volumes:
+      - plenka-pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U plenka -d plenka']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  plenka-pgdata:

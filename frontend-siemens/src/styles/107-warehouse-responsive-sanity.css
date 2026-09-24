@@ -1,0 +1,619 @@
+.app-shell[data-active-role='warehouse'][data-warehouse-inventory-page='true'] {
+  grid-template-rows: auto minmax(0, 1fr);
+  align-content: start;
+}
+.app-shell[data-active-role='warehouse'][data-warehouse-inventory-page='true']
+  > .warehouse-inventory-hub-page {
+  align-self: start;
+}
+.app-shell[data-active-role='warehouse'][data-warehouse-inventory-page='true'] > .detail-panel {
+  min-width: 0;
+  padding-top: 16px;
+}
+.app-shell[data-active-role='warehouse'][data-warehouse-inventory-page='true']
+  > .detail-panel
+  > .detail-view.role-warehouse {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+}
+.app-shell[data-active-role='warehouse'][data-warehouse-inventory-page='true']
+  .warehouse-inventory-layout {
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 380px);
+}
+@container (max-width: 820px) {
+  .warehouse-roll-row,
+  .warehouse-roll-row.is-head {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-roll-row.is-head {
+    display: none;
+  }
+
+  .warehouse-roll-row > span {
+    display: grid;
+    grid-template-columns: minmax(104px, 0.34fr) minmax(0, 1fr);
+    gap: 6px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .warehouse-roll-row > span::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .warehouse-roll-row > span > * {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .warehouse-row-actions {
+    display: grid;
+    grid-template-columns: minmax(104px, 0.34fr) minmax(0, 1fr);
+    gap: 6px;
+    width: 100%;
+    max-width: 100%;
+    overflow: hidden;
+  }
+
+  .warehouse-row-actions > .warehouse-row-action {
+    grid-column: 2;
+    justify-self: stretch;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .warehouse-scan-hub-page .role-top-nav,
+  .warehouse-inventory-hub-page .role-top-nav {
+    overflow: visible;
+  }
+  .warehouse-scan-hub-page .role-top-nav-list,
+  .warehouse-inventory-hub-page .role-top-nav-list {
+    display: none;
+  }
+  .warehouse-scan-hub-page .floor-mobile-section-nav,
+  .warehouse-inventory-hub-page .floor-mobile-section-nav {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 4px;
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    overscroll-behavior-x: contain;
+  }
+
+  .warehouse-scan-hub-page > .role-top-nav > .mobile-nav-drawer-layer,
+  .warehouse-inventory-hub-page > .role-top-nav > .mobile-nav-drawer-layer {
+    display: block;
+  }
+
+  .warehouse-scan-hub-page .mobile-section-nav-item,
+  .warehouse-inventory-hub-page .mobile-section-nav-item {
+    grid-template-columns: 18px minmax(0, 1fr) auto;
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    min-height: 40px;
+    padding: 5px 7px;
+  }
+
+  .warehouse-scan-station-detail,
+  .warehouse-inventory-detail {
+    order: 0;
+  }
+
+  .warehouse-pallet-label-preview {
+    width: min(100%, 340px);
+  }
+
+  .warehouse-scan-station-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-inventory-layout,
+  .app-shell[data-active-role='warehouse'][data-warehouse-inventory-page='true']
+    .warehouse-inventory-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-scan-station-detail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .warehouse-inventory-detail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .warehouse-scan-queue-scroll {
+    max-height: min(320px, 36dvh);
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table {
+    min-width: 0;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table colgroup {
+    display: none;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table thead {
+    display: block;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table thead tr {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    width: 100%;
+    padding: 6px;
+    border-bottom: 1px solid var(--border-default);
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table thead th {
+    position: static;
+    flex: 1 1 104px;
+    width: auto;
+    min-height: 34px;
+    height: auto;
+    padding: 4px 7px;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table thead th:empty {
+    display: none;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table,
+  .warehouse-inventory-main .warehouse-inventory-data-table tbody,
+  .warehouse-inventory-main .warehouse-inventory-data-table tr,
+  .warehouse-inventory-main .warehouse-inventory-data-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table tbody tr {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table td {
+    display: grid;
+    grid-template-columns: minmax(94px, 0.34fr) minmax(0, 1fr);
+    gap: 8px;
+    min-height: 0;
+    padding: 7px 12px;
+    border-bottom: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table td::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table td > * {
+    grid-column: 2;
+    min-width: 0;
+  }
+
+  .warehouse-inventory-main .warehouse-inventory-data-table .plenki-data-table-empty-row td {
+    display: block;
+    width: 100%;
+    padding: 0;
+  }
+
+  .warehouse-inventory-main
+    .warehouse-inventory-data-table
+    .plenki-data-table-empty-row
+    td::before {
+    display: none;
+  }
+
+  .warehouse-inventory-main .warehouse-row-edit-actions {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .warehouse-inventory-main .warehouse-row-edit-actions button {
+    width: 100%;
+    min-width: 0;
+    min-height: 40px;
+  }
+}
+
+@media (max-width: 900px) {
+  .warehouse-scan-station-layout,
+  .warehouse-inventory-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-coverage-recheck-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-coverage-recheck-queue {
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
+  }
+
+  .warehouse-coverage-recheck,
+  .warehouse-coverage-physical {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .warehouse-scan-station-detail {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+
+  .warehouse-inventory-detail {
+    position: static;
+    max-height: min(620px, 68dvh);
+  }
+
+  .warehouse-command-strip,
+  .warehouse-operation-header,
+  .warehouse-scan-station-detail .warehouse-scan-session-strip,
+  .warehouse-roll-route-summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-command-facts {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .warehouse-command-actions {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-scan-input-form {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .warehouse-scan-queue-scroll {
+    max-height: 54dvh;
+  }
+
+  .warehouse-scan-station-table,
+  .warehouse-scan-station-detail {
+    padding: 10px;
+  }
+
+  .warehouse-roll-row,
+  .warehouse-roll-row.is-head {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+
+  .warehouse-roll-row.is-head {
+    display: none;
+  }
+
+  .warehouse-roll-row > span {
+    display: grid;
+    grid-template-columns: minmax(88px, 0.34fr) minmax(0, 1fr);
+    gap: 6px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .warehouse-roll-row > span::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .warehouse-roll-row > span:last-child {
+    border-bottom: 0;
+  }
+
+  .warehouse-row-actions {
+    display: grid;
+    grid-template-columns: minmax(88px, 0.34fr) minmax(0, 1fr);
+    gap: 6px;
+  }
+
+  .warehouse-row-actions::before {
+    content: attr(data-label);
+    color: var(--text-muted);
+    font-size: 11px;
+    font-weight: 900;
+    line-height: 1.15;
+    text-transform: uppercase;
+  }
+
+  .warehouse-row-actions > .warehouse-row-action {
+    grid-column: 2;
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .warehouse-inline-action {
+    flex-basis: calc(50% - 4px);
+    min-height: 40px;
+  }
+
+  .warehouse-inventory-detail {
+    order: 2;
+  }
+
+  .warehouse-pallet-label-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-pallet-label-preview {
+    width: min(100%, 340px);
+  }
+}
+
+@media (max-width: 520px) {
+  .warehouse-coverage-recheck-head,
+  .warehouse-coverage-member > header,
+  .warehouse-coverage-physical > header,
+  .warehouse-coverage-physical-form > p {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .warehouse-coverage-spec-grid,
+  .warehouse-coverage-owner-field,
+  .warehouse-coverage-resolution-reason,
+  .warehouse-coverage-physical-rows > article,
+  .warehouse-coverage-physical-form > label {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-coverage-physical-rows > article > div,
+  .warehouse-coverage-physical-form > div {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-coverage-physical button {
+    width: 100%;
+    min-height: 40px;
+  }
+
+  .warehouse-scan-station-page {
+    gap: 10px;
+  }
+
+  .warehouse-command-strip {
+    padding: 10px;
+  }
+
+  .warehouse-command-title h2 {
+    font-size: 22px;
+  }
+
+  .warehouse-command-title small,
+  .warehouse-operation-title small,
+  .warehouse-operation-state small {
+    white-space: normal;
+  }
+
+  .warehouse-command-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-command-facts > div {
+    min-height: 42px;
+    border-right: 0;
+    border-bottom: 1px solid var(--border-subtle);
+  }
+
+  .warehouse-command-facts > div:last-child {
+    border-bottom: 0;
+  }
+
+  .warehouse-command-actions,
+  .warehouse-inline-action-row {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-command-action,
+  .warehouse-inline-action {
+    width: 100%;
+    flex-basis: 100%;
+    min-height: 42px;
+  }
+
+  .warehouse-scan-input-form {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-scan-input-form button {
+    width: 100%;
+  }
+
+  .warehouse-scan-queue-scroll {
+    max-height: 58dvh;
+  }
+
+  .warehouse-scan-station-detail,
+  .warehouse-inventory-detail {
+    max-height: none;
+    overflow: visible;
+  }
+
+  .warehouse-operation-header {
+    padding-right: 50px;
+  }
+
+  .warehouse-scan-session-strip .scan-focus-strip {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .warehouse-scan-result,
+  .warehouse-blocker {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2px;
+  }
+
+  .scan-focus-strip div {
+    min-height: 40px;
+    padding: 6px 7px;
+  }
+
+  .scan-focus-strip span {
+    font-size: 11px;
+  }
+
+  .scan-focus-strip strong {
+    font-size: 13px;
+  }
+
+  .warehouse-roll-row > span,
+  .warehouse-row-actions {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+    padding: 8px;
+  }
+
+  .warehouse-row-actions > .warehouse-row-action {
+    grid-column: 1;
+  }
+
+  .warehouse-pallet-label-panel {
+    gap: 10px;
+  }
+
+  .warehouse-pallet-label-preview {
+    width: 100%;
+  }
+
+  .warehouse-pallet-label-controls {
+    padding: 10px;
+  }
+
+  .warehouse-pallet-label-controls .warehouse-pallet-export-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-pallet-label-controls .warehouse-pallet-export-button {
+    min-height: 40px;
+  }
+
+  .warehouse-pallet-reprint-dialog .plenki-modal-body {
+    min-width: 0;
+  }
+
+  .warehouse-inventory-table-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .warehouse-inventory-toolbar .plenki-toolbar-row {
+    grid-template-areas:
+      'search'
+      'filters'
+      'meta';
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-inventory-table-actions {
+    justify-content: stretch;
+  }
+
+  .warehouse-inventory-table-actions button {
+    flex: 1 1 calc(50% - 4px);
+    min-height: 40px;
+  }
+
+  .warehouse-inventory-toolbar .plenki-filter-row button,
+  .warehouse-inventory-filter-row button {
+    flex: 1 1 calc(50% - 4px);
+    max-width: none;
+    min-height: 40px;
+  }
+
+  .warehouse-inventory-data-table,
+  .warehouse-inventory-data-table-rolls {
+    min-width: 0;
+  }
+
+  .warehouse-inventory-quick-edit label {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .warehouse-reserve-roll-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-reserve-roll-grid > .is-wide {
+    grid-column: auto;
+  }
+
+  .warehouse-reserve-roll-weight-preview {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .warehouse-stock-workspace .warehouse-stock-header {
+    display: grid;
+  }
+
+  .warehouse-stock-workspace .warehouse-stock-header > .action-recommended {
+    width: 100%;
+  }
+
+  .warehouse-stock-workspace .warehouse-stock-filters {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-stock-workspace .warehouse-stock-filters > .is-wide {
+    grid-column: auto;
+  }
+
+  .warehouse-stock-detail-modal .warehouse-stock-detail-facts {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-bigbag-create-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-bigbag-create-grid > .is-wide {
+    grid-column: auto;
+  }
+
+  .warehouse-bigbag-create-empty.is-wide {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .warehouse-bigbag-material-picker > [role='radiogroup'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

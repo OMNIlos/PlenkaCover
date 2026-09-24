@@ -1,0 +1,20 @@
+{
+"odata.metadata": "https://msk1.1cfresh.com:443/a/ea_demo/4099533/odata/standard.odata/$metadata#Document_ПоступлениеНаРасчетныйСчет",
+"value": [{
+"Ref_Key": "826d192f-1e91-11e6-a31d-14dae9b19a48",
+"DataVersion": "AAAAAAAAAAA=",
+"Number": "0000-000004",
+"Date": "2024-01-09T12:00:00",
+"Posted": true,
+"Контрагент": "9e1d8969-1dc5-11e6-a31d-14dae9b19a48",
+"СуммаДокумента": 15083.75
+},{
+"Ref_Key": "826d1958-1e91-11e6-a31d-14dae9b19a48",
+"DataVersion": "AAAAAAAAAAA=",
+"Number": "0000-000005",
+"Date": "2024-01-09T12:00:00",
+"Posted": true,
+"Контрагент": "9e1d8973-1dc5-11e6-a31d-14dae9b19a48",
+"СуммаДокумента": 123990
+}]
+}

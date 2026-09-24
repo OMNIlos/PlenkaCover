@@ -1,0 +1,187 @@
+.production-roll-cost-column {
+  width: 240px;
+  max-width: 240px;
+  white-space: normal;
+  vertical-align: middle;
+}
+
+.roll-cost-cell {
+  display: grid;
+  max-width: 240px;
+  gap: 3px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.roll-cost-cell strong {
+  color: var(--text-primary);
+  line-height: 1.25;
+}
+
+.roll-cost-cell small {
+  color: var(--text-secondary);
+  line-height: 1.25;
+}
+
+.roll-cost-cell.is-unresolved strong {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.warehouse-spool-price-form {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 10px;
+  box-sizing: border-box;
+  margin: 12px 0;
+  padding: 14px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-2);
+}
+
+.warehouse-spool-price-form h2,
+.warehouse-spool-price-form p {
+  margin: 0;
+}
+
+.warehouse-spool-price-form h2 {
+  font-size: 18px;
+}
+
+.warehouse-spool-price-fields {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  align-items: end;
+  min-width: 0;
+}
+
+.warehouse-spool-price-fields label {
+  display: grid;
+  min-width: 0;
+  gap: 5px;
+  color: var(--text-secondary);
+  font-size: 13px;
+}
+
+.warehouse-spool-price-fields input,
+.warehouse-spool-price-fields select,
+.warehouse-spool-price-fields button {
+  width: 100%;
+  min-width: 0;
+  min-height: 40px;
+  box-sizing: border-box;
+}
+
+.warehouse-spool-price-fields .is-wide {
+  grid-column: span 2;
+}
+
+.warehouse-spool-price-feedback {
+  min-height: 20px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  line-height: 20px;
+  overflow-wrap: anywhere;
+}
+
+.warehouse-spool-price-feedback[data-tone='error'] {
+  color: var(--state-danger-text);
+}
+
+.warehouse-spool-price-feedback[data-tone='success'] {
+  color: var(--state-success-text);
+}
+
+.warehouse-spool-price-state {
+  display: flex;
+  min-height: 40px;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-secondary);
+}
+
+.spool-stock-summary {
+  display: grid;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  gap: 10px;
+  box-sizing: border-box;
+  padding: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  background: var(--surface-1);
+}
+
+.spool-stock-summary h3,
+.spool-stock-summary p,
+.spool-stock-summary dl,
+.spool-stock-summary dd {
+  margin: 0;
+}
+
+.spool-stock-summary h3 {
+  font-size: 15px;
+}
+
+.spool-stock-summary dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 8px;
+}
+
+.spool-stock-summary dl > div {
+  display: grid;
+  min-width: 0;
+  gap: 3px;
+  padding: 8px 10px;
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+}
+
+.spool-stock-summary dt {
+  color: var(--text-secondary);
+  font-size: 12px;
+}
+
+.spool-stock-summary dd {
+  color: var(--text-primary);
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.spool-stock-summary [role='alert'] {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--state-danger-text);
+}
+
+@media (max-width: 1024px) {
+  .production-roll-cost-column {
+    width: 200px;
+    max-width: 200px;
+  }
+
+  .roll-cost-cell {
+    max-width: 200px;
+  }
+
+  .warehouse-spool-price-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .warehouse-spool-price-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .warehouse-spool-price-fields .is-wide {
+    grid-column: span 1;
+  }
+}

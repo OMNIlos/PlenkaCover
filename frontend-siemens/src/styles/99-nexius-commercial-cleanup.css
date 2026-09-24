@@ -1,0 +1,533 @@
+/* Nexius CBD commercial visual cleanup kept outside legacy commercial CSS debt budget. */
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-position-matrix {
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-radius: 6px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  table {
+  width: 100%;
+  min-width: 1240px;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th, td) {
+  box-sizing: border-box;
+  height: 58px;
+  padding: 10px 12px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-position-matrix th {
+  height: 48px;
+  font-size: 13px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  tr.is-editing
+  td {
+  height: 76px;
+  overflow: visible;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:first-child, td:first-child, th:last-child, td:last-child) {
+  position: static;
+  z-index: auto;
+  box-shadow: none;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:last-child, td:last-child) {
+  position: sticky;
+  right: 0;
+  z-index: 2;
+  background: var(--surface-inset);
+  box-shadow:
+    -1px 0 0 var(--border-subtle),
+    -14px 0 18px color-mix(in srgb, var(--surface-inset) 72%, transparent);
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  th:last-child {
+  z-index: 3;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(1), td:nth-child(1)) {
+  width: 52px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(2), td:nth-child(2)) {
+  width: 72px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(3), td:nth-child(3)) {
+  width: 140px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(4), td:nth-child(4), th:nth-child(5), td:nth-child(5)) {
+  width: 118px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(6), td:nth-child(6)) {
+  width: 150px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(7), td:nth-child(7)) {
+  width: 180px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(8), td:nth-child(8)) {
+  width: 170px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(9), td:nth-child(9)) {
+  width: 340px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-matrix
+  :is(th:nth-child(10), td:nth-child(10)) {
+  width: 160px;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-position-field {
+  width: 100%;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-position-input {
+  width: 100%;
+  max-width: 100%;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-input:is(
+    .is-number,
+    .is-thickness,
+    .is-film,
+    .is-birka,
+    .is-spool,
+    .is-material
+  ) {
+  width: 100%;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-unit-control {
+  grid-template-columns: minmax(46px, 1fr) 38px;
+  width: 100%;
+  min-width: 94px;
+  max-width: 100%;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-position-unit-control
+  .commercial-position-input {
+  min-width: 0;
+  padding: 4px 6px;
+  text-align: right;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-position-unit {
+  padding: 0 8px 0 2px;
+  text-align: left;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-row-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.82fr);
+  gap: 8px;
+  min-width: 0;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-table-action {
+  min-width: 0;
+  width: 100%;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-production-strip {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  min-width: 0;
+  margin: 8px 0 0;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-production-strip
+  > div {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 3px 8px;
+  align-items: start;
+  min-width: 0;
+  min-height: 0;
+  padding: 8px 10px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface-inset) 88%, var(--surface-1));
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-production-strip
+  .commercial-summary-mark {
+  grid-row: 1 / span 2;
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  color: var(--text-muted);
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-production-strip
+  :is(span:not(.commercial-summary-mark), strong) {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-production-strip
+  span:not(.commercial-summary-mark) {
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-transform: uppercase;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-production-strip
+  strong {
+  color: var(--text-primary);
+  font-size: 14px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-cover-gate {
+  margin-top: 8px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--surface-inset) 82%, transparent);
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-cover-gate summary {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px;
+  align-items: start;
+  min-width: 0;
+  padding: 9px 10px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-gate
+  summary::marker {
+  color: var(--text-secondary);
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-gate
+  summary
+  > span {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-gate
+  summary
+  :is(strong, small) {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-gate
+  summary
+  strong {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 900;
+  line-height: 1.2;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-gate
+  summary
+  small {
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1.28;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-cover-card {
+  padding: 0;
+  overflow: hidden;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-cover-card summary {
+  display: grid;
+  grid-template-columns: minmax(72px, 0.28fr) minmax(0, 1fr) minmax(96px, 0.34fr);
+  gap: 4px 10px;
+  align-items: center;
+  min-width: 0;
+  padding: 9px 10px;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-position-number {
+  grid-row: 1 / span 2;
+  min-width: 0;
+  color: var(--text-muted);
+  font-size: 13px;
+  font-weight: 900;
+  line-height: 1.15;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-card
+  summary
+  :is(strong, small, b) {
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-cover-card summary b {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+  justify-self: end;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-cover-detail-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0;
+  border-top: 1px solid var(--border-subtle);
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-detail-grid
+  > div {
+  min-width: 0;
+  padding: 8px 10px;
+  border-right: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-detail-grid
+  > div:nth-child(2n) {
+  border-right: 0;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-cover-detail-grid
+  :is(span, strong) {
+  display: block;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  white-space: normal;
+}
+
+.app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-billing-summary {
+  grid-template-columns: 34px minmax(0, 1fr) 36px;
+  gap: 10px;
+  min-width: 0;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-billing-summary
+  .commercial-section-copy {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 5px;
+  min-width: 0;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-billing-summary
+  .eyebrow,
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-billing-summary
+  strong {
+  display: block;
+  min-width: 0;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-billing-summary
+  .commercial-section-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  min-width: 0;
+  margin: 0;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-billing-summary
+  .commercial-owner-chip {
+  display: none;
+}
+
+.app-shell[data-active-role='commercial']
+  .commercial-detail-view
+  .commercial-billing-summary
+  .commercial-state-badge {
+  max-width: 100%;
+}
+
+@media (max-width: 760px) {
+  .app-shell[data-active-role='commercial']
+    .commercial-detail-view
+    .commercial-cover-production-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell[data-active-role='commercial'] .commercial-detail-view .commercial-billing-summary {
+    grid-template-columns: 30px minmax(0, 1fr) 34px;
+    padding: 10px 12px;
+  }
+}
+
+@media (max-width: 1180px) {
+  .app-shell[data-active-role='commercial']
+    .commercial-detail-view
+    .commercial-cover-production-strip {
+    grid-template-columns: 1fr;
+  }
+
+  .app-shell[data-active-role='commercial']
+    .commercial-detail-view
+    .commercial-cover-production-strip
+    :is(span:not(.commercial-summary-mark), strong) {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    align-items: start;
+  }
+
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header > div:first-child,
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header .panel-header-actions {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header > div:first-child {
+    display: grid;
+    gap: 2px;
+  }
+
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header h1 {
+    margin: 0;
+    line-height: 1.16;
+  }
+
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header .panel-header-actions {
+    display: grid;
+    grid-template-columns: minmax(0, max-content);
+    justify-content: start;
+  }
+
+  .app-shell[data-active-role='commercial'] .list-panel > .panel-header .create-intake-button {
+    width: auto;
+    min-width: 168px;
+    max-width: 100%;
+  }
+}
